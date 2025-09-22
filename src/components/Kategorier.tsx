@@ -28,7 +28,7 @@ function Kategorier() {
                         fontFamily: "sans-serif", 
                         textTransform: "uppercase",
                         letterSpacing: 7,
-                        fontSize: "1.4rem",
+                        fontSize: "1.2rem",
                         color: "white"
                     }} 
                     gutterBottom>
@@ -80,7 +80,7 @@ function Kategorier() {
                                 fontSize: "1.4rem", 
                                 marginBottom: "-1rem",
                                 textTransform: "uppercase",
-                                letterSpacing: 6,
+                                letterSpacing: 4,
                                 fontFamily: "sans-serif"
                             }}>
                                 Alle på banen
