@@ -103,7 +103,7 @@ export default function Favoriter() {
     <Grid container spacing={2}>
       {products.map((product) => (
         <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id}>
-          <Card sx={{ height: "55vh",position: "relative" }}>
+          <Card sx={{ height: { xs: "55vh", sm: "45vh" },position: "relative" }}>
             {product.image_url && (
               <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
             )}
@@ -140,7 +140,7 @@ export default function Favoriter() {
                     position: "absolute",
                     top: "1rem",
                     padding: "0 1rem",
-                    left: "-1rem",
+                    left: { xs: "-1rem", sm: "-3.5rem" },
                   }}
                 >
                   {product.price.toFixed(2)} DKK

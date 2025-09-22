@@ -4,7 +4,6 @@ import Fordele from "@/components/Fordele";
 import ForsideHero from "@/components/Forside";
 import Kategorier from "@/components/Kategorier";
 import { Box } from "@mui/material";
-// import "./globals.css";
 
 export default async function Home() {
   return (
@@ -15,7 +14,7 @@ export default async function Home() {
             backgroundImage: `url(/golfbane.jpg)`,
             backgroundSize: "cover",         
             backgroundPosition: "center", 
-            marginTop: { xs: "-4.5rem", sm: "-2.75rem" } 
+            marginTop: { xs: "0rem" } 
           }}
           >
             <ForsideHero   />

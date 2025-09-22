@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
-import { Box, Link, Typography, useMediaQuery, Drawer, IconButton } from '@mui/material'
+import { Box, Typography, useMediaQuery, Drawer, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import HomeFilledIcon from '@mui/icons-material/HomeFilled'
@@ -55,17 +55,23 @@ export default function BasicMenu() {
     handleClose()
   }
 
+  const handleHome = () => {
+    router.push('/')
+    handleClose()
+  }
+
   return (
     <Box
       sx={{
         display: 'flex',
         alignItems: 'center',
         width: '100%',
-        justifyContent: 'space-between',
+        justifyContent: { xs: "space-between", sm: "end" },
         padding: { xs: '0.3rem 1rem', sm: '0 5rem' },
-        position: { xs: 'fixed', sm: 'sticky' },
-        bottom: { xs: 0 },
-        top: { sm: '1rem' },
+        position: { xs: 'absolute'},
+        alignSelf: { sm: "baseline" },
+        bottom: { xs: "0rem" },
+        top: { sm: "2rem" },
         backgroundColor: { xs: 'white', sm: 'transparent' },
         borderTopLeftRadius: '1rem',
         borderTopRightRadius: '1rem',
@@ -73,10 +79,6 @@ export default function BasicMenu() {
         zIndex: 15,
       }}
     >
-      <Link sx={{  color: "black", fontWeight: "900", textDecorationLine: "none" }} href="/">
-        {/* <img src="/logo.webp" alt="logo" width={40} /> */}
-        SS 
-      </Link>
 
       {isTabletUp ? (
         <>
@@ -114,7 +116,13 @@ export default function BasicMenu() {
             </Box>
 
             {/* Menu items */}
-            <Box sx={{ mt: 2 }}>
+            <Box>
+              <Typography
+                onClick={handleHome}
+                sx={menuItemStyle}
+              >
+                Home
+              </Typography>
               <Typography
                 onClick={handleShop}
                 sx={menuItemStyle}
@@ -146,6 +154,7 @@ export default function BasicMenu() {
         </>
       ) : (
         <>
+          <Typography onClick={handleHome} sx={{ color: 'black', cursor: 'pointer', fontWeight: "900" }}>SS</Typography>
           <HomeFilledIcon onClick={handleShop} sx={{ color: 'black', cursor: 'pointer' }} />
           <CommentIcon onClick={handleChatHistory} sx={{ color: 'black', cursor: 'pointer' }} />
           <FavoriteIcon onClick={handleFav} sx={{ color: 'black', cursor: 'pointer' }} />
