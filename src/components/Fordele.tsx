@@ -9,11 +9,12 @@ function Fordele() {
                     display: { xs: "grid", sm: "none" }, 
                     gap: "2rem", 
                     textAlign: "center",
-                    padding: "5rem 1rem 1rem 1rem ",
+                    padding: "5rem 1rem 5rem 1rem",
                     textTransform: "uppercase",
                     fontFamily: "sans-serif",
+                    background: "black",
+                    color: "white",
                     marginTop: { xs: "-8rem" },
-                    marginBottom: { xs: "5rem" },
                 }}>
                 <Box>
                     <Typography 

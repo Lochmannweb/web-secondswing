@@ -4,9 +4,9 @@ import Fordele from "@/components/Fordele";
 import ForsideHero from "@/components/Forside";
 import Kategorier from "@/components/Kategorier";
 import { Box } from "@mui/material";
+// import "./globals.css";
 
 export default async function Home() {
-    
   return (
     <>
         <Box 

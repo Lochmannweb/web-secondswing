@@ -18,7 +18,8 @@ function Kategorier() {
                 textAlign: "center", 
                 padding: "5rem 3rem 3rem 3rem", 
                 paddingBottom: "8rem" ,
-                fontFamily: "JacquesFrancois"
+                background: "black",
+                marginTop: "-1rem"
             }}>
             <Box sx={{ marginBottom: "2rem"}}>
                 <Typography 
@@ -26,8 +27,9 @@ function Kategorier() {
                         marginBottom: "0px", 
                         fontFamily: "sans-serif", 
                         textTransform: "uppercase",
-                        letterSpacing: 6,
-                        fontSize: "1rem"
+                        letterSpacing: 7,
+                        fontSize: "1.4rem",
+                        color: "white"
                     }} 
                     gutterBottom>
                         Golfudstyr til enhver spiller
@@ -39,7 +41,7 @@ function Kategorier() {
                         textTransform: "uppercase",
                         letterSpacing: 4,
                         color: "gray",
-                        fontSize: "0.5rem"
+                        fontSize: "0.7rem"
                     }} 
                     gutterBottom>
                         Find din stil og dit spil
@@ -70,11 +72,12 @@ function Kategorier() {
                             textAlign: "center",
                             display: "grid",
                             gap: "1rem",
+                            color: "white"
                         }}
                     >
                         <Typography 
                             sx={{ 
-                                fontSize: "1.2rem", 
+                                fontSize: "1.4rem", 
                                 marginBottom: "-1rem",
                                 textTransform: "uppercase",
                                 letterSpacing: 6,
@@ -86,9 +89,10 @@ function Kategorier() {
                             sx={{ 
                                 fontSize: "0.5rem", 
                                 textTransform: "uppercase",
-                                letterSpacing: 6,
+                                letterSpacing: 4,
                                 fontFamily: "sans-serif",
                                 color: "lightgray",
+                                px: "1rem"
                             }}>
                                 Golfudstyr til ALLE spillere
                         </Typography>
@@ -143,7 +147,7 @@ function Kategorier() {
                     >
                         <Typography 
                             sx={{ 
-                                fontSize: "1.2rem", 
+                                fontSize: "1.4rem", 
                                 marginBottom: "-1rem",
                                 textTransform: "uppercase",
                                 letterSpacing: 6,
@@ -155,7 +159,7 @@ function Kategorier() {
                             sx={{ 
                                 fontSize: "0.5rem", 
                                 textTransform: "uppercase",
-                                letterSpacing: 6,
+                                letterSpacing: 4,
                                 fontFamily: "sans-serif",
                                 color: "lightgray",
                                 px: 2
@@ -214,7 +218,7 @@ function Kategorier() {
                         <Typography 
                             variant="h4" 
                             sx={{ 
-                                fontSize: "1.2rem", 
+                                fontSize: "1.4rem", 
                                 marginBottom: "-1rem",
                                 textTransform: "uppercase",
                                 letterSpacing: 6,
@@ -227,7 +231,7 @@ function Kategorier() {
                             sx={{ 
                                 fontSize: "0.5rem", 
                                 textTransform: "uppercase",
-                                letterSpacing: 6,
+                                letterSpacing: 4,
                                 fontFamily: "sans-serif",
                                 color: "lightgray",
                                 px: 2

@@ -4,7 +4,6 @@ import React from 'react'
 import { Box, Button, Typography, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useRouter } from 'next/navigation'
-import "@/app/font.module.css";
 
 
 export default function ForsideHero() {
@@ -34,6 +33,7 @@ export default function ForsideHero() {
                   fontFamily={"sans-serif"}
                   textTransform={"uppercase"}
                   letterSpacing={6}
+                  color='white'
                   fontSize={{ xs: "1.5rem", sm: "1rem", md: "4rem" }}
                   >
                     Golf med passion
