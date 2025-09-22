@@ -18,7 +18,7 @@ function Kategorier() {
                 textAlign: "center", 
                 padding: "5rem 3rem 3rem 3rem", 
                 paddingBottom: "8rem" ,
-                background: "black",
+                // background: "black",
                 marginTop: "-1rem"
             }}>
             <Box sx={{ marginBottom: "2rem"}}>
@@ -29,7 +29,7 @@ function Kategorier() {
                         textTransform: "uppercase",
                         letterSpacing: 7,
                         fontSize: "1.2rem",
-                        color: "white"
+                        // color: "white"
                     }} 
                     gutterBottom>
                         Golfudstyr til enhver spiller

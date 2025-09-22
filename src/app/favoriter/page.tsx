@@ -12,7 +12,6 @@ import {
   Alert,
   Box,
   Button,
-  Divider
 } from "@mui/material"
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import Link from "next/link"
@@ -104,7 +103,7 @@ export default function Favoriter() {
     <Grid container spacing={2}>
       {products.map((product) => (
         <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id}>
-          <Card sx={{ height: "100%", position: "relative" }}>
+          <Card sx={{ height: "55vh",position: "relative" }}>
             {product.image_url && (
               <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
             )}
@@ -134,14 +133,14 @@ export default function Favoriter() {
                     backgroundColor: "white",
                     borderRadius: "3rem",
                     fontSize: "0.8rem",
-                    width: "100%",
+                    width: "83%",
                     textAlign: "center",
                     alignSelf: "end",
                     color: "black",
-                    position: "relative",
-                    top: "-14rem",
+                    position: "absolute",
+                    top: "1rem",
                     padding: "0 1rem",
-                    left: "-2rem",
+                    left: "-1rem",
                   }}
                 >
                   {product.price.toFixed(2)} DKK
@@ -158,11 +157,12 @@ export default function Favoriter() {
                   href={`/products/${product.id}`}
                   sx={{ 
                     width: "80%", 
+                    position: "absolute",
                     backgroundColor: "gray", 
                     color: "white", 
                     display: "flex",
                     justifySelf: "center",
-                    marginBottom: "1rem",
+                    bottom: "1rem",
                     padding: "0.3rem 1rem",
                     fontSize: "10px",
                     "&:hover": {

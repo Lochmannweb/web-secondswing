@@ -12,14 +12,15 @@ function Fordele() {
                     padding: "5rem 1rem 5rem 1rem",
                     textTransform: "uppercase",
                     fontFamily: "sans-serif",
-                    background: "black",
-                    color: "white",
-                    marginTop: { xs: "-8rem" },
+                    // background: "black",
+                    // color: "white",
+                    // marginTop: { xs: "-8rem" },
+
                 }}>
                 <Box>
                     <Typography 
                         fontSize={"0.8rem"} 
-                        letterSpacing={4}
+                        letterSpacing={2}
                         fontFamily={"sans-serif"}>
                             Topkvalitet til skarpe priser
                     </Typography>
@@ -37,7 +38,7 @@ function Fordele() {
                 <Box>
                     <Typography 
                         fontSize={"0.8rem"} 
-                        letterSpacing={4}
+                        letterSpacing={2.5}
                         fontFamily={"sans-serif"}>
                             Nøje udvalgt brugt udstyr
                     </Typography>
@@ -55,7 +56,7 @@ function Fordele() {
                 <Box>
                     <Typography 
                         fontSize={"0.8rem"} 
-                        letterSpacing={4}
+                        letterSpacing={2}
                         fontFamily={"sans-serif"}>
                             Bæredygtigt golfvalg
                     </Typography>

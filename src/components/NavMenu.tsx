@@ -73,8 +73,9 @@ export default function BasicMenu() {
         zIndex: 15,
       }}
     >
-      <Link href="/">
-        <img src="/logo.webp" alt="logo" width={40} />
+      <Link sx={{  color: "black", fontWeight: "900", textDecorationLine: "none" }} href="/">
+        {/* <img src="/logo.webp" alt="logo" width={40} /> */}
+        SS 
       </Link>
 
       {isTabletUp ? (

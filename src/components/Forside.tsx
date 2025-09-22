@@ -3,18 +3,18 @@
 import React from 'react'
 import { Box, Button, Typography, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation' 
 
 
 export default function ForsideHero() {
     const theme = useTheme()
     const isDesktop = useMediaQuery(theme.breakpoints.up("sm"))
 
-    const router = useRouter()
+    // const router = useRouter()
 
-    const goToShop = (filter: "all" | "female") => {
-        router.push(`/shop?filter=${filter}`)
-    }
+    // const goToShop = (filter: "all" | "female") => {
+    //     router.push(`/shop?filter=${filter}`)
+    // }
     
     return (
         <>
@@ -26,7 +26,8 @@ export default function ForsideHero() {
                     alignContent: "center",
                     height: "100vh",
                     fontFamily: "sans-serif",
-                    background: { xs: "linear-gradient(0deg, black, transparent)" }
+                    // background: { xs: "linear-gradient(0deg, black, transparent)" }
+                    // background: { xs: "linear-gradient(0deg, white, transparent)" }
                 }}
             >
                 <Typography 

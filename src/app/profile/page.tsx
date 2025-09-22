@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Box, Divider } from '@mui/material'
 
+
 type UserProfile = {
   id: string
   email: string

@@ -233,7 +233,7 @@ export default function ChatLayout() {
               key={chat.id}
               sx={{
                 p: 2,
-                borderBottom: "1px solid #eee",
+                borderBottom: "1px solid gray",
                 cursor: "pointer",
                 backgroundColor: chat.id === activeChatId ? "#f5f5f5" : "transparent",
                 "&:hover": { backgroundColor: "#f0f0f0" },
