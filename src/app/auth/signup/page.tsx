@@ -45,7 +45,7 @@ export default function SignupPage() {
   }
 
   return (
-    <Box sx={{ padding: '1rem', height: '100vh', alignContent: 'center', backgroundColor: "black" }}>
+    <Box sx={{ padding: '1rem', height: '100vh', alignContent: 'center', backgroundColor: "black", color: "white" }}>
       <Typography sx={{ fontSize: '2.5rem', textAlign: 'center' }}>Signup</Typography>
       <form style={{ display: 'grid', gap: '1rem' }} onSubmit={handleSignup}>
         <input

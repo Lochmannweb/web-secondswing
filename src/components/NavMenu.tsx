@@ -68,7 +68,7 @@ export default function BasicMenu() {
         width: '100%',
         justifyContent: { xs: "space-between", sm: "end" },
         padding: { xs: '0.3rem 1rem', sm: '0 5rem' },
-        position: { xs: 'absolute'},
+        position: { xs: 'fixed', sm: "absolute"},
         alignSelf: { sm: "baseline" },
         bottom: { xs: "0rem" },
         top: { sm: "2rem" },

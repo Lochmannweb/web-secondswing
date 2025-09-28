@@ -1,8 +1,14 @@
 'use client'
 import { supabase } from '@/lib/supabaseClient'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Box, Button, Typography } from '@mui/material'
+
+declare global {
+  interface Window {
+    google?: any
+  }
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -23,12 +29,49 @@ export default function LoginPage() {
       }
     } else if (data.user) {
       console.log('Logged in:', data)
-      router.push('/profile') // redirect efter login
+      router.push('/profile')
     }
   }
 
+  // Google login setup
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.src = "https://accounts.google.com/gsi/client"
+    script.async = true
+    script.onload = () => {
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+          callback: async (response: any) => {
+            const { credential } = response
+
+            const { data, error } = await supabase.auth.signInWithIdToken({
+              provider: 'google',
+              token: credential,
+            })
+
+            if (error) {
+              console.error(error)
+              alert("Fejl ved Google login: " + error.message)
+            } else {
+              console.log('Supabase user:', data)
+              router.push('/profile')
+            }
+          },
+        })
+
+        // Google renderer knappen selv
+        window.google.accounts.id.renderButton(
+          document.getElementById("google-login-btn"),
+          { theme: "outline", size: "large", text: "continue_with" }
+        )
+      }
+    }
+    document.body.appendChild(script)
+  }, [router])
+
   return (
-    <Box sx={{ padding: "1rem", height: "100vh", alignContent: "center", backgroundColor: "black" }}>
+    <Box sx={{ padding: "1rem", height: "100vh", alignContent: "center", backgroundColor: "black", color: "white" }}>
       <Typography sx={{ fontSize: "2.5rem", textAlign: "center" }}>Login</Typography>
       <form style={{ display: "grid", gap: "1rem" }} onSubmit={handleLogin}>
         <input
@@ -69,25 +112,32 @@ export default function LoginPage() {
           }}  
           type="submit">
             Login
+        </Button>
+
+        {/* Google login knap – renderer automatisk af Google */}
+        <Box 
+          id="google-login-btn" 
+          sx={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}
+        />
+
+        <Box 
+          sx={{ 
+            display: "flex", 
+            alignItems: "center", 
+            justifySelf: "center" }}>
+          <p style={{ fontSize: "0.7rem" }}>Har du ikke allerede en konto?</p>
+          <Button
+            href='/auth/signup'
+            sx={{
+              color: "white",
+              "&:hover": {
+                color: "blue",
+                background: "none"
+              }
+            }}>
+              Signup
           </Button>
-          <Box 
-            sx={{ 
-              display: "flex", 
-              alignItems: "center", 
-              justifySelf: "center" }}>
-            <p style={{ fontSize: "0.7rem" }}>Har du ikke allerede en konto?</p>
-            <Button
-              href='/auth/signup'
-              sx={{
-                color: "white",
-                "&:hover": {
-                  color: "blue",
-                  background: "none"
-                }
-              }}>
-                Signup
-            </Button>
-          </Box>
+        </Box>
       </form>
     </Box>
   )

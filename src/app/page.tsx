@@ -18,8 +18,8 @@ export default async function Home() {
           }}
           >
             <ForsideHero   />
-            <Fordele />
-            <Kategorier />
+            {/* <Fordele /> */}
+            {/* <Kategorier /> */}
         </Box>
     </> 
   );
