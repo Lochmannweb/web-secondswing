@@ -1,10 +1,9 @@
-'use client'
+"use client"
 
 import { supabase } from '@/lib/supabaseClient'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Box, Divider } from '@mui/material'
-
 
 type UserProfile = {
   id: string
@@ -19,11 +18,31 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
 
-  console.log("profile: ", profile);
-  
-
   useEffect(() => {
     const fetchProfile = async () => {
+      // --- 1. Tjek om vi lige er kommet tilbage fra OAuth (hash i URL) ---
+      const hash = window.location.hash
+      if (hash) {
+        const params = new URLSearchParams(hash.substring(1))
+        const access_token = params.get("access_token")
+        const refresh_token = params.get("refresh_token")
+
+        if (access_token) {
+          // Gem session i Supabase client
+          const { error } = await supabase.auth.setSession({
+            access_token,
+            refresh_token: refresh_token ?? "",
+          })
+          if (error) {
+            console.error("Kunne ikke sætte session:", error.message)
+          }
+          // Fjern # fra URL’en
+          router.replace("/profile")
+          return
+        }
+      }
+
+      // --- 2. Normal login flow (når vi allerede har en session) ---
       const { data: { session } } = await supabase.auth.getSession()
       if (!session?.user) {
         router.push('/auth/login')
@@ -61,7 +80,6 @@ export default function ProfilePage() {
     fetchProfile()
   }, [router])
 
-
   if (loading) return <p>Loading...</p>
 
   return (
@@ -72,9 +90,7 @@ export default function ProfilePage() {
             <img
               src={profile.avatar_url || "/placeholderprofile.jpg"}
               alt="Profilbillede"
-              style={{
-                width: "100%",
-              }}
+              style={{ width: "100%" }}
             />
           </Box>
 
@@ -86,11 +102,9 @@ export default function ProfilePage() {
               width: "100%",
               borderTopLeftRadius: "2rem",
               borderTopRightRadius: "2rem",
-              // Top: "5rem",
               filter: "drop-shadow(2px 4px 6px black)",
               position: "absolute",
               bottom: "1rem",
-              // height: "50vh"
             }}
           >
             <Box sx={{ display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
@@ -102,7 +116,7 @@ export default function ProfilePage() {
               <Divider />
               <a href="/produkter">Produkter</a>
               <Divider />
-              <a href="indstillinger">Indstillinger</a>
+              <a href="/indstillinger">Indstillinger</a>
               <Divider />
               <a href="/about">Om Second Swing</a>
               <Divider />
