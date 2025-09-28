@@ -1,9 +1,10 @@
-"use client"
+'use client'
 
-import { supabase } from "@/lib/supabaseClient"
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { Box, Divider } from "@mui/material"
+import { supabase } from '@/lib/supabaseClient'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Box, Divider } from '@mui/material'
+
 
 type UserProfile = {
   id: string
@@ -18,44 +19,28 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
 
+  console.log("profile: ", profile);
+  
+
   useEffect(() => {
-    const handleAuthAndProfile = async () => {
-      // 1. Check for hash (OAuth redirect)
-      const hash = window.location.hash
-      if (hash) {
-        const params = new URLSearchParams(hash.substring(1))
-        const access_token = params.get("access_token")
-        const refresh_token = params.get("refresh_token")
-
-        if (access_token) {
-          await supabase.auth.setSession({
-            access_token,
-            refresh_token: refresh_token ?? "",
-          })
-          // Clean the URL and re-run effect on mount
-          router.replace("/profile")
-          return
-        }
-      }
-
-      // 2. Normal case: get session
+    const fetchProfile = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session?.user) {
-        router.push("/auth/login")
+        router.push('/auth/login')
         return
       }
 
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
-        router.push("/auth/login")
+        router.push('/auth/login')
         return
       }
 
-      // 3. Fetch profile data
+      // hent avatar_url fra profiles-tabellen
       const { data: profileData, error } = await supabase
-        .from("profiles")
-        .select("display_name, phone, avatar_url")
-        .eq("id", user.id)
+        .from('profiles')
+        .select('display_name, phone, avatar_url')
+        .eq('id', user.id)
         .single()
 
       if (error) {
@@ -73,8 +58,9 @@ export default function ProfilePage() {
       setLoading(false)
     }
 
-    handleAuthAndProfile()
+    fetchProfile()
   }, [router])
+
 
   if (loading) return <p>Loading...</p>
 
@@ -86,7 +72,9 @@ export default function ProfilePage() {
             <img
               src={profile.avatar_url || "/placeholderprofile.jpg"}
               alt="Profilbillede"
-              style={{ width: "100%" }}
+              style={{
+                width: "100%",
+              }}
             />
           </Box>
 
@@ -98,28 +86,23 @@ export default function ProfilePage() {
               width: "100%",
               borderTopLeftRadius: "2rem",
               borderTopRightRadius: "2rem",
+              // Top: "5rem",
               filter: "drop-shadow(2px 4px 6px black)",
               position: "absolute",
               bottom: "1rem",
+              // height: "50vh"
             }}
           >
             <Box sx={{ display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
-              <p>{profile.display_name ?? "Ikke udfyldt"}</p>
+              <p>{profile.display_name ?? 'Ikke udfyldt'}</p>
             </Box>
-            <Box
-              sx={{
-                padding: "2rem 0",
-                display: "grid",
-                gap: "0.5rem",
-                marginTop: "1rem",
-              }}
-            >
+            <Box sx={{ padding: "2rem 0", display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
               <Divider />
               <a href="/opretProdukt">Opret produkt</a>
               <Divider />
               <a href="/produkter">Produkter</a>
               <Divider />
-              <a href="/indstillinger">Indstillinger</a>
+              <a href="indstillinger">Indstillinger</a>
               <Divider />
               <a href="/about">Om Second Swing</a>
               <Divider />
