@@ -67,14 +67,12 @@ export default function BasicMenu() {
         alignItems: 'center',
         width: '100%',
         justifyContent: { xs: "space-between", sm: "end" },
-        padding: { xs: '0.3rem 1rem', sm: '0 5rem' },
+        padding: { xs: '0.5rem 1rem' },
         position: { xs: 'fixed', sm: "absolute"},
         alignSelf: { sm: "baseline" },
         bottom: { xs: "0rem" },
         top: { sm: "2rem" },
         backgroundColor: { xs: 'white', sm: 'transparent' },
-        borderTopLeftRadius: '1rem',
-        borderTopRightRadius: '1rem',
         filter: { xs: "drop-shadow(2px 4px 6px black)", sm: "none" },
         zIndex: 15,
       }}
@@ -154,11 +152,11 @@ export default function BasicMenu() {
         </>
       ) : (
         <>
-          <Typography onClick={handleHome} sx={{ color: 'black', cursor: 'pointer', fontWeight: "900" }}>SS</Typography>
-          <HomeFilledIcon onClick={handleShop} sx={{ color: 'black', cursor: 'pointer' }} />
-          <CommentIcon onClick={handleChatHistory} sx={{ color: 'black', cursor: 'pointer' }} />
-          <FavoriteIcon onClick={handleFav} sx={{ color: 'black', cursor: 'pointer' }} />
-          {isLoggedIn && <PersonIcon onClick={handleProfile} sx={{ color: 'black', cursor: 'pointer' }} />}
+          {/* <Typography onClick={handleHome} sx={{ color: 'black', cursor: 'pointer', fontWeight: "900" }}>SS</Typography> */}
+          <Box display={"grid"} justifyItems={"center"}><HomeFilledIcon onClick={handleShop} sx={{ color: 'black', cursor: 'pointer' }} />Home</Box>
+          <Box display={"grid"} justifyItems={"center"}><CommentIcon onClick={handleChatHistory} sx={{ color: 'black', cursor: 'pointer' }} />Chat</Box>
+          <Box display={"grid"} justifyItems={"center"}><FavoriteIcon onClick={handleFav} sx={{ color: 'black', cursor: 'pointer' }} />Favorites</Box>
+          <Box display={"grid"} justifyItems={"center"}>{isLoggedIn && <PersonIcon onClick={handleProfile} sx={{ color: 'black', cursor: 'pointer' }} />}Profile</Box>
         </>
       )}
     </Box>
