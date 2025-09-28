@@ -1,9 +1,9 @@
 "use client"
 
-import { supabase } from '@/lib/supabaseClient'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Box, Divider } from '@mui/material'
+import { supabase } from "@/lib/supabaseClient"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { Box, Divider } from "@mui/material"
 
 type UserProfile = {
   id: string
@@ -19,8 +19,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      // --- 1. Tjek om vi lige er kommet tilbage fra OAuth (hash i URL) ---
+    const handleAuthAndProfile = async () => {
+      // 1. Check for hash (OAuth redirect)
       const hash = window.location.hash
       if (hash) {
         const params = new URLSearchParams(hash.substring(1))
@@ -28,38 +28,34 @@ export default function ProfilePage() {
         const refresh_token = params.get("refresh_token")
 
         if (access_token) {
-          // Gem session i Supabase client
-          const { error } = await supabase.auth.setSession({
+          await supabase.auth.setSession({
             access_token,
             refresh_token: refresh_token ?? "",
           })
-          if (error) {
-            console.error("Kunne ikke sætte session:", error.message)
-          }
-          // Fjern # fra URL’en
+          // Clean the URL and re-run effect on mount
           router.replace("/profile")
           return
         }
       }
 
-      // --- 2. Normal login flow (når vi allerede har en session) ---
+      // 2. Normal case: get session
       const { data: { session } } = await supabase.auth.getSession()
       if (!session?.user) {
-        router.push('/auth/login')
+        router.push("/auth/login")
         return
       }
 
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
-        router.push('/auth/login')
+        router.push("/auth/login")
         return
       }
 
-      // hent avatar_url fra profiles-tabellen
+      // 3. Fetch profile data
       const { data: profileData, error } = await supabase
-        .from('profiles')
-        .select('display_name, phone, avatar_url')
-        .eq('id', user.id)
+        .from("profiles")
+        .select("display_name, phone, avatar_url")
+        .eq("id", user.id)
         .single()
 
       if (error) {
@@ -77,7 +73,7 @@ export default function ProfilePage() {
       setLoading(false)
     }
 
-    fetchProfile()
+    handleAuthAndProfile()
   }, [router])
 
   if (loading) return <p>Loading...</p>
@@ -108,9 +104,16 @@ export default function ProfilePage() {
             }}
           >
             <Box sx={{ display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
-              <p>{profile.display_name ?? 'Ikke udfyldt'}</p>
+              <p>{profile.display_name ?? "Ikke udfyldt"}</p>
             </Box>
-            <Box sx={{ padding: "2rem 0", display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
+            <Box
+              sx={{
+                padding: "2rem 0",
+                display: "grid",
+                gap: "0.5rem",
+                marginTop: "1rem",
+              }}
+            >
               <Divider />
               <a href="/opretProdukt">Opret produkt</a>
               <Divider />
