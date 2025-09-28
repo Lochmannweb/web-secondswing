@@ -5,6 +5,7 @@ import OurCompany from "@/components/about/OurCompany";
 import OurMission from "@/components/about/OurMission";
 import OurTeam from "@/components/about/OurTeam";
 import WhyUs from "@/components/about/WhyUs";
+import Image from "next/image";
 import { Box } from "@mui/material";
 
 export default function Home() {
@@ -14,14 +15,15 @@ export default function Home() {
             paddingBottom: "7rem",
         }}
         >
-        <img 
+        <Image src="/hero.jpg" alt="hero" width={100} height={50} style={{ filter: "brightness(0.5)" }} />
+        {/* <img 
             src="/hero.jpg" 
             alt="hero" 
             style={{
                 width: "100%",
                 filter: "brightness(0.5)"
             }}
-        />
+        /> */}
         <AboutHero />
         <Box 
             sx={{ 

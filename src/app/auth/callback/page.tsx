@@ -18,7 +18,7 @@ export default function AuthRedirect() {
         router.replace('/auth/login')
       }
 
-    //   setLoading(false) // nu opdaterer vi loading
+      setLoading(false) // nu opdaterer vi loading
     }
 
     checkUser()

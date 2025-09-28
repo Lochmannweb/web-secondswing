@@ -4,6 +4,7 @@ import { getSupabase } from "@/lib/supabaseClient"
 import { Box, TextField, Button, Alert, MenuItem, Select, InputLabel, FormControl } from "@mui/material"
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
+import Image from "next/image";
 
 export default function EditProductPage() {
   const params = useParams()
@@ -60,7 +61,7 @@ export default function EditProductPage() {
     const fileExt = file.name.split(".").pop()
     const fileName = `${Date.now()}.${fileExt}`
 
-    const { data, error } = await supabase.storage.from("avatars").upload(fileName, file, { upsert: true })
+    const { error } = await supabase.storage.from("avatars").upload(fileName, file, { upsert: true })
     if (error) throw new Error(`Kunne ikke uploade billede: ${error.message}`)
 
     const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(fileName)
@@ -102,11 +103,12 @@ export default function EditProductPage() {
   return (
     <Box component="form" onSubmit={handleSubmit}>
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-        <img
+        <Image src={imagePreview || "/placeholder.svg"} alt="Product preview" width={100} height={50} style={{ width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }} />
+        {/* <img
           src={imagePreview || "/placeholder.svg"}
           alt="Product preview"
           style={{ width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }}
-        />
+        /> */}
       </Box>
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2, padding: "1rem", marginTop: "-4rem", paddingBottom: "10rem", backgroundColor: "white", position: "relative", zIndex: 10, color: "white", borderTopLeftRadius: "1.5rem", borderTopRightRadius: "1.5rem" }}>

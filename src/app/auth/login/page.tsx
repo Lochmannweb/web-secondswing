@@ -6,6 +6,7 @@ import { Box, Button, Typography } from '@mui/material'
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     google?: any
   }
 }
@@ -42,6 +43,7 @@ export default function LoginPage() {
       if (window.google) {
         window.google.accounts.id.initialize({
           client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           callback: async (response: any) => {
             const { credential } = response
 

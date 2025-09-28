@@ -1,8 +1,6 @@
 
 
-import Fordele from "@/components/Fordele";
 import ForsideHero from "@/components/Forside";
-import Kategorier from "@/components/Kategorier";
 import { Box } from "@mui/material";
 
 export default async function Home() {
