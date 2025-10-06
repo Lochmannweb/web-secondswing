@@ -158,10 +158,10 @@ export default function BasicMenu() {
       ) : (
         <>
           {/* <Typography onClick={handleHome} sx={{ color: 'black', cursor: 'pointer', fontWeight: "900" }}>SS</Typography> */}
-          <Box display={"grid"} justifyItems={"center"}><HomeOutlinedIcon onClick={handleShop} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Home</Box>
-          <Box display={"grid"} justifyItems={"center"}><TextsmsOutlinedIcon onClick={handleChatHistory} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Chat</Box>
-          <Box display={"grid"} justifyItems={"center"}><FavoriteBorderOutlinedIcon onClick={handleFav} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Favorites</Box>
-          <Box display={"grid"} justifyItems={"center"}>{isLoggedIn && <PersonOutlinedIcon onClick={handleProfile} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />}Profile</Box>
+          <Box display={"grid"} justifyItems={"center"}><HomeOutlinedIcon onClick={handleShop} sx={{ color: 'black', cursor: 'pointer' }} />Home</Box>
+          <Box display={"grid"} justifyItems={"center"}><TextsmsOutlinedIcon onClick={handleChatHistory} sx={{ color: 'black', cursor: 'pointer' }} />Chat</Box>
+          <Box display={"grid"} justifyItems={"center"}><FavoriteBorderOutlinedIcon onClick={handleFav} sx={{ color: 'black', cursor: 'pointer' }} />Favorites</Box>
+          <Box display={"grid"} justifyItems={"center"}>{isLoggedIn && <PersonOutlinedIcon onClick={handleProfile} sx={{ color: 'black', cursor: 'pointer' }} />}Profile</Box>
         </>
       )}
     </Box>
