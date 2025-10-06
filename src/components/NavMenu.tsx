@@ -151,13 +151,13 @@ export default function BasicMenu() {
           </Drawer>
         </>
       ) : (
-        <>
+        <Box sx={{ background: "#e2ffd7" }}>
           {/* <Typography onClick={handleHome} sx={{ color: 'black', cursor: 'pointer', fontWeight: "900" }}>SS</Typography> */}
-          <Box display={"grid"} justifyItems={"center"}><HomeFilledIcon onClick={handleShop} sx={{ color: 'black', cursor: 'pointer' }} />Home</Box>
-          <Box display={"grid"} justifyItems={"center"}><CommentIcon onClick={handleChatHistory} sx={{ color: 'black', cursor: 'pointer' }} />Chat</Box>
-          <Box display={"grid"} justifyItems={"center"}><FavoriteIcon onClick={handleFav} sx={{ color: 'black', cursor: 'pointer' }} />Favorites</Box>
-          <Box display={"grid"} justifyItems={"center"}>{isLoggedIn && <PersonIcon onClick={handleProfile} sx={{ color: 'black', cursor: 'pointer' }} />}Profile</Box>
-        </>
+          <Box display={"grid"} justifyItems={"center"}><HomeFilledIcon onClick={handleShop} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Home</Box>
+          <Box display={"grid"} justifyItems={"center"}><CommentIcon onClick={handleChatHistory} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Chat</Box>
+          <Box display={"grid"} justifyItems={"center"}><FavoriteIcon onClick={handleFav} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Favorites</Box>
+          <Box display={"grid"} justifyItems={"center"}>{isLoggedIn && <PersonIcon onClick={handleProfile} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />}Profile</Box>
+        </Box>
       )}
     </Box>
   )

@@ -94,7 +94,7 @@ const toggleFavorite = async (productId: string) => {
               {product.price && (
                 <Typography
                   sx={{
-                    backgroundColor: "white",
+                    backgroundColor: "#e2ffd7",
                     borderRadius: "3rem",
                     fontSize: "0.8rem",
                     width: "70%",
@@ -146,6 +146,7 @@ const toggleFavorite = async (productId: string) => {
                     marginBottom: "0.5rem",
                     justifySelf: "center",
                     padding: "0.3rem 1rem",
+                    background:"#e2ffd7",
                     "&:hover": { backgroundColor: "black", color: "white" },
                   }}
                 >

@@ -30,9 +30,9 @@ export default function FilterButtons({ activeFilter, onFilterChange }: FilterBu
       spacing={2} 
       justifyContent="start" 
       sx={{ mb: 3, borderRadius: "3rem" }}>
-      <Button style={{ borderRadius: "3rem", padding: "0 1rem" }} sx={buttonStyles("all")} onClick={() => onFilterChange("all")}>All</Button>
-      <Button style={{ borderRadius: "3rem", padding: "0 1rem" }} sx={buttonStyles("female")} onClick={() => onFilterChange("female")}>Female</Button>
-      <Button style={{ borderRadius: "3rem", padding: "0 1rem" }} sx={buttonStyles("male")} onClick={() => onFilterChange("male")}>Male</Button>
+      <Button style={{ borderRadius: "3rem", padding: "0 1rem", background: "#60954d", border: "1px solid #60954d" }} sx={buttonStyles("all")} onClick={() => onFilterChange("all")}>All</Button>
+      <Button style={{ borderRadius: "3rem", padding: "0 1rem", background: "#60954d", border: "1px solid #60954d" }} sx={buttonStyles("female")} onClick={() => onFilterChange("female")}>Female</Button>
+      <Button style={{ borderRadius: "3rem", padding: "0 1rem", background: "#60954d", border: "1px solid #60954d" }} sx={buttonStyles("male")} onClick={() => onFilterChange("male")}>Male</Button>
       {/* <Button sx={buttonStyles("unisex")} onClick={() => onFilterChange("unisex")}>Unisex</Button> */}
     </Stack>
   )
