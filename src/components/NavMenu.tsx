@@ -13,6 +13,11 @@ import PersonIcon from '@mui/icons-material/Person'
 import ListIcon from '@mui/icons-material/List'
 import CloseIcon from '@mui/icons-material/Close'
 
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import TextsmsOutlinedIcon from '@mui/icons-material/TextsmsOutlined';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+
 export default function BasicMenu() {
   const router = useRouter()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -153,10 +158,10 @@ export default function BasicMenu() {
       ) : (
         <Box sx={{ background: "#e2ffd7" }}>
           {/* <Typography onClick={handleHome} sx={{ color: 'black', cursor: 'pointer', fontWeight: "900" }}>SS</Typography> */}
-          <Box display={"grid"} justifyItems={"center"}><HomeFilledIcon onClick={handleShop} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Home</Box>
-          <Box display={"grid"} justifyItems={"center"}><CommentIcon onClick={handleChatHistory} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Chat</Box>
-          <Box display={"grid"} justifyItems={"center"}><FavoriteIcon onClick={handleFav} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Favorites</Box>
-          <Box display={"grid"} justifyItems={"center"}>{isLoggedIn && <PersonIcon onClick={handleProfile} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />}Profile</Box>
+          <Box display={"grid"} justifyItems={"center"}><HomeOutlinedIcon onClick={handleShop} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Home</Box>
+          <Box display={"grid"} justifyItems={"center"}><TextsmsOutlinedIcon onClick={handleChatHistory} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Chat</Box>
+          <Box display={"grid"} justifyItems={"center"}><FavoriteBorderOutlinedIcon onClick={handleFav} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Favorites</Box>
+          <Box display={"grid"} justifyItems={"center"}>{isLoggedIn && <PersonOutlinedIcon onClick={handleProfile} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />}Profile</Box>
         </Box>
       )}
     </Box>
