@@ -77,7 +77,7 @@ export default function BasicMenu() {
         alignSelf: { sm: "baseline" },
         bottom: { xs: "0rem" },
         top: { sm: "2rem" },
-        backgroundColor: { xs: 'white', sm: 'transparent' },
+        backgroundColor: { xs: '#e2ffd7', sm: 'transparent' },
         filter: { xs: "drop-shadow(2px 4px 6px black)", sm: "none" },
         zIndex: 15,
       }}
@@ -156,13 +156,13 @@ export default function BasicMenu() {
           </Drawer>
         </>
       ) : (
-        <Box sx={{ background: "#e2ffd7" }}>
+        <>
           {/* <Typography onClick={handleHome} sx={{ color: 'black', cursor: 'pointer', fontWeight: "900" }}>SS</Typography> */}
           <Box display={"grid"} justifyItems={"center"}><HomeOutlinedIcon onClick={handleShop} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Home</Box>
           <Box display={"grid"} justifyItems={"center"}><TextsmsOutlinedIcon onClick={handleChatHistory} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Chat</Box>
           <Box display={"grid"} justifyItems={"center"}><FavoriteBorderOutlinedIcon onClick={handleFav} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />Favorites</Box>
           <Box display={"grid"} justifyItems={"center"}>{isLoggedIn && <PersonOutlinedIcon onClick={handleProfile} sx={{ fontSize: "0.7rem", color: 'black', cursor: 'pointer' }} />}Profile</Box>
-        </Box>
+        </>
       )}
     </Box>
   )
