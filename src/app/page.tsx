@@ -6,19 +6,18 @@ import { Box } from "@mui/material";
 export default async function Home() {
   return (
     <>
-        <Box 
-          sx={{
+        <link 
+          style={{
             height: "100vh", 
             backgroundImage: `url(/golfbane.jpg)`,
             backgroundSize: "cover",         
             backgroundPosition: "center", 
-            marginTop: { xs: "0rem" } 
+            marginTop: "0rem"
+            // marginTop: { xs: "0rem" } 
           }}
           >
             <ForsideHero   />
-            {/* <Fordele /> */}
-            {/* <Kategorier /> */}
-        </Box>
+        </link>
     </> 
   );
 }
