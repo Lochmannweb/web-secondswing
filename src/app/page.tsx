@@ -6,7 +6,7 @@ import { Box } from "@mui/material";
 export default async function Home() {
   return (
     <>
-        <link 
+        <div 
           style={{
             height: "100vh", 
             backgroundImage: `url(/golfbane.jpg)`,
@@ -17,7 +17,7 @@ export default async function Home() {
           }}
           >
             <ForsideHero   />
-        </link>
+        </div>
     </> 
   );
 }
