@@ -14,8 +14,8 @@ export default function FilterButtons({ activeFilter, onFilterChange }: FilterBu
       filter === "female" ? "#60954d" : 
       "#60954d" 
       : "transparent",
-    color: activeFilter === filter ? "white" : "black",
-    border: "1px solid #616161",
+    color: activeFilter === filter ? "black" : "black",
+    // border: "1px solid #616161",
     "&:hover": {
       backgroundColor: 
                       filter === "male" ? "#e2ffd7" : 

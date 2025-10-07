@@ -147,7 +147,7 @@ const toggleFavorite = async (productId: string) => {
                     justifySelf: "center",
                     padding: "0.3rem 1rem",
                     background:"#e2ffd7",
-                    "&:hover": { backgroundColor: "black", color: "white" },
+                    "&:hover": { backgroundColor: "#60954d", color: "white" },
                   }}
                 >
                   See More
