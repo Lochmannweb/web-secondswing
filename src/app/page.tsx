@@ -7,15 +7,27 @@ export default async function Home() {
   return (
     <>
         <div 
-          style={{
-            height: "100vh", 
-            backgroundImage: `url(/golfbane.jpg)`,
-            backgroundSize: "cover",         
-            backgroundPosition: "center", 
-            marginTop: "0rem"
-            // marginTop: { xs: "0rem" } 
-          }}
+          // style={{
+          //   height: "100vh", 
+          //   backgroundImage: `url(/golfbane.jpg)`,
+          //   backgroundSize: "cover",         
+          //   backgroundPosition: "center", 
+          //   marginTop: "0rem"
+          //   // marginTop: { xs: "0rem" } 
+          // }}
           >
+            <link 
+              rel="preload" 
+              as="image" 
+              href="golfbane.jpg" 
+              style={{
+                height: "100vh", 
+                backgroundImage: `url(/golfbane.jpg)`,
+                backgroundSize: "cover",         
+                backgroundPosition: "center", 
+                marginTop: "0rem"
+                // marginTop: { xs: "0rem" } 
+              }} />
             <ForsideHero   />
         </div>
     </> 
