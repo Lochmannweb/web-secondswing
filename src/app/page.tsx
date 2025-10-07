@@ -16,7 +16,7 @@ export default async function Home() {
           //   // marginTop: { xs: "0rem" } 
           // }}
           >
-            <img 
+            <image
               style={{
                 height: "100vh", 
                 backgroundImage: `url(/golfbane.jpg)`,
