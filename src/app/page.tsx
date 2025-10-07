@@ -16,10 +16,7 @@ export default async function Home() {
           //   // marginTop: { xs: "0rem" } 
           // }}
           >
-            <link 
-              rel="preload" 
-              as="image" 
-              href="golfbane.jpg" 
+            <img 
               style={{
                 height: "100vh", 
                 backgroundImage: `url(/golfbane.jpg)`,
@@ -27,7 +24,8 @@ export default async function Home() {
                 backgroundPosition: "center", 
                 marginTop: "0rem"
                 // marginTop: { xs: "0rem" } 
-              }} />
+              }}
+            />
             <ForsideHero   />
         </div>
     </> 
