@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <Box sx={{ position: "relative", height: "100vh", overflow: "hidden" }}>
       {/* Optimized hero image */}
-      <Image
+      {/* <Image
         src="/golfbane.jpg"
         alt="Golfbane"
         fill
@@ -15,7 +15,7 @@ export default function Home() {
           objectFit: "cover",
           objectPosition: "center",
         }}
-      />
+      /> */}
 
       {/* Foreground content */}
       <Box

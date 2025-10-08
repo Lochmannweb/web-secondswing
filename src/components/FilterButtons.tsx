@@ -34,7 +34,6 @@ export default function FilterButtons({ activeFilter, onFilterChange }: FilterBu
       <Button style={{ borderRadius: "3rem", padding: "0 1rem" }} sx={buttonStyles("all")} onClick={() => onFilterChange("all")}>All</Button>
       <Button style={{ borderRadius: "3rem", padding: "0 1rem" }} sx={buttonStyles("female")} onClick={() => onFilterChange("female")}>Female</Button>
       <Button style={{ borderRadius: "3rem", padding: "0 1rem" }} sx={buttonStyles("male")} onClick={() => onFilterChange("male")}>Male</Button>
-      {/* <Button sx={buttonStyles("unisex")} onClick={() => onFilterChange("unisex")}>Unisex</Button> */}
     </Stack>
   )
 }

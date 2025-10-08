@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Link, Typography } from '@mui/material'
 import { supabase } from '@/lib/supabaseClient'
 
 export default function ForsideHero() {
@@ -17,45 +17,96 @@ export default function ForsideHero() {
   }
 
   return (
-    <Box
-      sx={{
-        textAlign: "center",
-        alignContent: "center",
-        height: "100vh",
-        fontFamily: "sans-serif",
-      }}
-    >
-      <Typography 
-        textTransform={"uppercase"}
-        letterSpacing={{ xs: 6, sm: 8, md: 15, lg: 30 }}
-        color='white'
-        fontSize={{ xs: "1.5rem", sm: "2rem", md: "2rem", lg: "4rem" }}
-      >
-        Golf med passion
-      </Typography>
-      <Typography 
-        textTransform={"uppercase"}
-        letterSpacing={6}
-        color='lightgray'
-        fontSize={{ xs: "0.5rem", sm: "0.7rem", md: "0.7rem", lg: "1rem" }}
-      >
-        brugt udstyr. nye oplevelser.
-      </Typography>
-      <Button
-        sx={{
-          backgroundColor: "transparent",
-          color: "white",
-          padding: "0.1rem 1.2rem",
-          top: { xs: "2rem", lg: "5rem" },
-          "&:hover": {
-            backgroundColor: "white",
-            color: "black",
-          }
-        }}
-        onClick={handleGoogleLogin}
-      >
-        Get started
-      </Button>
-    </Box>
+    <>
+      <Box textAlign={"center"} display={"grid"}>
+        <Typography position={"absolute"} top={0} justifySelf={"center"} padding={1}>Second Swing</Typography>
+        {/* image banner */}
+
+        <Box padding={2}>
+        <Typography fontSize={"1rem"} fontFamily={"auto"}>Tilmeld dig gratis</Typography>
+        <Typography fontSize={"1.5rem"} fontFamily={"auto"}>Gør din passion for golf til en oplevelse hver dag.</Typography>
+        <Box display={"grid"} gap={1} marginTop={5}>
+        <Button
+          sx={{
+            backgroundColor: "black",
+            color: "white",
+            padding: "0.1rem 1.2rem",
+            width: "50%",
+            justifySelf: "center",
+            // top: { xs: "2rem", lg: "5rem" },
+            "&:hover": {
+              backgroundColor: "green",
+              color: "black",
+            }
+          }}
+          onClick={handleGoogleLogin}
+        >
+          Login
+        </Button>
+        <Button
+          sx={{
+            backgroundColor: "black ",
+            color: "white",
+            padding: "0.1rem 1.2rem",
+            width: "50%",
+            justifySelf: "center",
+            // top: { xs: "2rem", lg: "5rem" },
+            "&:hover": {
+              backgroundColor: "green",
+              color: "black",
+            }
+          }}
+          onClick={handleGoogleLogin}
+        >
+          Signup
+        </Button>
+        </Box>
+        </Box>
+        <Link position={"absolute"} bottom={0} justifySelf={"center"} padding={1} style={{ color: "black" }} href='/about'>Om Second Swing</Link>
+      </Box>
+    </>
   )
 }
+
+
+
+    // <Box
+    //   sx={{
+    //     textAlign: "center",
+    //     alignContent: "center",
+    //     height: "100vh",
+    //     fontFamily: "sans-serif",
+    //   }}
+    // >
+    //   <Typography 
+    //     textTransform={"uppercase"}
+    //     letterSpacing={{ xs: 6, sm: 8, md: 15, lg: 30 }}
+    //     color='white'
+    //     fontSize={{ xs: "1.5rem", sm: "2rem", md: "2rem", lg: "4rem" }}
+    //   >
+    //     Golf med passion
+    //   </Typography>
+    //   <Typography 
+    //     textTransform={"uppercase"}
+    //     letterSpacing={6}
+    //     color='lightgray'
+    //     fontSize={{ xs: "0.5rem", sm: "0.7rem", md: "0.7rem", lg: "1rem" }}
+    //   >
+    //     brugt udstyr. nye oplevelser.
+    //   </Typography>
+    //   <Button
+    //     sx={{
+    //       backgroundColor: "transparent",
+    //       color: "white",
+    //       padding: "0.1rem 1.2rem",
+    //       top: { xs: "2rem", lg: "5rem" },
+    //       "&:hover": {
+    //         backgroundColor: "white",
+    //         color: "black",
+    //       }
+    //     }}
+    //     onClick={handleGoogleLogin}
+    //   >
+    //     Get started
+    //   </Button>
+    // </Box>
