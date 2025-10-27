@@ -18,25 +18,35 @@ export default function ForsideHero() {
 
   return (
     <>
-      <Box textAlign={"center"} display={"grid"}>
-        <Typography position={"absolute"} top={0} justifySelf={"center"} padding={1}>Second Swing</Typography>
+      <Box textAlign={"center"} display={"grid"} color="white">
+        <Typography 
+          position={"absolute"} 
+          top={0} 
+          justifySelf={"center"} 
+          padding={1}
+          textTransform={"uppercase"}
+          letterSpacing={3}
+          fontSize={"0.8rem"}
+          >
+            Second Swing
+          </Typography>
         {/* image banner */}
 
-        <Box padding={2}>
-        <Typography fontSize={"1rem"} fontFamily={"auto"}>Tilmeld dig gratis</Typography>
-        <Typography fontSize={"1.5rem"} fontFamily={"auto"}>Gør din passion for golf til en oplevelse hver dag.</Typography>
-        <Box display={"grid"} gap={1} marginTop={5}>
+        <Box padding={5}>
+        <Typography fontSize={"0.5rem"} fontFamily={"auto"} textTransform={"uppercase"} letterSpacing={3}>Tilmeld dig gratis</Typography>
+        <Typography fontSize={"1rem"} fontFamily={"auto"} textTransform={"uppercase"} letterSpacing={5} fontWeight={900}>Gør din passion for golf til en oplevelse hver dag.</Typography>
+        <Box display={"grid"} gap={2} marginTop={5}>
         <Button
           sx={{
-            backgroundColor: "black",
-            color: "white",
-            padding: "0.1rem 1.2rem",
-            width: "50%",
+            // backgroundColor: "#e2ffd7",
+            backgroundColor: "white",
+            color: "black",
+            padding: "0.5rem 1.2rem",
+            width: "80%",
             justifySelf: "center",
-            // top: { xs: "2rem", lg: "5rem" },
             "&:hover": {
-              backgroundColor: "green",
-              color: "black",
+              backgroundColor: "#034100",
+              color: "white",
             }
           }}
           onClick={handleGoogleLogin}
@@ -45,15 +55,15 @@ export default function ForsideHero() {
         </Button>
         <Button
           sx={{
-            backgroundColor: "black ",
-            color: "white",
-            padding: "0.1rem 1.2rem",
-            width: "50%",
+            // backgroundColor: "#e2ffd7",
+            backgroundColor: "white",
+            color: "black",
+            padding: "0.5rem 2rem",
+            width: "80%",
             justifySelf: "center",
-            // top: { xs: "2rem", lg: "5rem" },
             "&:hover": {
-              backgroundColor: "green",
-              color: "black",
+              backgroundColor: "#034100",
+              color: "white",
             }
           }}
           onClick={handleGoogleLogin}
@@ -62,7 +72,22 @@ export default function ForsideHero() {
         </Button>
         </Box>
         </Box>
-        <Link position={"absolute"} bottom={0} justifySelf={"center"} padding={1} style={{ color: "black" }} href='/about'>Om Second Swing</Link>
+        <Link 
+          position={"absolute"} 
+          bottom={0} 
+          justifySelf={"center"} 
+          padding={1} 
+          textTransform={"uppercase"}
+          letterSpacing={3}
+          fontSize={"0.8rem"}
+          style={{ 
+            color: "white", 
+            textDecorationLine: "none" 
+          }} 
+          href='/startabout'
+          >
+            Om Second Swing
+          </Link>
       </Box>
     </>
   )

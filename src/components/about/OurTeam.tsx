@@ -1,20 +1,20 @@
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
 
 function OurMission() {
   return (
     <>
         <Box sx={{ textAlign: "center" }}> 
-            <h1>Our Team</h1>
-            <Box sx={{ display: "grid", gap: "1rem" }}>
-                <p>
+            <Typography variant='h5' fontFamily={"sans-serif"}>Our Team</Typography>
+            <Box display={"flex"} flexDirection={"column"} gap={2}>
+                <Typography>
                     Bag SecondSwing.dk står Frederik og Line, to golfentusiaster med en fælles vision 
                     - at gøre det nemmere og billigere at købe og sælge brugt golfudstyr.  
-                </p>
-                <p>
+                </Typography>
+                <Typography>
                     Med erfaring inden for både golf, forretning og digital udvikling har vi skabt en platform, 
                     hvor kvalitet, brugervenlighed og passion for sporten går hånd i hånd.
-                </p>
+                </Typography>
             </Box>
         </Box>
     </>

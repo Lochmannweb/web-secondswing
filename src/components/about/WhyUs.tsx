@@ -1,27 +1,27 @@
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
 
 function WhyUs() {
   return (
     <>
         <Box sx={{ textAlign: "center" }}> 
-            <h1>Why Choose us</h1>
+            <Typography>Why Choose us</Typography>
             <Box sx={{ display: "grid", gap: "1rem", marginTop: "1rem" }}>
                 <Box>
-                    <p><strong>Mere golf, mindre omkostning</strong></p>
-                    <p>- Kvalitetsudstyr til en brøkdel af nyprisen</p>
+                    <Typography><strong>Mere golf, mindre omkostning</strong></Typography>
+                    <Typography>- Kvalitetsudstyr til en brøkdel af nyprisen</Typography>
                 </Box>
                 <Box>
-                    <p><strong>Enkel og sikker handel</strong></p>
-                    <p>- Vi gør det let at købe og sælge</p>
+                    <Typography><strong>Enkel og sikker handel</strong></Typography>
+                    <Typography>- Vi gør det let at købe og sælge</Typography>
                 </Box>
                 <Box>
-                    <p><strong>Fællesskab for golfspillere</strong></p>
-                    <p>- Skabt af golfere, for golfere</p>
+                    <Typography><strong>Fællesskab for golfspillere</strong></Typography>
+                    <Typography>- Skabt af golfere, for golfere</Typography>
                 </Box>
                 <Box>
-                    <p><strong>Giv dit golfudstyr nyt liv</strong></p>
-                    <p>- og find dit næste sæt hos os!</p>
+                    <Typography><strong>Giv dit golfudstyr nyt liv</strong></Typography>
+                    <Typography>- og find dit næste sæt hos os!</Typography>
                 </Box>
             </Box>
         </Box>

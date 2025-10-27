@@ -6,8 +6,8 @@ export default function Home() {
   return (
     <Box sx={{ position: "relative", height: "100vh", overflow: "hidden" }}>
       {/* Optimized hero image */}
-      {/* <Image
-        src="/golfbane.jpg"
+      <Image
+        src="/forside.png"
         alt="Golfbane"
         fill
         priority // ensures fast LCP load
@@ -15,7 +15,7 @@ export default function Home() {
           objectFit: "cover",
           objectPosition: "center",
         }}
-      /> */}
+      />
 
       {/* Foreground content */}
       <Box
