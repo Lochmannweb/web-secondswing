@@ -1,7 +1,7 @@
 "use client"
 
 import { getSupabase } from "@/lib/supabaseClient"
-import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress, Grid, Divider, Button, IconButton } from "@mui/material"
+import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress, Grid, Divider, Button } from "@mui/material"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 
