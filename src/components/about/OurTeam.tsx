@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
 
 function OurMission() {
@@ -10,11 +10,11 @@ function OurMission() {
                 <p>
                     Bag SecondSwing.dk står Frederik og Line, to golfentusiaster med en fælles vision 
                     - at gøre det nemmere og billigere at købe og sælge brugt golfudstyr.  
-                </p>
-                <p>
+                </Typography>
+                <Typography>
                     Med erfaring inden for både golf, forretning og digital udvikling har vi skabt en platform, 
                     hvor kvalitet, brugervenlighed og passion for sporten går hånd i hånd.
-                </p>
+                </Typography>
             </Box>
         </Box>
     </>

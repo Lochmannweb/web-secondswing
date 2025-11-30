@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "secondswingapp",
+    "slug": "secondswingapp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "package": "com.lochmann.secondswingapp"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6991399c-0d30-4f3f-b54c-a63509b5911e"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.lochmann.secondswingapp",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
+  }
+}

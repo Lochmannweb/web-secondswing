@@ -36,7 +36,6 @@ export default function ForsideHero() {
             padding: "0.1rem 1.2rem",
             width: "50%",
             justifySelf: "center",
-            // top: { xs: "2rem", lg: "5rem" },
             "&:hover": {
               backgroundColor: "darkgreen",
               color: "white",
@@ -53,7 +52,6 @@ export default function ForsideHero() {
             padding: "0.1rem 1.2rem",
             width: "50%",
             justifySelf: "center",
-            // top: { xs: "2rem", lg: "5rem" },
             "&:hover": {
               backgroundColor: "darkgreen",
               color: "white",
