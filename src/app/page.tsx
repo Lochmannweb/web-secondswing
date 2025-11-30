@@ -1,3 +1,5 @@
+"use client"
+
 import ImageSphere from "@/components/ImageSphere";
 
 export default function Home() {
