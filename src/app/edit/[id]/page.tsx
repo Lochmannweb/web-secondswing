@@ -22,7 +22,8 @@ export default function EditProductPage() {
   const supabase = getSupabase()
 
   useEffect(() => {
-    if (!productId) return  // sikkerhed, hvis id mangler
+    if (!productId) return  // sikkerhedstjek, hvis id mangler, det er meget vigtigt at have sikkerheldstjek på
+
     const fetchProduct = async () => {
       const { data, error } = await supabase
         .from("products")

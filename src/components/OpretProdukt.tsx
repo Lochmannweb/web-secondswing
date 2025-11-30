@@ -1,5 +1,6 @@
 "use client"
 
+import { createProduct } from "@/lib/crud"
 import { getSupabase } from "@/lib/supabaseClient"
 import { Box, TextField, Button, Alert, MenuItem, Select, InputLabel, FormControl, OutlinedInput } from "@mui/material"
 import type React from "react"
@@ -33,7 +34,6 @@ export default function CreateProduct() {
 
 
 
-
   const uploadImage = async (file: File): Promise<string> => {
     const supabase = getSupabase()
     const fileExt = file.name.split(".").pop()
@@ -49,6 +49,9 @@ export default function CreateProduct() {
     return publicUrl
   }
 
+
+
+  // bruger CRUD.ts
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     setLoading(true)
@@ -57,46 +60,51 @@ export default function CreateProduct() {
     try {
       const supabase = getSupabase()
 
+      // Check user
       const { data: { user }, error: userError } = await supabase.auth.getUser()
       if (userError || !user) throw new Error("Du skal være logget ind for at oprette et produkt")
 
+      // Check profilen eksisterer 
       const { error: profileError } = await supabase
         .from("profiles")
         .select("id")
         .eq("id", user.id)
-        .single()
+        .single();
 
       if (profileError && profileError.code === "PGRST116") {
-        const { error: createProfileError } = await supabase.from("profiles").insert({
-          id: user.id,
-          created_at: new Date().toISOString(),
-        })
-        if (createProfileError) throw new Error(`Kunne ikke oprette brugerprofil: ${createProfileError.message}`)
-      } else if (profileError) {
-        throw new Error(`Fejl ved tjek af brugerprofil: ${profileError.message}`)
+        const { error: createProfileError } = await supabase
+          .from("products")
+          .insert({ id: user.id, created_at: new Date().toISOString() });
+
+          if (createProfileError) {
+            throw new Error("Kunne ikke oprette din profil");
+          } else if (profileError) {
+            throw new Error("Profil kunne ikke verificeres");
+          }
       }
 
+
+      // Upload image
       let imageUrl = null
-      if (imageFile) {
-        imageUrl = await uploadImage(imageFile)
-      }
+      if (imageFile) imageUrl = await uploadImage(imageFile);
 
-      // Insert product 
-      const { error: insertError } = await supabase.from("products").insert({
+
+
+      // CRUD - Create product
+      await createProduct({
         user_id: user.id,
         title,
         description,
-        price: price ? Number.parseFloat(price) : null,
+        price: Number(price),
         gender,
         color,
         size,
         stand,
         image_url: imageUrl,
-      })
+      });
+      setMessage({ type: "success", text: "Produkt blev oprettet!" })
 
-      if (insertError) throw insertError
 
-      setMessage({ type: "success", text: "Produkt oprettet succesfuldt!" })
 
       // Reset form
       setTitle("")
@@ -107,22 +115,17 @@ export default function CreateProduct() {
       setSize("Størrelse")
       setStand("Tilstand")
       setImageFile(null)
-      // setImagePreview("/placeholderprofile.jpg")
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setMessage({ type: "error", text: error.message || "Der opstod en fejl" })
-    } finally {
-      setLoading(false)
+
+
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setMessage({ type: "error", text: error.message })
+      } else {
+        setMessage({ type: "error", text: "Der opstod en fejl" })
+      }
     }
   }
 
-  // const fileInput = useRef<HTMLInputElement>(null);
-
-  // function imagePreview() {
-  //   if(fileInput.current) {
-  //     fileInput.current.click()
-  //   }
-  // }
 
 
   return (

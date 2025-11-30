@@ -34,7 +34,7 @@ export default function ChatPage() {
 
       if (!productId) return
 
-      // lookup product → sellerId
+      // lookup product → sellerId + error handling 
       const { data: product, error } = await supabase
         .from("products")
         .select("user_id")
