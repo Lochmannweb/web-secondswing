@@ -104,11 +104,6 @@ export default function EditProductPage() {
     <Box component="form" onSubmit={handleSubmit}>
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
         <Image src={imagePreview || "/placeholder.svg"} alt="Product preview" width={100} height={50} style={{ width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }} />
-        {/* <img
-          src={imagePreview || "/placeholder.svg"}
-          alt="Product preview"
-          style={{ width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }}
-        /> */}
       </Box>
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2, padding: "1rem", marginTop: "-4rem", paddingBottom: "10rem", backgroundColor: "white", position: "relative", zIndex: 10, color: "white", borderTopLeftRadius: "1.5rem", borderTopRightRadius: "1.5rem" }}>

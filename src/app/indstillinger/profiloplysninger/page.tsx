@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react"
 import { Box, Button, Alert, Divider, Typography } from "@mui/material"
 import { getSupabase } from "@/lib/supabaseClient"
+import Image from "next/image"
 
 export default function Profiloplysninger() {
   const [imageFile, setImageFile] = useState<File | null>(null)
@@ -114,9 +115,11 @@ export default function Profiloplysninger() {
                 Skift foto
                 <input type="file" hidden accept="image/*" onChange={handleImageChange} />
             </Button>
-            <img
+            <Image
                 src={imagePreview}
                 alt="Profil preview"
+                width={100}
+                height={100}
                 style={{ 
                     width: "100%"
                 }}

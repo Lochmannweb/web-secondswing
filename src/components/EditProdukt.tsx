@@ -2,6 +2,7 @@
 
 import { getSupabase } from "@/lib/supabaseClient"
 import { Box, TextField, Button, Alert, MenuItem, Select, InputLabel, FormControl } from "@mui/material"
+import Image from "next/image"
 import { useEffect, useState } from "react"
 
 interface EditProductProps {
@@ -107,9 +108,11 @@ export default function EditProduct({ productId }: EditProductProps) {
   return (
     <Box component="form" onSubmit={handleSubmit}>
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-        <img
+        <Image
           src={imagePreview || "/placeholder.svg"}
           alt="Product preview"
+          width={100}
+          height={100}
           style={{ width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }}
         />
       </Box>
