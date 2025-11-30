@@ -1,4 +1,3 @@
-import HeaderMenu from "@/components/HeaderMenu";
 import ImageSphere from "@/components/ImageSphere";
 
 export default function Home() {
