@@ -68,7 +68,7 @@ export default function ProfilePage() {
   return (
     <>
       <Box sx={{ display: { xs: "grid" }, gridTemplateColumns: { sm: "1fr 1fr" } }}>
-        <Box>
+        <Box p={2}>
           {profile ? (
             <Box sx={{ width: { xs: "100%", sm: "55%" }, justifySelf: "center", paddingTop: { xs: "5rem" } }}>
                 <Image
