@@ -2,87 +2,100 @@
 
 import { createProduct } from "@/lib/crud"
 import { getSupabase } from "@/lib/supabaseClient"
-import { Box, TextField, Button, Alert, MenuItem, Select, InputLabel, FormControl, OutlinedInput } from "@mui/material"
 import type React from "react"
 import { useState } from "react"
+import { 
+  Box, 
+  TextField, 
+  Button, 
+  Alert, 
+  MenuItem, 
+  Select, 
+  InputLabel, 
+  FormControl, 
+  OutlinedInput 
+} from "@mui/material"
+import Image from "next/image"
 
 export default function CreateProduct() {
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [price, setPrice] = useState("")
-  const [gender, setGender] = useState<"female" | "male" | "unisex">("female")
-  const [color, setColor] = useState<"Farve" | "Hvid" | "Sort" | "Grå">("Farve")
-  const [size, setSize] = useState<"Størrelse" | "XS" | "S" | "M" | "L" | "XL">("Størrelse")
-  const [stand, setStand] = useState<"Tilstand" | "Nyt" | "Brugt" | "Brugspor">("Tilstand")
+  const [ form, setForm ] = useState({
+    title: "",
+    description: "",
+    price: "",
+    gender: "Female" as "Female" | "female" | "male",
+    color: "Farve" as "Farve" | "Sort" | "Hvid" | "Grå",
+    size: "Størrelse" as "Størrelse" | "XS" | "S" | "M" | "L" | "XL",
+    stand: "Tilstand" as "Tilstand" | "Nyt" | "Brugt" | "Brugspor",
+  })
+
+
   const [imageFile, setImageFile] = useState<File | null>(null)
-  
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
 
+  const supabase = getSupabase();
 
 
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      setImageFile(file)
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-    }
+  //  Shared mui props
+  const inputStyle = {
+    mb: 2,
+    "& .MuiOutlinedInput-root": {
+      color: "white",
+      "& fieldset": { borderColor: "gray" },
+      "&:hover fieldset": { borderColor: "gray" },
+      "&.Mui-focused fieldset": { borderColor: "gray" },
+    },
+    "& .MuiInputLabel-root": { color: "white" },
+    "& .MuiInputLabel-root.Mui-focused": { color: "white" },
   }
+
   
 
-
-
+  // uploade image
   const uploadImage = async (file: File): Promise<string> => {
-    const supabase = getSupabase()
     const fileExt = file.name.split(".").pop()
     const fileName = `${Date.now()}.${fileExt}`
 
     const { error } = await supabase.storage.from("avatars").upload(fileName, file)
-    if (error) throw new Error(`Kunne ikke uploade billede: ${error.message}`)
+    if (error) throw new Error(`Kunne ikke uploade billede.`)
 
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("avatars").getPublicUrl(fileName)
-    if (!publicUrl) throw new Error("Kunne ikke generere offentlig URL for billedet")
-    return publicUrl
+    const {data: { publicUrl }, 
+      } = supabase.storage.from("avatars").getPublicUrl(fileName)
+    
+      if (!publicUrl) throw new Error("Kunne ikke generere offentlig URL.")
+    
+      return publicUrl
+  }
+
+
+  // Form changes
+  const updateField = (key: string, value: string) => {
+    setForm((prev) => ({...prev, [key]: value}))
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    
+    setImageFile(file)
+    setImagePreview(URL.createObjectURL(file))
   }
 
 
 
-  // bruger CRUD.ts
+
+  // bruger CRUD.ts 
+  // Submit
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     setLoading(true)
     setMessage(null)
 
     try {
-      const supabase = getSupabase()
-
       // Check user
       const { data: { user }, error: userError } = await supabase.auth.getUser()
-      if (userError || !user) throw new Error("Du skal være logget ind for at oprette et produkt")
-
-      // Check profilen eksisterer 
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("id", user.id)
-        .single();
-
-      if (profileError && profileError.code === "PGRST116") {
-        const { error: createProfileError } = await supabase
-          .from("products")
-          .insert({ id: user.id, created_at: new Date().toISOString() });
-
-          if (createProfileError) {
-            throw new Error("Kunne ikke oprette din profil");
-          } else if (profileError) {
-            throw new Error("Profil kunne ikke verificeres");
-          }
-      }
-
+      if (userError || !user) throw new Error("Du skal være logget ind først")
 
       // Upload image
       let imageUrl = null
@@ -93,245 +106,124 @@ export default function CreateProduct() {
       // CRUD - Create product
       await createProduct({
         user_id: user.id,
-        title,
-        description,
-        price: Number(price),
-        gender,
-        color,
-        size,
-        stand,
-        image_url: imageUrl,
+        ...form,
+        price: Number(form.price),
+        image_url: imageUrl
       });
       setMessage({ type: "success", text: "Produkt blev oprettet!" })
 
 
 
       // Reset form
-      setTitle("")
-      setDescription("")
-      setPrice("")
-      setGender("female")
-      setColor("Farve")
-      setSize("Størrelse")
-      setStand("Tilstand")
+      setForm({
+        title: "",
+        description: "",
+        price: "",
+        gender: "Female",
+        color: "Farve",
+        size: "Størrelse",
+        stand: "Tilstand",
+      })
       setImageFile(null)
 
 
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setMessage({ type: "error", text: error.message })
-      } else {
-        setMessage({ type: "error", text: "Der opstod en fejl" })
-      }
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : "Der opstod en fejl."
+      setMessage({ type: "error", text: msg })
     }
+
+    setLoading(false)
   }
 
 
 
   return (
-    <Box>
-      <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%&", height: "50vh" }}>
+    <Box component="form" onSubmit={handleSubmit} position={"absolute"} p={2} top={{ xs: "8rem" }} display={{ xs: "grid", sm: "flex" }}>
+      <Box>
         {/* vis valgte billeder her */}
+        {imagePreview && (
+          <Box sx={{ mb: 2 }}>
+            <Image
+              src={imagePreview || "/test.jpg"}
+              alt="Valgt billede"
+              width={500}
+              height={500}
+              style={{ width: "100%", maxHeight: "300px", objectFit: "cover", borderRadius: "0.5rem" }}
+            />
+          </Box>
+        )}
       </Box>
 
-      <Box p={2}>
+      <Box>
           <TextField 
             label="Titel" 
             variant="outlined"
-            value={title} 
-            onChange={(e) => setTitle(e.target.value)} 
+            value={form.title} 
+            onChange={(e) => updateField("title", e.target.value)} 
             required 
             fullWidth
-            sx={{
-              mb: 2,
-              "& .MuiOutlinedInput-root": {
-                color: "white",
-                "& fieldset": {
-                  borderColor: "gray"
-                },
-                "&:hover fieldset": {
-                  borderColor: "gray"
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "gray"
-                },
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root.MuiFormLabel-filled": {
-                color: "white",
-              },
-            }}
+            sx={inputStyle}
           />
 
           <TextField 
             label="Beskrivelse" 
             variant="outlined"
-            value={description} 
-            onChange={(e) => setDescription(e.target.value)} 
+            value={form.description} 
+            onChange={(e) => updateField("description", e.target.value)} 
             required 
             fullWidth
-            sx={{
-              mb: 2,
-              "& .MuiOutlinedInput-root": {
-                color: "white",
-                "& fieldset": {
-                  borderColor: "gray"
-                },
-                "&:hover fieldset": {
-                  borderColor: "gray"
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "gray"
-                },
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root.MuiFormLabel-filled": {
-                color: "white",
-              },
-            }}
+            sx={inputStyle}
           />
 
           <FormControl 
             fullWidth 
             required 
-            sx={{ 
-              mb: 2,
-              "& .MuiOutlinedInput-root": {
-                color: "white",
-                backgroundColor: "transparent",
-                "& fieldset": {
-                  borderColor: "gray",
-                },
-                "&:hover fieldset": {
-                  borderColor: "gray",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "gray",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root.MuiFormLabel-filled": {
-                color: "white",
-              },
-            }}
+            sx={inputStyle}
           >
             <InputLabel>Farve</InputLabel>
-          
             <Select
-              label="Farve"
-              value={color}
-              onChange={(e) =>
-                setColor(e.target.value as "Hvid" | "Sort" | "Grå")
-              }
-              input={ <OutlinedInput label="Gender" /> }
-              sx={{ color: "white" }}
+              value={form.color}
+              onChange={(e) => updateField("color", e.target.value as "Hvid" | "Sort" | "Grå")}
+              input={ <OutlinedInput label="Farve" /> }
             >
-              <MenuItem value="white">Hvid</MenuItem>
-              <MenuItem value="black">Sort</MenuItem>
-              <MenuItem value="gray">Grå</MenuItem>
+              <MenuItem value="Hvid">Hvid</MenuItem>
+              <MenuItem value="Sort">Sort</MenuItem>
+              <MenuItem value="Grå">Grå</MenuItem>
             </Select>
           </FormControl>    
 
           <FormControl 
             fullWidth 
             required 
-            sx={{ 
-              mb: 2,
-              "& .MuiOutlinedInput-root": {
-                color: "white",
-                backgroundColor: "transparent",
-                "& fieldset": {
-                  borderColor: "gray",
-                },
-                "&:hover fieldset": {
-                  borderColor: "gray",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "gray",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root.MuiFormLabel-filled": {
-                color: "white",
-              },
-            }}
+            sx={inputStyle}
           >
             <InputLabel>Størrelse</InputLabel>
           
             <Select
               label="Størrelse"
-              value={size}
-              onChange={(e) =>
-                setSize(e.target.value as "XS" | "S" | "M" | "L" | "XL")
-              }
+              value={form.size}
+              onChange={(e) => updateField("size", e.target.value as "XS" | "S" | "M" | "L" | "XL")}
               input={ <OutlinedInput label="Størrelse" /> }
               sx={{ color: "white" }}
             >
-              <MenuItem value="xs">XS</MenuItem>
-              <MenuItem value="m">S</MenuItem>
-              <MenuItem value="m">M</MenuItem>
-              <MenuItem value="l">L</MenuItem>
-              <MenuItem value="xl">XL</MenuItem>
+              <MenuItem value="XS">XS</MenuItem>
+              <MenuItem value="S">S</MenuItem>
+              <MenuItem value="M">M</MenuItem>
+              <MenuItem value="L">L</MenuItem>
+              <MenuItem value="XL">XL</MenuItem>
             </Select>
           </FormControl>    
 
           <FormControl 
             fullWidth 
             required 
-            sx={{ 
-              mb: 2,
-              "& .MuiOutlinedInput-root": {
-                color: "white",
-                backgroundColor: "transparent",
-                "& fieldset": {
-                  borderColor: "gray",
-                },
-                "&:hover fieldset": {
-                  borderColor: "gray",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "gray",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root.MuiFormLabel-filled": {
-                color: "white",
-              },
-            }}
+            sx={inputStyle}
           >
             <InputLabel>Gender</InputLabel>
           
             <Select
-              label="Gender"
-              value={gender}
-              onChange={(e) =>
-                setGender(e.target.value as "female" | "male")
-              }
+              value={form.gender}
+              onChange={(e) => updateField("gender", e.target.value as "female" | "male")}
               input={ <OutlinedInput label="Gender" /> }
               sx={{ color: "white" }}
             >
@@ -343,80 +235,31 @@ export default function CreateProduct() {
           <FormControl 
             fullWidth 
             required 
-            sx={{ 
-              mb: 2,
-              "& .MuiOutlinedInput-root": {
-                color: "white",
-                backgroundColor: "transparent",
-                "& fieldset": {
-                  borderColor: "gray",
-                },
-                "&:hover fieldset": {
-                  borderColor: "gray",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "gray",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root.MuiFormLabel-filled": {
-                color: "white",
-              },
-            }}
+            sx={inputStyle}
           >
             <InputLabel>Tilstand</InputLabel>
           
             <Select
               label="Tilstand"
-              value={stand}
-              onChange={(e) =>
-                setStand(e.target.value as "Nyt" | "Brugt" | "Brugspor")
-              }
+              value={form.stand}
+              onChange={(e) => updateField("stand", e.target.value as "Nyt" | "Brugt" | "Brugspor")}
               input={ <OutlinedInput label="Tilstand" /> }
               sx={{ color: "white" }}
             >
-              <MenuItem value="nyt">Nyt</MenuItem>
-              <MenuItem value="brugt">Brugt</MenuItem>
-              <MenuItem value="brugspor">Brugspor</MenuItem>
+              <MenuItem value="Nyt">Nyt</MenuItem>
+              <MenuItem value="Brugt">Brugt</MenuItem>
+              <MenuItem value="Brugspor">Brugspor</MenuItem>
             </Select>
           </FormControl>          
 
           <TextField 
             label="Pris" 
             variant="outlined"
-            value={price} 
-            onChange={(e) => setPrice(e.target.value)} 
+            value={form.price} 
+            onChange={(e) => updateField("price", e.target.value)} 
             required 
             fullWidth
-            sx={{
-              mb: 2,
-              "& .MuiOutlinedInput-root": {
-                color: "white",
-                "& fieldset": {
-                  borderColor: "gray"
-                },
-                "&:hover fieldset": {
-                  borderColor: "gray"
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "gray"
-                },
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root.MuiFormLabel-filled": {
-                color: "white",
-              },
-            }}
+            sx={inputStyle}
           />
 
 
@@ -450,8 +293,9 @@ export default function CreateProduct() {
             variant="contained" 
             size="large" 
             fullWidth
-            disabled={!title || !description || !color || !size || !gender || !stand || !price || !imageFile}
+            disabled={!form.title || !form.description || !form.color || !form.size || !form.gender || !form.stand || !form.price || !imageFile}
             sx={{
+              mb: 2,
               backgroundColor: "transparent",
               border: "1px solid gray",
               "&:hover": {
@@ -462,6 +306,7 @@ export default function CreateProduct() {
           >
             {loading ? "Opretter..." : "Opret Produkt"}
           </Button>
+
 
           {message && (
             <Alert severity={message.type} sx={{ mb: 2 }}>

@@ -40,10 +40,6 @@ function HeaderMenu() {
         })
     }
 
-    // async function handleLogout() {
-    //     await supabase.auth.signOut()
-    // }
-
     return (
         <Box 
             sx={{ 
@@ -61,7 +57,7 @@ function HeaderMenu() {
                     sx={{ 
                         color: "white", 
                         borderBottom: "1px solid white", 
-                        fontSize: { xs: "0.7rem" }, 
+                        fontSize: { xs: "0.5rem", sm: "0.7rem" }, 
                         "&:hover": { 
                             backgroundColor: "transparent", 
                             borderBottom: "1px solid darkgreen" 
@@ -76,7 +72,7 @@ function HeaderMenu() {
                     sx={{ 
                         color: "white", 
                         borderBottom: "1px solid white",
-                        fontSize: { xs: "0.7rem" },
+                        fontSize: { xs: "0.5rem", sm: "0.7rem" },
                         "&:hover": { 
                             backgroundColor: "transparent",
                             borderBottom: "1px solid darkgreen" 
@@ -86,7 +82,7 @@ function HeaderMenu() {
                     href="/shop" 
                     sx={{ 
                         color: "white", 
-                        fontSize: { xs: "0.7rem" },
+                        fontSize: { xs: "0.5rem", sm: "0.7rem" },
                         borderBottom: "1px solid white", 
                         "&:hover": { 
                             backgroundColor: "transparent", 
@@ -103,7 +99,7 @@ function HeaderMenu() {
                             sx={{
                             color: "white",
                             borderBottom: "1px solid white",
-                            fontSize: { xs: "0.7rem" },
+                            fontSize: { xs: "0.5rem", sm: "0.7rem" },
                             "&:hover": {
                                 backgroundColor: "transparent",
                                 borderBottom: "1px solid darkgreen",
@@ -138,7 +134,7 @@ function HeaderMenu() {
                         <Button
                             sx={{ 
                                 color: "white", 
-                                fontSize: { xs: "0.7rem" }, 
+                                fontSize: { xs: "0.5rem", sm: "0.7rem" }, 
                                 borderBottom: "1px solid white", 
                                 "&:hover": { 
                                     backgroundColor: "transparent", 
@@ -147,12 +143,12 @@ function HeaderMenu() {
                             }}
                             onClick={handleGoogleLogin}
                         >
-                            Login
+                            Login / Signup
                         </Button>
-                        <Button
+                        {/* <Button
                             sx={{ 
                                 color: "white", 
-                                fontSize: { xs: "0.7rem" }, 
+                                fontSize: { xs: "0.5rem", sm: "0.7rem" }, 
                                 borderBottom: "1px solid white", 
                                 "&:hover": { 
                                     backgroundColor: "transparent", 
@@ -162,7 +158,7 @@ function HeaderMenu() {
                             onClick={handleGoogleLogin}
                         >
                             Signup
-                        </Button>
+                        </Button> */}
                     </>
                 )}
             </Box>
