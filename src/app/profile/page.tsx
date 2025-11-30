@@ -3,7 +3,8 @@
 import { supabase } from '@/lib/supabaseClient'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Box, Divider } from '@mui/material'
+import { Box, Button, Divider } from '@mui/material'
+import Image from 'next/image'
 
 
 type UserProfile = {
@@ -65,53 +66,60 @@ export default function ProfilePage() {
   if (loading) return <p>Loading...</p>
 
   return (
-    <Box sx={{ padding: 0 }}>
-      {profile ? (
-        <>
-          <Box>
-            <img
-              src={profile.avatar_url || "/placeholderprofile.jpg"}
-              alt="Profilbillede"
-              style={{
-                width: "100%",
+    <>
+      <Box sx={{ display: { xs: "grid" }, gridTemplateColumns: { sm: "1fr 1fr" } }}>
+        <Box>
+          {profile ? (
+            <Box sx={{ width: { xs: "100%", sm: "55%" }, justifySelf: "center", paddingTop: { xs: "5rem" } }}>
+                <Image
+                  src={profile.avatar_url || "/placeholderprofile.jpg"}
+                  alt="Profilbillede"
+                  width={800}
+                  height={100}
+                  style={{ width: "100%", height: "auto", borderRadius: "1rem" }}
+                  />
+            </Box>
+          ) : (
+            <p>Ingen profil fundet</p>
+          )}
+        </Box>
+        
+        <Box>
+          {profile ? (
+            <Box
+              sx={{
+                backgroundColor: "black",
+                top: { xs: "40rem", sm: "30%" },
+                padding: "1rem",
+                color: "white",
+                width: { xs: "100%", sm: "50%" },
+                height: { xs: "30vh" },
+                position: "absolute",
               }}
-            />
-          </Box>
+            >
+              <Box sx={{ display: "grid", gap: "0.5rem" }}>
+                <p>{profile.display_name ?? 'Ikke udfyldt'}</p>
+                <Divider color="white" sx={{ width: "30%" }} />
+              </Box>
+              <Box sx={{ paddingTop: "1rem", marginTop: "1rem" }}>
+                <Divider />
+                <Button sx={{ width: "95%", color: "white", justifyContent: "normal", "&:hover": { backgroundColor: "#00ff001c" } }} href="/opretProdukt">Opret produkt</Button>
+                <Divider />
+                <Button sx={{ width: "95%", color: "white", justifyContent: "normal", "&:hover": { backgroundColor: "#00ff001c" } }} href="/produkter">Mine Produkter</Button>
+                <Divider />
+                <Button sx={{ width: "95%", color: "white", justifyContent: "normal","&:hover": { backgroundColor: "#00ff001c" } }} href="indstillinger">Indstillinger</Button>
+                <Divider />
+                <Button sx={{ width: "95%", color: "white", justifyContent: "normal", "&:hover": { backgroundColor: "#00ff001c" } }} href="/about">Om Second Swing</Button>
+                <Divider />
+              </Box>
+            </Box>
+          ) : (
+            <p>Ingen profil fundet</p>
+          )}
+        </Box>
+      </Box>
 
-          <Box
-            sx={{
-              backgroundColor: "white",
-              padding: "1rem",
-              color: "black",
-              width: "100%",
-              borderTopLeftRadius: "2rem",
-              borderTopRightRadius: "2rem",
-              // Top: "5rem",
-              filter: "drop-shadow(2px 4px 6px black)",
-              position: "absolute",
-              bottom: "1rem",
-              // height: "50vh"
-            }}
-          >
-            <Box sx={{ display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
-              <p>{profile.display_name ?? 'Ikke udfyldt'}</p>
-            </Box>
-            <Box sx={{ padding: "2rem 0", display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
-              <Divider />
-              <a href="/opretProdukt">Opret produkt</a>
-              <Divider />
-              <a href="/produkter">Produkter</a>
-              <Divider />
-              <a href="indstillinger">Indstillinger</a>
-              <Divider />
-              <a href="/about">Om Second Swing</a>
-              <Divider />
-            </Box>
-          </Box>
-        </>
-      ) : (
-        <p>Ingen profil fundet</p>
-      )}
-    </Box>
+    </>
   )
 }
+

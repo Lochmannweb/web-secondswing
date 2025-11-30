@@ -8,15 +8,19 @@ import ImageIcon from "@mui/icons-material/Image"
 import SendIcon from "@mui/icons-material/Send"
 import { supabase } from "@/lib/supabaseClient"
 import type { RealtimeChannel } from "@supabase/supabase-js"
+import Image from "next/image"
 
 type Chat = {
   id: string
+  avatar_url?: string
   buyer_id: string
   seller_id: string
   product_id: string
   product?: { title: string }
   buyerName: string
   sellerName: string
+  buyerAvatar?: string | null
+  sellerAvatar?: string | null
   messages?: { content: string; created_at: string }[]
 }
 
@@ -67,8 +71,8 @@ export default function ChatLayout() {
           seller_id,
           product_id,
           product:product_id ( title ),
-          buyer:buyer_id ( display_name ),
-          seller:seller_id ( display_name ),
+          buyer:buyer_id ( display_name, avatar_url ),
+          seller:seller_id ( display_name, avatar_url ),
           messages (
             id,
             content,
@@ -92,6 +96,8 @@ export default function ChatLayout() {
         product: chat.product,
         buyerName: chat.buyer?.display_name ?? "Unknown buyer",
         sellerName: chat.seller?.display_name ?? "Unknown seller",
+        buyerAvartar: chat.buyer?.avatar_url ?? null,
+        sellerAvartar: chat.seller?.avatar_url ?? null,
         messages: chat.messages?.sort(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (a: any, b: any) =>
@@ -132,8 +138,8 @@ export default function ChatLayout() {
           buyer_id,
           seller_id,
           product:product_id!inner ( title ),
-          buyer:buyer_id!inner ( display_name ),
-          seller:seller_id!inner ( display_name )
+          buyer:buyer_id!inner ( display_name, avartar_url ),
+          seller:seller_id!inner ( display_name, avartar_url )
         `)
         .eq("id", activeChatId)
         .maybeSingle()
@@ -153,6 +159,10 @@ export default function ChatLayout() {
       })
     })()
   }, [activeChatId, userId])
+
+
+
+
 
   // Realtime messages
   useEffect(() => {
@@ -176,6 +186,10 @@ export default function ChatLayout() {
     }
   }, [activeChatId, userId])
 
+
+
+
+
   async function sendMessage() {
     if (!newMessage.trim() || !activeChatId || !userId) return
     const text = newMessage
@@ -196,55 +210,86 @@ export default function ChatLayout() {
     }
   }
 
+
+
+
+
   function scrollToBottomSoon() {
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 0)
   }
 
+
+
+
   useEffect(() => {
     scrollToBottomSoon()
   }, [messages.length])
+
+
+
 
   return (
     <Box 
       sx={{ 
         maxWidth: { sm: 1200 },
         mx: { sm: "auto" }, 
-        p: { sm: 2 }, 
+        paddingTop: { sm: "7rem" },
         display: {sm: "flex" }, 
-        color: "black"
+        color: "white"
       }}>
         
       {/* Left: Chat list */}
       <Box
         sx={{
           width: { xs: "100%", md: "30%" },
-          borderRight: { md: "1px solid #ddd" },
+          height: "80vh",
+          borderRight: { md: "1px solid #393939ff" },
           overflowY: "auto",
           display: { xs: activeChatId ? "none" : "block", md: "block" },
         }}
       >
-        <Typography variant="h6" sx={{ p: 2, borderBottom: "1px solid black" }}>Chat History</Typography>
+        <Typography variant="h6" sx={{ ml: 2, color: "white", width: { xs: "93%", sm: "0vh" }, position: "absolute", top: "7rem", borderBottom: { xs: "1px solid gray", sm: "none" } }}>Beskeder</Typography>
+
+
+
         {chats.map((chat) => {
           const lastMsg = chat.messages?.[0]?.content ?? "No messages yet"
           const otherName = userId === chat.buyer_id ? chat.sellerName : chat.buyerName
+          const imageProfile = userId === chat.buyer_id ? chat.sellerAvatar : chat.buyerAvatar
+          // const isBuyer = userId === chat.buyer_id
 
           return (
             <Box
               key={chat.id}
               sx={{
                 p: 2,
-                borderBottom: "1px solid gray",
+                top: { xs: "10rem", sm: "3rem" },
+                display: "flex",
+                gap: "1rem",
+                position: "relative",
                 cursor: "pointer",
-                backgroundColor: chat.id === activeChatId ? "#f5f5f5" : "transparent",
-                "&:hover": { backgroundColor: "#f0f0f0" },
+                color: "white",
               }}
               onClick={() => setActiveChatId(chat.id)}
             >
-              <Typography fontWeight="bold">{otherName}</Typography>
-              <Typography>{chat.product?.title ?? "Unknown product"}</Typography>
-              <Typography variant="body2" color="text.secondary" noWrap>
-                {lastMsg}
-              </Typography>
+              <Box>
+                  <Image
+                    src={imageProfile || "/placeholderprofile.jpg"}
+                    alt="placeholderprofile"
+                    width={100}
+                    height={100}
+                    style={{
+                      width: "3rem",
+                      height: "3rem",
+                      borderRadius: "50%",
+                      objectFit: "cover"
+                    }}
+                  />
+              </Box>
+              <Box>
+                <Typography>{otherName}: {chat.product?.title ?? "Unknown product"}</Typography>
+                <Typography style={{ color:"gray" }}>{lastMsg}</Typography>
+              </Box>
             </Box>
           )
         })}
@@ -255,7 +300,7 @@ export default function ChatLayout() {
         sx={{
           flex: 1,
           display: { xs: activeChatId ? "flex" : "none", md: "flex" },
-          height: { xs: "93vh", sm: "88vh" },
+          height: { xs: "93vh", sm: "81vh" },
           flexDirection: "column",
         }}
       >
@@ -292,6 +337,9 @@ export default function ChatLayout() {
               <MoreVertIcon />
             </Box>
 
+
+
+
             {/* Messages */}
             <Box sx={{ flex: 1, overflowY: "auto", p: 2 }}>
               {messages.map((msg) => (
@@ -305,12 +353,13 @@ export default function ChatLayout() {
                 >
                   <Typography
                     sx={{
-                      border: "1px solid gray",
-                      borderRadius: "1rem",
+                      border: msg.sender_id === userId ? "1px solid blue" : "1px solid gray",
+                      borderRadius: "0.5rem",
                       p: "0.5rem 1rem",
                       maxWidth: "70%",
                       whiteSpace: "pre-wrap",
                       wordBreak: "break-word",
+                      backgroundColor: msg.sender_id === userId ? "blue" : "gray"
                     }}
                   >
                     {msg.content}
@@ -320,13 +369,18 @@ export default function ChatLayout() {
               <div ref={bottomRef} />
             </Box>
 
+
+
+
+
+
             {/* Input */}
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
                 p: 2,
-                borderTop: "1px solid #ddd",
+                // borderTop: "1px solid #ddd",
               }}
             >
               <AddCircleOutlineIcon sx={{ mr: 1 }} />
@@ -337,8 +391,10 @@ export default function ChatLayout() {
                 fullWidth
                 sx={{
                   "& .MuiInputBase-root": {
-                    backgroundColor: "lightgray",
+                    backgroundColor: "transparent",
+                    border: "1px solid gray",
                     borderRadius: "2rem",
+                    color: "white",
                     px: 2,
                   },
                 }}

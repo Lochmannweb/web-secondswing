@@ -3,6 +3,7 @@
 import React from 'react'
 import { Box, Button, Link, Typography } from '@mui/material'
 import { supabase } from '@/lib/supabaseClient'
+import Image from 'next/image'
 
 export default function ForsideHero() {
   async function handleGoogleLogin() {
@@ -20,23 +21,25 @@ export default function ForsideHero() {
     <>
       <Box textAlign={"center"} display={"grid"}>
         <Typography position={"absolute"} top={0} justifySelf={"center"} padding={1}>Second Swing</Typography>
-        {/* image banner */}
+
+        <Image src="/golfsætold2.jpg" alt="Golf" width={450} height={450} style={{ borderRadius: "1rem" }} />
 
         <Box padding={2}>
         <Typography fontSize={"1rem"} fontFamily={"auto"}>Tilmeld dig gratis</Typography>
-        <Typography fontSize={"1.5rem"} fontFamily={"auto"}>Gør din passion for golf til en oplevelse hver dag.</Typography>
+        {/* <Typography fontSize={"1.5rem"} fontFamily={"auto"}>Gør din passion for golf til en oplevelse hver dag.</Typography> */}
+        <Typography fontSize={"1.5rem"} fontFamily={"auto"}>Effortable Golf equitment.</Typography>
         <Box display={"grid"} gap={1} marginTop={5}>
         <Button
           sx={{
-            backgroundColor: "black",
-            color: "white",
+            backgroundColor: "white",
+            color: "black",
             padding: "0.1rem 1.2rem",
             width: "50%",
             justifySelf: "center",
             // top: { xs: "2rem", lg: "5rem" },
             "&:hover": {
-              backgroundColor: "green",
-              color: "black",
+              backgroundColor: "darkgreen",
+              color: "white",
             }
           }}
           onClick={handleGoogleLogin}
@@ -45,15 +48,15 @@ export default function ForsideHero() {
         </Button>
         <Button
           sx={{
-            backgroundColor: "black ",
-            color: "white",
+            backgroundColor: "white",
+            color: "black",
             padding: "0.1rem 1.2rem",
             width: "50%",
             justifySelf: "center",
             // top: { xs: "2rem", lg: "5rem" },
             "&:hover": {
-              backgroundColor: "green",
-              color: "black",
+              backgroundColor: "darkgreen",
+              color: "white",
             }
           }}
           onClick={handleGoogleLogin}
@@ -62,7 +65,7 @@ export default function ForsideHero() {
         </Button>
         </Box>
         </Box>
-        <Link position={"absolute"} bottom={0} justifySelf={"center"} padding={1} style={{ color: "black" }} href='/about'>Om Second Swing</Link>
+        <Link position={"absolute"} bottom={0} justifySelf={"center"} padding={1} href='/about'>Om Second Swing</Link>
       </Box>
     </>
   )

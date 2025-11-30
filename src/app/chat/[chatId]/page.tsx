@@ -160,7 +160,8 @@ export default function ChatPage() {
           backgroundColor: "black",
           height: "5vh",
           alignItems: "center",
-          padding: "2rem 2rem 4rem 2rem",
+          paddingTop: { xs: "5rem" }
+          // padding: "2rem 2rem 4rem 2rem",
         }}
       >
         <ArrowBackIosIcon

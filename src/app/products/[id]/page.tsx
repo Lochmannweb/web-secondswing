@@ -27,13 +27,14 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   return (
     <Box 
       sx={{ 
-        paddingBottom: { xs: "6rem"},
+        padding: { xs: "1rem 1rem 6rem 1rem" },
         display: { sm: "flex" },
         alignItems: { sm: "center" },
         justifyContent: { sm: "space-around" },
         maxWidth: { sm: 1000 }, 
         mx: { sm: "auto" } , 
         p: { sm: "12rem 1rem" }, 
+        pt: { xs: "6rem" }
       }}>
           {product.image_url && (
             <Box
@@ -45,15 +46,16 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                   xs: "100%",   // mobil
                   sm: "35%",  // tablet/desktop
                 },
-                borderRadius: { xs: "0", sm: "1rem"}
+                borderRadius: "1rem",
+                marginBottom: { xs: "1rem" },
               }}        
               />
             )}
 
-      <Box sx={{ padding: "1rem" }}>
+      <Box>
         <Box
           sx={{
-            color: "black",
+            color: "white",
             display: { xs: "flex", sm: "flex" },
             justifyContent: "space-between",
             alignItems: "center",
@@ -61,18 +63,18 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         >
           <p>{profileDisplayName}</p>
           <Button
-            style={{ cursor: "pointer", color: "black" }}
+            style={{ cursor: "pointer", color: "white" }}
             href={`/chat/product/${product.id}`}
           >
             Start chat
           </Button>
         </Box>
 
-        <Divider sx={{ backgroundColor: "black", width: "100%", mb: 3 }} />
+        <Divider sx={{ backgroundColor: "white", width: "100%", mb: 3 }} />
 
         <Box
           sx={{
-            color: "black",
+            color: "white",
             width: { sm: "300px" }
           }}
         >
@@ -81,7 +83,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
         <Box
           sx={{
-            color: "black",
+            color: "white",
             marginTop: "1rem",
             display: "grid",
             gap: "0.5rem",
@@ -96,11 +98,11 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           <p>Tilstand: {product.stand}</p>
         </Box>
 
-        <Divider sx={{ backgroundColor: "black", width: "100%", mb: 3, mt: 3 }} />
+        <Divider sx={{ backgroundColor: "white", width: "100%", mb: 3, mt: 3 }} />
 
         <Box 
           sx={{
-            color: "black",
+            color: "white",
             display: { xs: "flex", sm: "flex" },
             justifyContent: "space-between",
             alignItems: "center",
@@ -112,11 +114,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         <Button
           sx={{
             width: "100%",
-            backgroundColor: "gray",
+            backgroundColor: "transparent",
+            border: "1px solid grey",
             color: "white",
             top: "1.5rem",
             position: "relative",
-            "&:hover": { backgroundColor: "black", color: "white" },
+            "&:hover": { backgroundColor: "darkGreen", color: "white",border: "1px solid darkGreen" },
           }}
         >
           Køb

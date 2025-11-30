@@ -4,9 +4,9 @@ import React from 'react'
 function OurMission() {
   return (
     <>
-        <Box sx={{ textAlign: "center" }}> 
+        <Box> 
             <h1>Our Mission</h1>
-            <Box sx={{ display: "grid", gap: "1rem" }}>
+            <Box sx={{ display: "grid", gap: "1rem", color: "lightgray" }}>
                 <p>
                     Vi ønsker at gøre golf mere tilgængeligt for alle. 
                     Nyt golfudstyr kan være dyrt, men der findes masser af gode jern, 

@@ -1,16 +1,14 @@
 "use client"
 
+import HeaderMenu from "@/components/HeaderMenu";
 import "./globals.css";
-import NavMenu from "@/components/NavMenu";
-import { usePathname } from "next/navigation"
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
-  const pathname = usePathname()
 
   return (
     <html lang="en">
       <body>
-      {pathname !== "/" && <NavMenu />}
+        <HeaderMenu />
         {children}
       </body>
     </html>

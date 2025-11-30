@@ -8,7 +8,6 @@ import {
   CardContent, 
   CardMedia, 
   Grid, 
-  Box, 
   Button,
   Alert, 
   IconButton
@@ -86,52 +85,40 @@ const toggleFavorite = async (productId: string) => {
     <Grid container spacing={2}>
       {products.map((product) => (
         <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id}>
-          <Card sx={{ height: "100%" }}>
+          <Card sx={{ height: "45vh", backgroundColor: "transparent" }}>
             {product.image_url && (
               <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
             )}
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              {product.price && (
-                <Typography
-                  sx={{
-                    backgroundColor: "#e2ffd7",
-                    borderRadius: "3rem",
-                    fontSize: "0.8rem",
-                    width: "70%",
-                    textAlign: "center",
-                    alignSelf: "end",
-                    color: "black",
-                    position: "relative",
-                    top: "-12rem",
-                    padding: "0 1rem",
-                    right: "0.5rem",
-                  }}
-                >
-                  {product.price.toFixed(2)} DKK
-                </Typography>
-              )}
-              <IconButton
-                onClick={() => toggleFavorite(product.id)}
-                sx={{ 
-                  color: favorites.includes(product.id) ? 'white' : 'white',   
-                  top: "-11.5rem", }}>
-                {favorites.includes(product.id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-              </IconButton>
-            </Box>
-            <CardContent>
-              <Box 
-                sx={{ 
-                  marginTop: "-3rem" 
-                }}>
+            <CardContent sx={{ color: "white" }}>
                 <Typography sx={{ fontSize: "15px" }} component="h2">
                   {product.title}
                 </Typography>
-              </Box>
-              {product.description && (
-                <Typography variant="body2" sx={{ mb: 2, fontSize: "13px" }}>
-                  {product.description}
-                </Typography>
-              )}
+                {product.description && (
+                  <Typography variant="body2">
+                    {product.description}
+                  </Typography>
+                )}
+                <IconButton
+                  onClick={() => toggleFavorite(product.id)}
+                  sx={{ 
+                    color: favorites.includes(product.id) ? 'white' : 'white', 
+                    left: "10rem", 
+                    position: "relative",  
+                    top: "-3rem", 
+                  }}
+                    >
+                  {favorites.includes(product.id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                </IconButton>
+                {product.price && (
+                  <Typography
+                    sx={{
+                      color: "white",
+                      paddingTop: "1rem",
+                    }}
+                  >
+                    {product.price.toFixed(2)} DKK
+                  </Typography>
+                )}
             </CardContent>
             <Button
                   component={Link}
@@ -140,13 +127,12 @@ const toggleFavorite = async (productId: string) => {
                     fontSize: "10px",
                     border: "1px solid grey",
                     borderRadius: "0.5rem",
-                    width: "90%",
-                    color: "black",
+                    width: "100%",
+                    color: "white",
                     display: "flex",
-                    marginBottom: "0.5rem",
                     justifySelf: "center",
                     padding: "0.3rem 1rem",
-                    background:"#e2ffd7",
+                    // background:"#e2ffd7",
                     "&:hover": { backgroundColor: "#60954d", color: "white" },
                   }}
                 >

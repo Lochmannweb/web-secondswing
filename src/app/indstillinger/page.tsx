@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Box, Divider, MenuItem, Typography } from '@mui/material'
+import { Box, Button, Divider, MenuItem, Typography } from '@mui/material'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 
@@ -16,62 +16,76 @@ function Indstillinger() {
   }
 
   return (
-    <Box sx={{ color: "black" }}>
-      <Typography sx={{ padding: "1rem" }}>
-        <strong>Indstillinger</strong>
-      </Typography>
+    <Box position={"absolute"} top={"5rem"} p={2} sx={{ color: "white" }}>
+      <Typography>Indstillinger</Typography> 
+      <Divider sx={{ backgroundColor: "white" }} />
 
-      <Box sx={{ display: "grid", gap: "1rem" }}>
-        <Divider sx={{ backgroundColor: "black" }} />
-        <a 
-          href='/indstillinger/profiloplysninger'
-          style={{ 
-            padding: "0rem 1rem 1rem 1rem",
-            borderBottom: "1px solid black",
-            cursor: "pointer" 
-          }}>
-            Profiloplysninger
-          </a>
-        <a 
-          href='/indstillinger/kontoindstillinger'
-          style={{ 
-            padding: "0rem 1rem 1rem 1rem",
-            borderBottom: "1px solid black",
-            cursor: "pointer" 
-          }}>
-            Kontooplysninger
-          </a>
-        <a 
-          href='/indstillinger/betalinger'
-          style={{ 
-            padding: "0rem 1rem 1rem 1rem",
-            borderBottom: "1px solid black",
-            cursor: "pointer" 
-          }}>
-            Betalinger
-          </a>
-        <a 
-          href='/indstillinger/sikkerhed'
-          style={{ 
-            padding: "0rem 1rem 1rem 1rem",
-            borderBottom: "1px solid black",
+      <Box position={"absolute"} top={"5rem"}>
+        <Button
+          href='/indstillinger/profileoplysninger'
+          sx={{
+            backgroundColor: "transparent",
+            color: "white",
             cursor: "pointer",
-          }}>
-            Sikkerhed
-          </a>
+            width: "94%",
+            justifySelf: "normal",
+            alignSelf: "start",
+            "&:hover": {
+              backgroundColor: "#00ff001c",
+            }
+          }}
+        >
+          Profiloplysninger
+        </Button>
+
+        <Button
+          href='/indstillinger/kontoindstillinger'
+          sx={{
+            backgroundColor: "transparent",
+            color: "white",
+            cursor: "pointer",
+            width: "94%",
+            justifySelf: "normal",
+            alignSelf: "start",
+            "&:hover": {
+              backgroundColor: "#00ff001c",
+            }
+          }}
+        >
+          Kontooplysninger
+        </Button>
+
+        <Button
+          href='/indstillinger/sikkerhed'
+          sx={{
+            backgroundColor: "transparent",
+            color: "white",
+            cursor: "pointer",
+            "&:hover": {
+              backgroundColor: "#00ff001c",
+            }
+          }}
+        >
+          Sikkerhed
+        </Button>
       </Box>
 
-      <Box sx={{ marginTop: "5rem" }}>
-          <MenuItem 
-            onClick={handleLogout} 
-            style={{ 
-              padding: "1rem", 
-              cursor: "pointer", 
-              borderTop: "1px solid black", 
-              borderBottom: "1px solid black" 
-            }}>
-            Log ud
-          </MenuItem>
+      <Box sx={{ marginTop: "12rem" }}>
+        <Button
+          onClick={handleLogout}
+          sx={{
+            backgroundColor: "transparent",
+            color: "white",
+            cursor: "pointer",
+            textAlign: "start",
+            width: "100%",
+            "&:hover": {
+              backgroundColor: "#00ff001c",
+            }
+          }}
+        >
+          Log ud
+        </Button>
       </Box>
     </Box>
   )

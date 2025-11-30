@@ -1,43 +1,90 @@
 
-
-import AboutHero from "@/components/about/AboutHero";
-import OurCompany from "@/components/about/OurCompany";
-import OurMission from "@/components/about/OurMission";
-import OurTeam from "@/components/about/OurTeam";
-import WhyUs from "@/components/about/WhyUs";
-import Image from "next/image";
-import { Box } from "@mui/material";
+import { aboutData } from "@/Content/about"
+import { Box, Divider } from "@mui/material";
 
 export default function Home() {
   return (
+    <>
     <Box 
-        sx={{ 
-            paddingBottom: "7rem",
-        }}
-        >
-        <Image src="/hero.jpg" alt="hero" width={100} height={50} style={{ filter: "brightness(0.5)" }} />
-        {/* <img 
-            src="/hero.jpg" 
-            alt="hero" 
-            style={{
-                width: "100%",
-                filter: "brightness(0.5)"
-            }}
-        /> */}
-        <AboutHero />
-        <Box 
-            sx={{ 
-                display: "grid", 
-                gap: "3rem", 
-                padding: "0rem 2rem 2rem 2rem", 
-                color: "black",
-                marginTop: "-2rem"
-            }}>
-            <OurCompany />
-            <OurMission />  
-            <WhyUs />  
-            <OurTeam />  
-        </Box>
+        sx={{
+            padding: { xs: "6rem 1rem", sm: "6rem 20rem" },
+            display: "grid",
+            gap: "2rem"
+        }} >
+            <Box>
+                <h2 style={{ color: "white", transform: "uppercase" }}>{aboutData.Company.title}</h2>
+                <Divider sx={{ backgroundColor: "white", width: "100%", mb: 1 }} />
+                <Box 
+                    sx={{
+                        color: "gray",
+                        mb: 2,
+                        "& > p:not(:last-child)": { mb: 2 }
+                    }}>
+                    <p>{aboutData.Company.contentTop}</p>                
+                    <p>{aboutData.Company.contentMidt}</p>                
+                    <p>{aboutData.Company.contentBottom}</p>  
+                </Box>              
+            </Box>
+
+            <Box>
+                <h2 style={{ color: "white" }}>{aboutData.OurMission.title}</h2>
+                <Divider sx={{ backgroundColor: "white", width: "100%", mb: 1 }} />
+                <Box 
+                    sx={{
+                        color: "gray",
+                        mb: 2,
+                        "& > p:not(:last-child)": { mb: 2 }
+                    }}>
+                    <p>{aboutData.OurMission.contentTop}</p>                
+                    <p>{aboutData.OurMission.contentMidt}</p>                
+                </Box>              
+            </Box>
+
+            <Box>
+                <h2 style={{ color: "white" }}>{aboutData.OurTeam.title}</h2>
+                <Divider sx={{ backgroundColor: "white", width: "100%", mb: 1 }} />
+                <Box 
+                    sx={{
+                        color: "gray",
+                        mb: 2,
+                        "& > p:not(:last-child)": { mb: 2 }
+                    }}>
+                    <p>{aboutData.OurTeam.contentTop}</p>                
+                    <p>{aboutData.OurTeam.contentMidt}</p>                
+                </Box>              
+            </Box>
+
+            <Box>
+                <h2 style={{ color: "white" }}>{aboutData.ChooseUs.title}</h2>
+                <Divider sx={{ backgroundColor: "white", width: "100%", mb: 1 }} />
+                <Box 
+                    sx={{
+                        color: "gray",
+                        display: "grid",
+                        gap: "1rem"
+                    }}>
+                        <Box>
+                            <h5 style={{ color: "white" }}>{aboutData.ChooseUs.reasonOne.title}</h5>                
+                            <p>{aboutData.ChooseUs.reasonOne.content}</p>                
+                        </Box>
+
+                        <Box>
+                            <h5 style={{ color: "white" }}>{aboutData.ChooseUs.reasonTwo.title}</h5>                
+                            <p>{aboutData.ChooseUs.reasonTwo.content}</p>                
+                        </Box>
+
+                        <Box>
+                            <h5 style={{ color: "white" }}>{aboutData.ChooseUs.reasonThree.title}</h5>                
+                            <p>{aboutData.ChooseUs.reasonThree.content}</p>                
+                        </Box>
+
+                        <Box>
+                            <h5 style={{ color: "white" }}>{aboutData.ChooseUs.reasonFour.title}</h5>                
+                            <p>{aboutData.ChooseUs.reasonFour.content}</p>                
+                        </Box>
+                </Box>              
+            </Box>
     </Box>
+    </>
   );
 }

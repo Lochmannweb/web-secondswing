@@ -20,7 +20,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         <Box
             component="form"
             onSubmit={handleSubmit}
-            sx={{ mb: 3, display: "flex", justifyContent: "center", border: "none" }}
+            sx={{ mb: 3, mt: { xs: "5rem", s: "3rem" }, display: "flex", justifyContent: "center", border: "none" }}
         >   
             <TextField
                 variant="outlined"
@@ -30,22 +30,22 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                 sx={{
                     width: "100%",
                     "& .MuiOutlinedInput-root": {
-                    borderRadius: "3rem",
+                    borderRadius: "0.5rem",
                     "& fieldset": {
-                      borderColor: "black", // default border
+                      borderColor: "gray", // default border
                     },
                     "&:hover fieldset": {
-                      borderColor: "black", // hover border
+                      borderColor: "white", // hover border
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: "black", // focused border (blue one you see)
+                      borderColor: "white", // focused border (blue one you see)
                     },
                     },
-                    input: { color: "black" },
+                    input: { color: "white" },
                 }}
                 InputProps={{
                     sx: { 
-                        color: "black",
+                        color: "white",
                         "&:hover": {
                             border: "none"
                         }

@@ -4,9 +4,9 @@ import React from 'react'
 function OurMission() {
   return (
     <>
-        <Box sx={{ textAlign: "center" }}> 
+        <Box> 
             <h1>Our Team</h1>
-            <Box sx={{ display: "grid", gap: "1rem" }}>
+            <Box sx={{ display: "grid", gap: "1rem", color: "lightgray" }}>
                 <p>
                     Bag SecondSwing.dk står Frederik og Line, to golfentusiaster med en fælles vision 
                     - at gøre det nemmere og billigere at købe og sælge brugt golfudstyr.  

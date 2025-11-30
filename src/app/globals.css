@@ -7,7 +7,12 @@
 }
 
 
-a {
-  color: black;
+/* a {
+  back: black;
   text-decoration-line: none;
+} */
+
+body {
+  background-color: black;
+  color: "white";
 }

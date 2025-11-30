@@ -4,9 +4,9 @@ import React from 'react'
 function WhyUs() {
   return (
     <>
-        <Box sx={{ textAlign: "center" }}> 
+        <Box> 
             <h1>Why Choose us</h1>
-            <Box sx={{ display: "grid", gap: "1rem", marginTop: "1rem" }}>
+            <Box sx={{ display: "grid", gap: "1rem", marginTop: "1rem", color: "lightgray" }}>
                 <Box>
                     <p><strong>Mere golf, mindre omkostning</strong></p>
                     <p>- Kvalitetsudstyr til en brøkdel af nyprisen</p>

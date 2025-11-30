@@ -170,15 +170,13 @@ export default function ChatPage() {
             key={msg.id}
             sx={{
               display: "flex",
-              justifyContent:
-                msg.sender_id === buyerId ? "flex-end" : "flex-start",
+              justifyContent: msg.sender_id === buyerId ? "flex-end" : "flex-start",
               marginBottom: "0.5rem",
             }}
           >
             <Typography
               sx={{
-                border:
-                  msg.sender_id === buyerId ? "1px solid gray" : "1px solid gray",
+                border: msg.sender_id === buyerId ? "1px solid gray" : "1px solid gray",
                 borderRadius: "1rem",
                 padding: "0.5rem 1rem",
                 maxWidth: "60%",

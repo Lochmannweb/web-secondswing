@@ -4,9 +4,9 @@ import React from 'react'
 function OurCompany() {
   return (
     <>   
-        <Box sx={{ textAlign: "center" }}>  
-                <h1>Our Company</h1>
-                <Box sx={{ display: "grid", gap: "1rem" }}>
+        <Box>  
+                {/* <h1>Our Company</h1> */}
+                {/* <Box sx={{ display: "grid", gap: "1rem", color: "lightgray"}}>
                     <p>
                         SecondSwing.dk blev startet af Frederik, to passionerede golfspillere, 
                         der ønskede at gøre det lettere og billigere at købe og sælge brugt golfudstyr. 
@@ -19,7 +19,7 @@ function OurCompany() {
                         Vores mission er at give golfudstyr nyt liv og gøre sporten mere tilgængelig for alle 
                         – mere golf, mindre omkostning!
                     </p>
-                </Box>
+                </Box> */}
         </Box>
     </>
   )

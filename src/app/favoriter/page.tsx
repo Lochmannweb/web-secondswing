@@ -97,58 +97,50 @@ export default function Favoriter() {
 
   return (
     <>
-    <Box sx={{ maxWidth: 1200, mx: "auto", p: 2, pb: "6rem" }}>
-    <Typography variant="h5" sx={{ mb: 2, borderBottom: "1px solid black", color: "black" }}>Mine Favoriter</Typography>
-    {/* <Divider sx={{ backgroundColor: "black", width: "50%", mb: "3rem" }} /> */}
+    <Box sx={{ maxWidth: 1200, mx: "auto", p: 2, pt: "6rem" }}>
+    <Typography variant="h5" sx={{ mb: 2, borderBottom: "1px solid white", color: "white" }}>Favorites</Typography>
+
+    
     <Grid container spacing={2}>
       {products.map((product) => (
         <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id}>
-          <Card sx={{ height: { xs: "55vh", sm: "45vh" },position: "relative" }}>
+          <Card sx={{ height: { xs: "50vh", sm: "45vh" }, position: "relative", backgroundColor: "transparent" }}>
             {product.image_url && (
               <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
             )}
-
-            {/* Favorit-ikon til at fjerne */}
-            <IconButton
-              onClick={() => removeFavorite(product.id)}
-              sx={{
-                position: "absolute",
-                top: 8,
-                right: 4,
-                color: "white",
-              }}
-            >
-              <FavoriteIcon />
-            </IconButton>
-
-            <CardContent>
+            <CardContent sx={{ color: "white" }}>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography sx={{ fontSize: "18px" }} component="h2">
                   {product.title}
                 </Typography>
               </Box>
+              {/* Favorit-ikon til at fjerne */}
+              <IconButton
+                onClick={() => removeFavorite(product.id)}
+                sx={{
+                  position: "absolute",
+                  top: "13rem",
+                  right: 6,
+                  color: "white",
+                }}
+              >
+                <FavoriteIcon />
+              </IconButton>
+              {product.description && (
+                <Typography variant="body2" sx={{ mb: 2, fontSize: "13px" }}>
+                  {product.description}
+                </Typography>
+              )}
               {product.price && (
                 <Typography
                   sx={{
-                    backgroundColor: "white",
                     borderRadius: "3rem",
                     fontSize: "0.8rem",
-                    width: "83%",
-                    textAlign: "center",
                     alignSelf: "end",
-                    color: "black",
-                    position: "absolute",
-                    top: "1rem",
-                    padding: "0 1rem",
                     left: { xs: "-1rem", sm: "-3.5rem" },
                   }}
                 >
                   {product.price.toFixed(2)} DKK
-                </Typography>
-              )}
-              {product.description && (
-                <Typography variant="body2" sx={{ mb: 2, fontSize: "13px" }}>
-                  {product.description}
                 </Typography>
               )}
             </CardContent>
@@ -156,9 +148,9 @@ export default function Favoriter() {
                   component={Link}
                   href={`/products/${product.id}`}
                   sx={{ 
-                    width: "80%", 
+                    width: "100%", 
                     position: "absolute",
-                    backgroundColor: "gray", 
+                    border: "1px solid gray",
                     color: "white", 
                     display: "flex",
                     justifySelf: "center",
@@ -166,7 +158,8 @@ export default function Favoriter() {
                     padding: "0.3rem 1rem",
                     fontSize: "10px",
                     "&:hover": {
-                      backgroundColor: "black",
+                      backgroundColor: "darkGreen",
+                      border: "1px solid darkGreen",
                       color: "white"
                     }
                   }}
