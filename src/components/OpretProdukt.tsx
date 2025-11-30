@@ -3,7 +3,7 @@
 import { getSupabase } from "@/lib/supabaseClient"
 import { Box, TextField, Button, Alert, MenuItem, Select, InputLabel, FormControl, OutlinedInput } from "@mui/material"
 import type React from "react"
-import { useRef, useState } from "react"
+import { useState } from "react"
 
 export default function CreateProduct() {
   const [title, setTitle] = useState("")
@@ -39,7 +39,7 @@ export default function CreateProduct() {
     const fileExt = file.name.split(".").pop()
     const fileName = `${Date.now()}.${fileExt}`
 
-    const { data, error } = await supabase.storage.from("avatars").upload(fileName, file)
+    const { error } = await supabase.storage.from("avatars").upload(fileName, file)
     if (error) throw new Error(`Kunne ikke uploade billede: ${error.message}`)
 
     const {
@@ -60,7 +60,7 @@ export default function CreateProduct() {
       const { data: { user }, error: userError } = await supabase.auth.getUser()
       if (userError || !user) throw new Error("Du skal være logget ind for at oprette et produkt")
 
-      const { data: profile, error: profileError } = await supabase
+      const { error: profileError } = await supabase
         .from("profiles")
         .select("id")
         .eq("id", user.id)
@@ -116,13 +116,13 @@ export default function CreateProduct() {
     }
   }
 
-  const fileInput = useRef<HTMLInputElement>(null);
+  // const fileInput = useRef<HTMLInputElement>(null);
 
-  function imagePreview() {
-    if(fileInput.current) {
-      fileInput.current.click()
-    }
-  }
+  // function imagePreview() {
+  //   if(fileInput.current) {
+  //     fileInput.current.click()
+  //   }
+  // }
 
 
   return (

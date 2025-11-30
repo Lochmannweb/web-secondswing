@@ -62,7 +62,7 @@ export default function EditProduct({ productId }: EditProductProps) {
     const fileExt = file.name.split(".").pop()
     const fileName = `${Date.now()}.${fileExt}`
 
-    const { data, error } = await supabase.storage.from("avatars").upload(fileName, file, { upsert: true })
+    const { error } = await supabase.storage.from("avatars").upload(fileName, file, { upsert: true })
     if (error) throw new Error(`Kunne ikke uploade billede: ${error.message}`)
 
     const {

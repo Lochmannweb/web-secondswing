@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Box, Button, Divider, MenuItem, Typography } from '@mui/material'
+import { Box, Button, Divider, Typography } from '@mui/material'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 
