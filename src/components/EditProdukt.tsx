@@ -1,3 +1,6 @@
+// bliver måske ikke brugt, det skulle undersøges lidt mere
+// hvis den ikke bliver brugt, så slet filen
+
 "use client"
 
 import { getSupabase } from "@/lib/supabaseClient"

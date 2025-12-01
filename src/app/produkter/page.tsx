@@ -78,7 +78,7 @@ export default function ProdukterPage() {
   }
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: "auto", top: "5rem", p: 2, color: "white", position: "absolute" }}>
+    <Box  sx={{ maxWidth: 1200, mx: "auto", p: 2, pt: "6rem", color: "white" }}>
       <Typography sx={{ fontSize: "1.2rem" }}>Mine produkter</Typography>
       <Divider sx={{ mb: "3rem", backgroundColor: "white", width: "30%" }} />
       {products.length === 0 ? (
@@ -87,7 +87,7 @@ export default function ProdukterPage() {
         <>
           <Grid container spacing={1} sx={{ justifySelf: "start" }}>
             {products.map((product) => (
-              <Grid key={product.id} size={{ xs: 6, sm: 6, md: 4 }}>
+              <Grid key={product.id} size={{ xs: 6, sm: 6, md: 3 }}>
                 <Card sx={{ backgroundColor: "transparent", height: "100%" }}>
                   {product.image_url && (
                     <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
@@ -122,7 +122,7 @@ export default function ProdukterPage() {
                           color: "white"
                         }
                       }}>
-                      Ændre
+                      Rediger
                     </Button>
                   </CardContent>
                 </Card>
