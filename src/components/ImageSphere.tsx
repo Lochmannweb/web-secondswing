@@ -4,6 +4,8 @@ import { Canvas, useFrame, useThree, useLoader } from "@react-three/fiber";
 import { Suspense, useRef, useState } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
+import { useSentry } from "@/hooks/useSentry";
+
 
 interface ImageSphereProps {
   images?: string[];
@@ -14,6 +16,7 @@ export default function ImageSphere({ radius = 3 }: ImageSphereProps) {
   const [enterCenter, setEnterCenter] = useState(false);
   const [showFirstText, setShowFirstText] = useState(false);
   const [showSecondText, setShowSecondText] = useState(false);
+
   
   const images = [
     "golfsæt.jpg",
@@ -57,7 +60,8 @@ export default function ImageSphere({ radius = 3 }: ImageSphereProps) {
             showFirstText={showFirstText} 
             setShowFirstText={setShowFirstText} 
             showSecondText={showSecondText} 
-            setShowSecondText={setShowSecondText} />
+            setShowSecondText={setShowSecondText} 
+            />
         </Suspense>
       </Canvas>
 
@@ -115,10 +119,23 @@ function SphereContent({
   setShowFirstText,
   setShowSecondText,
 }: SphereContentProps) {
-  const textures = useLoader(THREE.TextureLoader, images) as THREE.Texture[]; // brugere altid en array af textures
-  const [clicks, setClicks] = useState(0);
+  const textures = useLoader(THREE.TextureLoader, images) as THREE.Texture[]; 
   const groupRef = useRef<THREE.Group>(null);
   const { camera } = useThree();
+  const { log, logWarning, logError } = useSentry();
+  const [clicks, setClicks] = useState(0);
+
+
+
+  // Når textures er loaded - logging
+  textures.forEach((tex, index) => {
+    if (!tex) {
+      logWarning("Texture failed to load", { file: images[index] });
+    }
+  });
+
+
+
 
   const moveCamera = (x: number, y: number, z: number, done?: () => void) => {
     gsap.to(camera.position, {
@@ -130,6 +147,10 @@ function SphereContent({
       onComplete: done,
     });
   };
+
+
+
+
 
   const rotateToMesh = (mesh: THREE.Mesh) => {
     if (!groupRef.current) return;
@@ -145,7 +166,23 @@ function SphereContent({
     });
   };
 
+
+
+
   const handleClick = (mesh: THREE.Mesh) => {
+    // logging med sentry
+    try {
+      log("User clicked image", {
+        uuid: mesh.uuid,
+        click: clicks + 1,
+        file: images[clicks]
+      });
+    } catch (err) {
+      logError(err);
+    }
+
+
+
     const next = clicks + 1;
     setClicks(next);
 
@@ -170,6 +207,20 @@ function SphereContent({
         setShowFirstText(false);
         setShowSecondText(false);
       });
+    }
+
+    // logging med sentry
+    try{
+      log("User clicked image", { file: mesh.uuid, clickNumber: clicks + 1 });
+    } catch (err) {
+      logError(err);
+    }
+
+    // logging med sentry
+    try {
+    rotateToMesh(mesh);
+    } catch (err) {
+      logError(err);
     }
 
     rotateToMesh(mesh);
@@ -213,7 +264,7 @@ function ImagePlane({
   img,
   pos,
   rot,
-  onClick
+  onClick,
 }: ImagePlaneProps) {
   const ref = useRef<THREE.Mesh>(null);
 

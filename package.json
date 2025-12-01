@@ -15,6 +15,7 @@
     "@mui/material": "^7.3.1",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",
+    "@sentry/nextjs": "^10.27.0",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/auth-helpers-react": "^0.5.0",
     "@supabase/auth-ui-react": "^0.4.7",
@@ -39,6 +40,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/gsap": "^1.20.2",
+    "@types/jest": "^30.0.0",
     "@types/micro": "^7.3.7",
     "@types/node": "^20",
     "autoprefixer": "^10.4.21",

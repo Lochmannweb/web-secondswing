@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "Sentry": {
+      "url": "https://mcp.sentry.dev/mcp/line-lochmann-mller/typescript-nextjs",
+      "type": "http"
+    }
+  }
+}
