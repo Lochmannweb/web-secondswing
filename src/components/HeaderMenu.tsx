@@ -121,6 +121,9 @@ function HeaderMenu() {
                             <MenuItem onClick={handleClose} component="a" href="/indstillinger/profiloplysninger">
                                 Rediger profil
                             </MenuItem>
+                            <MenuItem onClick={handleClose} component="a" href="/produkter">
+                                Mine produkter
+                            </MenuItem>
                             <MenuItem onClick={handleClose} component="a" href="/favoriter">
                                 Favoritter
                             </MenuItem>

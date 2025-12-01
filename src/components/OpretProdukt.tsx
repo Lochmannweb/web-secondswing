@@ -138,23 +138,32 @@ export default function CreateProduct() {
 
 
   return (
-    <Box component="form" onSubmit={handleSubmit} position={"absolute"} p={2} top={{ xs: "8rem" }} display={{ xs: "grid", sm: "flex" }}>
-      <Box>
+    <Box 
+      component="form" 
+      onSubmit={handleSubmit} 
+      position={"absolute"} 
+      p={2} 
+      top={{ xs: "8rem" }} 
+      display={"grid"} 
+      gridTemplateColumns={{ sm: "1fr 1fr" }} 
+      gap={2}
+      >
+      <Box justifySelf={"center"} alignSelf={"center"}>
         {/* vis valgte billeder her */}
-        {imagePreview && (
+        {/* {imagePreview && ( */}
           <Box sx={{ mb: 2 }}>
             <Image
-              src={imagePreview || "/test.jpg"}
+              src={imagePreview || "/placeholderprofile.jpg"}
               alt="Valgt billede"
-              width={500}
-              height={500}
-              style={{ width: "100%", maxHeight: "300px", objectFit: "cover", borderRadius: "0.5rem" }}
+              width={600}
+              height={100}
+              style={{ height: "auto", objectFit: "cover", borderRadius: "0.5rem" }}
             />
           </Box>
-        )}
+        {/* )} */}
       </Box>
 
-      <Box>
+      <Box width={{ sm: "80%" }}>
           <TextField 
             label="Titel" 
             variant="outlined"
@@ -219,7 +228,7 @@ export default function CreateProduct() {
             required 
             sx={inputStyle}
           >
-            <InputLabel>Gender</InputLabel>
+            <InputLabel>Køn</InputLabel>
           
             <Select
               value={form.gender}

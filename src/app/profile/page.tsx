@@ -71,10 +71,10 @@ export default function ProfilePage() {
         <Box p={2}>
           {profile ? (
             <Box sx={{ width: { xs: "100%", sm: "55%" }, justifySelf: "center", paddingTop: { xs: "5rem" } }}>
-                <Image
+                <Image 
                   src={profile.avatar_url || "/placeholderprofile.jpg"}
                   alt="Profilbillede"
-                  width={800}
+                  width={500}
                   height={100}
                   style={{ width: "100%", height: "auto", borderRadius: "1rem" }}
                   />
