@@ -7,7 +7,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import ImageIcon from "@mui/icons-material/Image"
 import SendIcon from "@mui/icons-material/Send"
 import { useParams } from "next/navigation"
-import { supabase } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 
 type Message = {
   id: string
@@ -24,6 +24,8 @@ export default function ChatPage() {
   const [chatId, setChatId] = useState<string | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState("")
+
+  const supabase = getSupabaseClient()
 
   // 1. Load buyer + seller from product
   useEffect(() => {
@@ -135,36 +137,16 @@ export default function ChatPage() {
   }
 
   return (
-    <Box>
+    <Box p={2}>
       {/* Header */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          backgroundColor: "black",
-          height: "5vh",
-          alignItems: "center",
-          padding: "2rem 2rem 4rem 2rem",
-        }}
-      >
+      <Box>
         <ArrowBackIosIcon />
         <Typography color="white">Chat with seller</Typography>
         <MoreVertIcon />
       </Box>
 
       {/* Chat container */}
-      <Box
-        sx={{
-          borderTopLeftRadius: "1rem",
-          borderTopRightRadius: "1rem",
-          marginTop: "-2rem",
-          backgroundColor: "white",
-          zIndex: 10,
-          height: "90vh",
-          overflowY: "auto",
-          padding: "1rem",
-        }}
-      >
+      <Box>
         {messages.map((msg) => (
           <Box
             key={msg.id}
@@ -179,8 +161,7 @@ export default function ChatPage() {
                 border: msg.sender_id === buyerId ? "1px solid gray" : "1px solid gray",
                 borderRadius: "1rem",
                 padding: "0.5rem 1rem",
-                maxWidth: "60%",
-                color: "black"
+                color: "white"
               }}
             >
               {msg.content}
@@ -190,25 +171,14 @@ export default function ChatPage() {
       </Box>
 
       {/* Input */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-around",
-          alignItems: "center",
-          position: "absolute",
-          bottom: "5rem",
-          width: "100%",
-          borderTop: "1px solid gray",
-          paddingTop: "1rem",
-        }}
-      >
-        <AddCircleOutlineIcon sx={{ color: "black" }} />
+      <Box>
+        <AddCircleOutlineIcon sx={{ color: "white" }} />
         <TextField
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           sx={{
             "& .MuiInputBase-root": {
-              backgroundColor: "lightgray",
+              backgroundColor: "#1a1a1aff",
               borderRadius: "3rem",
               padding: "0 0.5rem",
             },
@@ -216,9 +186,9 @@ export default function ChatPage() {
           }}
           placeholder="Skriv en besked..."
         />
-        <ImageIcon sx={{ color: "black" }} />
+        <ImageIcon sx={{ color: "white" }} />
         <SendIcon
-          sx={{ color: "black", cursor: "pointer" }}
+          sx={{ color: "white", cursor: "pointer" }}
           onClick={sendMessage}
         />
       </Box>

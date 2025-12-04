@@ -7,7 +7,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import ImageIcon from "@mui/icons-material/Image"
 import SendIcon from "@mui/icons-material/Send"
 import { useParams, useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 import type { RealtimeChannel } from "@supabase/supabase-js"
 
 type Message = {
@@ -40,7 +40,7 @@ export default function ChatPage() {
   // Load current user
   useEffect(() => {
     ;(async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await getSupabaseClient.auth.getUser()
       if (user) setUserId(user.id)
     })()
   }, [])
@@ -49,7 +49,7 @@ export default function ChatPage() {
   useEffect(() => {
     if (!chatId || !userId) return
     ;(async () => {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabaseClient
         .from("chats")
         .select(`
           id,
@@ -86,7 +86,7 @@ export default function ChatPage() {
   useEffect(() => {
     if (!chatId) return
     ;(async () => {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabaseClient
         .from("messages")
         .select("*")
         .eq("chat_id", chatId)
@@ -103,7 +103,7 @@ export default function ChatPage() {
   // Realtime DB messages
   useEffect(() => {
     if (!chatId) return
-    const dbChannel = supabase.channel(`db:chat-${chatId}`)
+    const dbChannel = getSupabaseClient.channel(`db:chat-${chatId}`)
     dbChannel.on(
       "postgres_changes",
       { event: "INSERT", schema: "public", table: "messages", filter: `chat_id=eq.${chatId}` },
@@ -117,7 +117,7 @@ export default function ChatPage() {
     dbChannel.subscribe()
     dbChannelRef.current = dbChannel
     return () => {
-      supabase.removeChannel(dbChannel)
+      getSupabaseClient.removeChannel(dbChannel)
       dbChannelRef.current = null
     }
   }, [chatId, userId])
@@ -127,7 +127,7 @@ export default function ChatPage() {
     const text = newMessage
     setNewMessage("")
 
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient
       .from("messages")
       .insert([{ chat_id: chatId, sender_id: userId, content: text }])
       .select()

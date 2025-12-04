@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { supabase } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 import { 
   Typography, 
   Card, 
@@ -29,6 +29,8 @@ export default function Favoriter() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [userId, setUserId] = useState<string | null>(null)
+
+  const supabase = getSupabaseClient()
 
   useEffect(() => {
     const fetchFavoritesWithProducts = async () => {
@@ -72,7 +74,7 @@ export default function Favoriter() {
     }
 
     fetchFavoritesWithProducts()
-  }, [])
+  }, [supabase])
 
   const removeFavorite = async (productId: string) => {
     if (!userId) return

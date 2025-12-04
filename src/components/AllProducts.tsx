@@ -14,7 +14,7 @@ import {
 } from "@mui/material"
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import { supabase } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 
 interface Product {
   id: string
@@ -34,6 +34,7 @@ interface AllProductsProps {
 export default function AllProducts({ products }: AllProductsProps) {
   const [favorites, setFavorites] = useState<string[]>([])
   const [userId, setUserId] = useState<string | null>(null)
+  const supabase = getSupabaseClient()
 
 useEffect(() => {
   const fetchFavorites = async () => {

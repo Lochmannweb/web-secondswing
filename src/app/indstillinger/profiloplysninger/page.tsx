@@ -1,22 +1,36 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { Box, Button, Alert, Typography } from "@mui/material"
-import { getSupabase } from "@/lib/supabaseClient"
+import { Box, Button, Alert, TextField } from "@mui/material"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 import Image from "next/image"
 
 export default function Profiloplysninger() {
+  const [displayName, setDisplayName] = useState<string>("")
+  
+
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string>("/placeholderprofile.jpg")
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
-  const [displayName, setDisplayName] = useState<string>("")
+  const supabase = getSupabaseClient()
+
+  const inputStyle = {
+    mb: 2,
+    "& .MuiOutlinedInput-root": {
+      color: "white",
+      "& fieldset": { borderColor: "gray" },
+      "&:hover fieldset": { borderColor: "gray" },
+      "&.Mui-focused fieldset": { borderColor: "gray" },
+    },
+    "& .MuiInputLabel-root": { color: "white" },
+    "& .MuiInputLabel-root.Mui-focused": { color: "white" },
+  }
   
 
   // Hent profilens avatar_url når siden loader
   useEffect(() => {
     const fetchProfile = async () => {
-      const supabase = getSupabase()
       const { data: { user }, error: userError } = await supabase.auth.getUser()
       if (userError || !user) return
 
@@ -48,7 +62,6 @@ export default function Profiloplysninger() {
   }
 
   const uploadImage = async (file: File): Promise<string> => {
-    const supabase = getSupabase()
     const fileExt = file.name.split(".").pop()
     const fileName = `${Date.now()}.${fileExt}`
 
@@ -61,126 +74,120 @@ export default function Profiloplysninger() {
   }
 
   const handleSubmit = async () => {
-    if (!imageFile) {
-      setMessage({ type: "error", text: "Vælg et billede først" })
-      return
-    }
-
-    setLoading(true)
-    setMessage(null)
+    setLoading(true);
+    setMessage(null);
 
     try {
-      const supabase = getSupabase()
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
-      if (userError || !user) throw new Error("Du skal være logget ind")
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) throw new Error("Du skal være logget ind");
 
-      const imageUrl = await uploadImage(imageFile)
+      let newAvatarUrl = imagePreview; 
+
+      // Hvis der er valgt nyt billede → upload
+      if (imageFile) {
+        newAvatarUrl = await uploadImage(imageFile);
+      }
+
+      // Opdater ALT hvad der er ændret
+      const updates = {
+        avatar_url: newAvatarUrl,
+        display_name: displayName,
+        updated_at: new Date(),
+      };
 
       const { error: updateError } = await supabase
         .from("profiles")
-        .update({ avatar_url: imageUrl })
-        .eq("id", user.id)
+        .update(updates)
+        .eq("id", user.id);
 
-      if (updateError) throw new Error(`Kunne ikke opdatere profil: ${updateError.message}`)
+      if (updateError) throw new Error(updateError.message);
 
-      setImagePreview(imageUrl) // Opdater preview til den rigtige public URL
-      setMessage({ type: "success", text: "Profilbillede opdateret!" })
-      setImageFile(null)
+      setImagePreview(newAvatarUrl);
+      setImageFile(null);
+
+      setMessage({ type: "success", text: "Profil opdateret!" });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setMessage({ type: "error", text: err.message || "Der opstod en fejl" })
+      setMessage({ type: "error", text: err.message || "Der opstod en fejl" });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
+  };
+
+
+  // opdater kvalitet på google profil billede, da googles opløsning af billeder er ekstrem lort
+  function upgradeGoogleAvatar(url: string) {
+    return url.replace(/=s\d+-c$/, "=s512-c");
   }
 
   return (
-    <Box>
-        <Box>
-            <Button 
-                variant="outlined" 
-                component="label" 
-                sx={{ 
-                    color: "white",
-                    border: "1px solid white",
-                    top: "15rem",
-                    justifySelf: "center",
-                    display: "flex",
-                    marginTop: "-2.3rem",
-                    "&:hover": {
-                        backgroundColor: "white",
-                        color: "black"
-                    }
-                }}>
-                Skift foto
-                <input type="file" hidden accept="image/*" onChange={handleImageChange} />
-            </Button>
-            <Image
-                src={imagePreview}
-                alt="Profil preview"
-                width={100}
-                height={100}
-                style={{ 
-                    width: "100%"
-                }}
-            />
-        </Box>
-        <Box
-            sx={{
-                backgroundColor: "white",
-                padding: "1.5rem",
-                color: "black",
+    <Box p={2} display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} gap={2} height={{ sm: "100vh" }}>
+      <Box alignSelf={{sm: "center"}}>
+        <Image
+            src={upgradeGoogleAvatar(imagePreview)}
+            alt="Profil preview"
+            width={800}
+            height={100}
+            style={{ 
                 width: "100%",
-                borderTopLeftRadius: "2rem",
-                borderTopRightRadius: "2rem",
-                marginTop: "-2rem",
-                filter: "drop-shadow(2px 4px 6px black)",
-                position: "fixed",
-                bottom: "0",
-                height: "50vh"
+                height: "50vh",
+                objectFit: "cover",
+                marginTop: "4rem",
+                borderRadius: "1rem",
+            }}
+        />
+      </Box>
+
+      <Box sx={{ alignSelf: { sm: "center" } }}>
+        <Button 
+            variant="outlined" 
+            component="label"
+            fullWidth 
+            sx={{ 
+                color: "white",
+                border: "none",
+                top: "1rem",
+                marginBottom: "2rem",
+                justifySelf: "center",
+                display: "flex",
+                "&:hover": {
+                    backgroundColor: "white",
+                    color: "black"
+                }
+            }}>
+            Skift profil billede
+            <input type="file" hidden accept="image/*" onChange={handleImageChange} />
+        </Button>
+
+        <TextField 
+          label="Navn"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+          fullWidth
+          sx={inputStyle}
+        />
+
+        <Button
+            variant="contained"
+            fullWidth
+            onClick={handleSubmit}
+            // disabled={loading || !imageFile}
+            sx={{
+              border: "1px solid white",
+              backgroundColor: "transparent",
+              borderRadius: "0.5rem",
+              mb: 2,
+              "&:hover": {
+                backgroundColor: "darkGreen",
+                border: "1px solid darkGreen",
+              }
             }}
         >
-            <Typography
-                sx={{ 
-                    paddingBottom: "1rem",
-                    borderBottom: "1px solid grey",
-                    cursor: "pointer" 
-                }}>
-                    Brugernavn: {  }
-            </Typography>
-            <Typography
-                sx={{ 
-                    padding: "1rem 0rem 1rem 0rem",
-                    borderBottom: "1px solid grey",
-                    cursor: "pointer" 
-                }}
-            >
-                Min placering: </Typography>
-            <Typography
-                 sx={{ 
-                    padding: "1rem 0rem 1rem 0rem",
-                    borderBottom: "1px solid grey",
-                    cursor: "pointer" 
-                }}
-            >
-                Vis by i Profil: 
-                {/* toogle knap */}
-            </Typography>
-            <Button
-                variant="contained"
-                onClick={handleSubmit}
-                disabled={loading || !imageFile}
-                sx={{
-                    display: "flex",
-                    justifySelf: "center",
-                    position: "absolute",
-                    bottom: "7rem"
-                }}
-            >
-                {loading ? "Gemmer..." : "Gem ændringer"}
-            </Button>
-            {message && <Alert severity={message.type}>{message.text}</Alert>}
-        </Box>
+            {loading ? "Gemmer..." : "Gem ændringer"}
+        </Button>
+
+        {message && <Alert severity={message.type}>{message.text}</Alert>}
+      </Box>
     </Box>
   )
 }

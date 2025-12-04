@@ -1,9 +1,13 @@
 
-import { supabase } from "@/lib/supabaseClient"
+import { getSupabaseServerClient } from "@/lib/supabaseServer"
 import { Box, Button, Divider, Typography } from "@mui/material"
+import Image from "next/image"
 
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params 
+
+
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  const id = params.id
+  const supabase = await getSupabaseServerClient()
 
 
   // hent produkt + ejerens profil i ét query
@@ -25,40 +29,31 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const profileDisplayName = product.profiles?.display_name ?? "Ukendt bruger"
   
   return (
-    <Box 
-      sx={{ 
-        padding: { xs: "1rem 1rem 6rem 1rem" },
-        display: { sm: "flex" },
-        alignItems: { sm: "center" },
-        justifyContent: { sm: "space-around" },
-        maxWidth: { sm: 1000 }, 
-        mx: { sm: "auto" } , 
-        p: { sm: "12rem 1rem" }, 
-        pt: { xs: "6rem" }
-      }}>
+    <Box display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} gap={{ sm: "2rem" }} pt={{ xs: "8rem" }} p={2} height={{ sm: "100vh" }}>
+      <Box alignSelf={{ sm: "center" }}>  
           {product.image_url && (
-            <Box
-              component="img"
+            <Image
               src={product.image_url}
               alt={product.title}
-              sx={{
-                width: {
-                  xs: "100%",   // mobil
-                  sm: "35%",  // tablet/desktop
-                },
+              width={500}
+              height={100}
+              style={{
+                width: "100%",
+                height: "70vh",
                 borderRadius: "1rem",
-                marginBottom: { xs: "1rem" },
               }}        
-              />
-            )}
+            />
+          )}
+      </Box>
 
-      <Box>
+      <Box alignSelf={{ sm: "center" }} width={{ sm: "50vh" }}>
         <Box
           sx={{
             color: "white",
-            display: { xs: "flex", sm: "flex" },
+            display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            textTransform: "uppercase",
           }}
         >
           <p>{profileDisplayName}</p>
@@ -69,7 +64,6 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             Start chat
           </Button>
         </Box>
-
         <Divider sx={{ backgroundColor: "white", width: "100%", mb: 3 }} />
 
         <Box
@@ -83,7 +77,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
         <Box
           sx={{
-            color: "white",
+            color: "gray",
             marginTop: "1rem",
             display: "grid",
             gap: "0.5rem",

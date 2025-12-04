@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { supabase } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 import { Box } from "@mui/material"
 
 type Message = {
@@ -24,6 +24,7 @@ export default function ChatHistory({
   socket,
 }: ChatHistoryProps) {
   const [messages, setMessages] = useState<Message[]>([])
+  const supabase = getSupabaseClient()
 
   // Hent historik fra DB
   useEffect(() => {

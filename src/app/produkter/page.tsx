@@ -1,6 +1,6 @@
 "use client"
 
-import { getSupabase } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress, Grid, Divider, Button } from "@mui/material"
 import Link from "next/link"
 import { useState, useEffect } from "react"
@@ -22,10 +22,11 @@ export default function ProdukterPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null)
 
+  const supabase = getSupabaseClient()
+
   useEffect(() => {
     const fetchUserProducts = async () => {
       try {
-        const supabase = getSupabase()
 
         const {
           data: { user },
@@ -39,7 +40,7 @@ export default function ProdukterPage() {
 
         setUser(user)
 
-        const { data: userProducts, error: productsError } = await supabase
+        const { data: userProducts, error: productsError } = await supabase 
           .from("products")
           .select("*")
           .eq("user_id", user.id)
@@ -59,7 +60,7 @@ export default function ProdukterPage() {
     }
 
     fetchUserProducts()
-  }, [])
+  }, [supabase])
 
   if (loading) {
     return (
@@ -71,7 +72,7 @@ export default function ProdukterPage() {
 
   if (error) {
     return (
-      <Box sx={{ maxWidth: 800, mx: "auto", p: 2 }}>
+      <Box sx={{ maxWidth: 800, mx: "auto", pt: "5rem" }}>
         <Alert severity="error">{error}</Alert>
       </Box>
     )
@@ -80,15 +81,15 @@ export default function ProdukterPage() {
   return (
     <Box  sx={{ maxWidth: 1200, mx: "auto", p: 2, pt: "6rem", color: "white" }}>
       <Typography sx={{ fontSize: "1.2rem" }}>Mine produkter</Typography>
-      <Divider sx={{ mb: "3rem", backgroundColor: "white", width: "30%" }} />
+      <Divider sx={{ mb: "3rem", backgroundColor: "white" }} />
       {products.length === 0 ? (
         <Alert severity="info">Du har ikke oprettet nogen produkter endnu.</Alert>
       ) : (
         <>
-          <Grid container spacing={1} sx={{ justifySelf: "start" }}>
+          <Grid container spacing={2}>
             {products.map((product) => (
               <Grid key={product.id} size={{ xs: 6, sm: 6, md: 3 }}>
-                <Card sx={{ backgroundColor: "transparent", height: "100%" }}>
+                <Card sx={{ backgroundColor: "transparent", height: "100%", width: "100%" }}>
                   {product.image_url && (
                     <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
                   )}
@@ -110,7 +111,7 @@ export default function ProdukterPage() {
                       component={Link}
                       href={`/edit/${product.id}`}
                       sx={{ 
-                        width: "100%",
+                        // width: "100%",
                         fontSize: "0.7rem",
                         color: "white",
                         border: "1px solid gray",

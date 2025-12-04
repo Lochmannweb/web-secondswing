@@ -1,7 +1,7 @@
 "use client"
 
 import { createProduct } from "@/lib/crud"
-import { getSupabase } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 import type React from "react"
 import { useState } from "react"
 import { 
@@ -22,10 +22,10 @@ export default function CreateProduct() {
     title: "",
     description: "",
     price: "",
-    gender: "Female" as "Female" | "female" | "male",
-    color: "Farve" as "Farve" | "Sort" | "Hvid" | "Grå",
-    size: "Størrelse" as "Størrelse" | "XS" | "S" | "M" | "L" | "XL",
-    stand: "Tilstand" as "Tilstand" | "Nyt" | "Brugt" | "Brugspor",
+    gender: "",
+    color: "",
+    size: "",
+    stand: "",
   })
 
 
@@ -34,7 +34,7 @@ export default function CreateProduct() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
 
-  const supabase = getSupabase();
+  const supabase = getSupabaseClient();
 
 
   //  Shared mui props
@@ -157,13 +157,13 @@ export default function CreateProduct() {
               alt="Valgt billede"
               width={600}
               height={100}
-              style={{ height: "auto", objectFit: "cover", borderRadius: "0.5rem" }}
+              style={{ height: "70vh", objectFit: "cover", borderRadius: "0.5rem" }}
             />
           </Box>
         {/* )} */}
       </Box>
 
-      <Box width={{ sm: "80%" }}>
+      <Box width={{ sm: "80%" }} alignSelf={"center"}>
           <TextField 
             label="Titel" 
             variant="outlined"
