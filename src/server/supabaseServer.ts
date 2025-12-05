@@ -2,23 +2,25 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 export async function createClient() {
-  // 1. Await the cookies() promise (Required for Next.js 15)
   const cookieStore = await cookies();
 
-  // 1. Read variables securely
+  // 1. Read the variables
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  // 2. Add a clear check before initializing
+  // 2. Check if they exist
   if (!supabaseUrl || !supabaseKey) {
-    // During build time (static generation), these might be missing. 
-    // We can log a warning or throw a clearer error.
-    console.error("❌ Supabase Keys missing! Check your .env file.");
+    console.error("---------------------------------------------------");
+    console.error("⚠️  ERROR: Supabase Keys are missing.");
+    console.error("   Please ensure you have a .env file in the ROOT folder.");
+    console.error("   Current Directory:", process.cwd());
+    console.error("---------------------------------------------------");
     
-    // Throwing here stops the build with a clear message
-    throw new Error("Missing Supabase URL or Key in .env file");
+    // Prevent the build from crashing with a confusing library error
+    throw new Error("Missing Supabase Keys"); 
   }
 
+  // 3. Create the client safely
   return createServerClient(
     supabaseUrl,
     supabaseKey,
@@ -33,7 +35,7 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             );
           } catch {
-            // Ignore for Server Components
+            // Ignore writes in Server Components
           }
         },
       },
