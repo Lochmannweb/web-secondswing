@@ -46,7 +46,7 @@ export default function ChatHistory({
     }
 
     loadHistory()
-  }, [currentUserId, otherUserId])
+  }, [currentUserId, otherUserId, supabase])
 
   // Lyt til websocket for nye beskeder
   useEffect(() => {

@@ -5,12 +5,25 @@ export async function createClient() {
   // 1. Await the cookies() promise (Required for Next.js 15)
   const cookieStore = await cookies();
 
+  // 1. Read variables securely
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // 2. Add a clear check before initializing
+  if (!supabaseUrl || !supabaseKey) {
+    // During build time (static generation), these might be missing. 
+    // We can log a warning or throw a clearer error.
+    console.error("❌ Supabase Keys missing! Check your .env file.");
+    
+    // Throwing here stops the build with a clear message
+    throw new Error("Missing Supabase URL or Key in .env file");
+  }
+
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseKey,
     {
       cookies: {
-        // 2. Use getAll/setAll for better cookie chunking support
         getAll() {
           return cookieStore.getAll();
         },
@@ -20,8 +33,7 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             );
           } catch {
-            // This 'try/catch' ignores errors when this is called
-            // from a Server Component (which is Read-Only).
+            // Ignore for Server Components
           }
         },
       },

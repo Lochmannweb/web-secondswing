@@ -47,7 +47,7 @@ export default function Profiloplysninger() {
     }
 
     fetchProfile()
-  }, [])
+  }, [supabase])
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]

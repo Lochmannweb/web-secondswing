@@ -51,7 +51,7 @@ useEffect(() => {
     else setFavorites(favData.map(f => f.product_id))
   }
   fetchFavorites()
-}, [])
+}, [supabase])
 
 const toggleFavorite = async (productId: string) => {
   if (!userId) return

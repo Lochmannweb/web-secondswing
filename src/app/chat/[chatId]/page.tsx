@@ -46,7 +46,7 @@ export default function ChatPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) setUserId(user.id)
     })()
-  }, [])
+  }, [supabase.auth])
 
   // Load chat participants + product
   useEffect(() => {
@@ -83,7 +83,7 @@ export default function ChatPage() {
         sellerName: data.seller?.[0].display_name ?? "Unknown seller",
       })
     })()
-  }, [chatId, userId])
+  }, [chatId, userId, supabase])
 
   // Load messages
   useEffect(() => {
@@ -101,7 +101,7 @@ export default function ChatPage() {
       }
       setMessages((data || []) as Message[])
     })()
-  }, [chatId])
+  }, [chatId, supabase])
 
   // Realtime DB messages
   useEffect(() => {
@@ -123,7 +123,7 @@ export default function ChatPage() {
       supabase.removeChannel(dbChannel)
       dbChannelRef.current = null
     }
-  }, [chatId, userId])
+  }, [chatId, userId, supabase])
 
   async function sendMessage() {
     if (!newMessage.trim() || !chatId || !userId) return

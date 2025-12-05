@@ -35,7 +35,7 @@ export default function BasicMenu() {
     return () => {
       listener.subscription.unsubscribe()
     }
-  }, [])
+  }, [supabase.auth])
 
   const handleClose = () => setOpen(false)
   const handleOpenMenu = () => setOpen(true)

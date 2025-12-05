@@ -52,11 +52,29 @@ export default function ChatPage() {
     }
 
     loadIds()
-  }, [productId])
+  }, [productId, supabase])
+
+  // 3. Load old messages
+
 
   // 2. Create or load chat
   useEffect(() => {
     if (!buyerId || !sellerId || !productId) return
+
+    async function loadMessages(chatId: string) {
+      const { data, error } = await supabase
+        .from("messages")
+        .select("*")
+        .eq("chat_id", chatId)
+        .order("created_at", { ascending: true })
+    
+      if (error) {
+        console.error("Load messages error:", error)
+        return
+      }
+    
+      if (data) setMessages(data as Message[])
+    }
 
     async function initChat() {
       const { data, error } = await supabase
@@ -78,23 +96,9 @@ export default function ChatPage() {
     }
 
     initChat()
-  }, [buyerId, sellerId, productId])
+  }, [buyerId, sellerId, productId, supabase])
 
-  // 3. Load old messages
-  async function loadMessages(chatId: string) {
-    const { data, error } = await supabase
-      .from("messages")
-      .select("*")
-      .eq("chat_id", chatId)
-      .order("created_at", { ascending: true })
 
-    if (error) {
-      console.error("Load messages error:", error)
-      return
-    }
-
-    if (data) setMessages(data as Message[])
-  }
 
   // 4. Realtime subscription
   useEffect(() => {
@@ -117,7 +121,7 @@ export default function ChatPage() {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [chatId])
+  }, [chatId, supabase])
 
   // 5. Send a message
   async function sendMessage() {

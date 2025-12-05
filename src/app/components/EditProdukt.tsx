@@ -46,7 +46,7 @@ export default function EditProduct({ productId }: EditProductProps) {
     }
 
     fetchProduct()
-  }, [productId])
+  }, [productId, supabase])
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]

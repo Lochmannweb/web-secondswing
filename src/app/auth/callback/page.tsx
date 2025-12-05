@@ -11,7 +11,7 @@ export default function AuthCallback() {
     supabase.auth.getSession().then(() => {
       router.replace('/shop')
     })
-  }, [router])
+  }, [router, supabase.auth])
 
   return null
 }
