@@ -4,6 +4,7 @@
 import { getSupabaseClient } from '@/app/lib/supabaseClient';
 import { Box, Button, Menu, MenuItem, Modal, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
+import { loginWithEmail } from '../auth/login/login';
 
 function HeaderMenu() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -48,11 +49,8 @@ function HeaderMenu() {
     }
 
     async function handleEmailLogin() {
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        })
-        if (!error) closeLogin()
+      await loginWithEmail(email, password);
+      closeLogin();
     }
 
     async function handleEmailSignup() {
@@ -170,7 +168,7 @@ function HeaderMenu() {
                     Login med Google
                 </Button>
 
-                <Typography textAlign="center">eller</Typography>
+                {/* <Typography textAlign="center">eller</Typography>
 
                 <TextField 
                     label="Email" 
@@ -197,7 +195,7 @@ function HeaderMenu() {
 
                 <Button variant="outlined" onClick={handleEmailSignup} sx={{ borderColor: "white", color: "white" }}>
                     Opret konto
-                </Button>
+                </Button> */}
             </Box>
         </Modal>
         </>

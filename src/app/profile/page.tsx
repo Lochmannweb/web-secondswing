@@ -19,35 +19,27 @@ export default function ProfilePage() {
   const router = useRouter()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = getSupabaseClient()
-
-  console.log("profile: ", profile);
-  
+  const [needsLogin, setNeedsLogin] = useState(false)
+  const supabase = getSupabaseClient()  
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session?.user) {
-        router.push('/auth/login')
-        return
-      }
-
       const { data: { user } } = await supabase.auth.getUser()
+
+
+      // BRUGER IKKE LOGGET IND → VIS LOGIN POPUP
       if (!user) {
-        router.push('/auth/login')
+        setNeedsLogin(true)
+        setLoading(true)
         return
       }
 
-      // hent avatar_url fra profiles-tabellen
-      const { data: profileData, error } = await supabase
+      // Hent profil fra DB
+      const { data: profileData } = await supabase
         .from('profiles')
         .select('display_name, avatar_url')
         .eq('id', user.id)
         .single()
-
-      if (error) {
-        console.error("Fejl ved hentning af profil:", error.message)
-      }
 
       setProfile({
         id: user.id,
@@ -61,12 +53,47 @@ export default function ProfilePage() {
     }
 
     fetchProfile()
+
+    // Lyt efter logins/logouts
+    const { data: listener } = supabase.auth.onAuthStateChange(() => {
+      fetchProfile()
+    })
+
+
+    return () => { listener?.subscription.unsubscribe() }
   }, [router, supabase])
+
+  function signInWithGoogle() {
+    supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.href,
+        queryParams: { prompt: "select_account" },
+      },
+    })
+  }
 
 
   // opdater kvalitet på google profil billede, da googles opløsning af billeder er ekstrem lort
   function upgradeGoogleAvatar(url: string) {
     return url.replace(/=s\d+-c$/, "=s512-c");
+  }
+
+
+    // ⬇️ Viser login-popup i stedet for redirect
+  if (needsLogin) {
+    return (
+      <Box p={3}>
+        <h2>Du skal logge ind for at se profilen</h2>
+        <Button 
+          variant="contained"
+          onClick={signInWithGoogle}
+          sx={{ mt: 2 }}
+        >
+          Log ind med Google
+        </Button>
+      </Box>
+    )
   }
 
 
@@ -84,6 +111,7 @@ export default function ProfilePage() {
                   width={800}
                   height={100}
                   style={{ width: "100%", height: "auto", borderRadius: "1rem" }}
+                  priority
                   />
             </Box>
           ) : (
