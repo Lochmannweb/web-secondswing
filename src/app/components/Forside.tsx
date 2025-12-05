@@ -2,10 +2,12 @@
 
 import React from 'react'
 import { Box, Button, Link, Typography } from '@mui/material'
-import { supabase } from '@/lib/supabaseClient'
+import { getSupabaseClient } from '@/app/lib/supabaseClient'
 import Image from 'next/image'
 
 export default function ForsideHero() {
+  const supabase = getSupabaseClient()
+
   async function handleGoogleLogin() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',

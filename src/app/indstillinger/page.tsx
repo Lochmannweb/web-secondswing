@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { Box, Button, Divider, Typography } from '@mui/material'
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { useRouter } from 'next/navigation'
 
 function Indstillinger() {

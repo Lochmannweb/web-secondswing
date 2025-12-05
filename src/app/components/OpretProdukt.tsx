@@ -1,7 +1,7 @@
 "use client"
 
-import { createProduct } from "@/lib/crud"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { createProduct } from "@/app/lib/crud"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import type React from "react"
 import { useState } from "react"
 import { 

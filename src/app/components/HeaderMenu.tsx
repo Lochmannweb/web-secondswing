@@ -1,6 +1,7 @@
-'use client'
+"use client"
 
-import { getSupabaseClient } from '@/lib/supabaseClient';
+
+import { getSupabaseClient } from '@/app/lib/supabaseClient';
 import { Box, Button, Menu, MenuItem, Modal, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
@@ -169,7 +170,7 @@ function HeaderMenu() {
                     Login med Google
                 </Button>
 
-                {/* <Typography textAlign="center">eller</Typography>
+                <Typography textAlign="center">eller</Typography>
 
                 <TextField 
                     label="Email" 
@@ -196,7 +197,7 @@ function HeaderMenu() {
 
                 <Button variant="outlined" onClick={handleEmailSignup} sx={{ borderColor: "white", color: "white" }}>
                     Opret konto
-                </Button> */}
+                </Button>
             </Box>
         </Modal>
         </>

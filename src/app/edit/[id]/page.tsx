@@ -1,7 +1,7 @@
 "use client"
 
-import { getSupabaseClient } from "@/lib/supabaseClient"
-import { updateProduct } from "@/lib/crud"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
+import { updateProduct } from "@/app/lib/crud"
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import Image from "next/image"

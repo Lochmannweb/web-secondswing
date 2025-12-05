@@ -3,7 +3,7 @@
 
 "use client"
 
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { Box, TextField, Button, Alert, MenuItem, Select, InputLabel, FormControl } from "@mui/material"
 import Image from "next/image"
 import { useEffect, useState } from "react"

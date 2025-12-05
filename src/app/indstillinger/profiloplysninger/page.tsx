@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import { Box, Button, Alert, TextField } from "@mui/material"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import Image from "next/image"
 
 export default function Profiloplysninger() {

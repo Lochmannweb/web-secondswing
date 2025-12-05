@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { getSupabaseClient } from "@/lib/supabaseClient"
-import SearchBar from "@/components/SearchBar"
-import AllProducts from "@/components/AllProducts"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
+import SearchBar from "@/app/components/SearchBar"
+import AllProducts from "@/app/components/AllProducts"
 import { Alert, Box, CircularProgress } from "@mui/material"
-import FilterButtons from "@/components/FilterButtons"
+import FilterButtons from "@/app/components/FilterButtons"
 
 interface Product {
   id: string

@@ -14,7 +14,7 @@ import {
 } from "@mui/material"
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 
 interface Product {
   id: string

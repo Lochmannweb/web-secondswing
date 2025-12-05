@@ -1,5 +1,5 @@
 'use client'
-import { getSupabaseClient } from '@/lib/supabaseClient'
+import { getSupabaseClient } from '@/app/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 
 export default function LogoutPage() {

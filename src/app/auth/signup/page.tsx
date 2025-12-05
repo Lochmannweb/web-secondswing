@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { getSupabaseClient } from '@/lib/supabaseClient'
+import { getSupabaseClient } from '@/app/lib/supabaseClient'
 import { Box, Button, Typography } from '@mui/material'
 
 export default function SignupPage() {

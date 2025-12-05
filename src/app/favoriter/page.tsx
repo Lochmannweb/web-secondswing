@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { 
   Typography, 
   Card, 

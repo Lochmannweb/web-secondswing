@@ -4,7 +4,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Box, Button, Typography } from '@mui/material'
-import { getSupabaseServerClient } from '@/lib/supabaseServer'
+import { getSupabaseBrowser } from '@/app/lib/supabaseBrowser'
 
 declare global {
   interface Window {
@@ -22,7 +22,7 @@ export default function LoginPage() {
     e.preventDefault()
 
   // login flow (client -> supabase -> tilbage til client)
-    const supabase = await getSupabaseServerClient();
+    const supabase = await getSupabaseBrowser();
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {

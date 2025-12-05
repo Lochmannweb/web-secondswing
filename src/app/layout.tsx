@@ -1,6 +1,4 @@
-"use client"
-
-import HeaderMenu from "@/components/HeaderMenu";
+import HeaderMenu from "@/app/components/HeaderMenu";
 import "./globals.css";
 import ErrorBoundary from "./ErrorBoundary";
 

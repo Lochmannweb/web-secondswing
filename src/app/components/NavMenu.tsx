@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
-import { getSupabaseClient } from '@/lib/supabaseClient'
+import { getSupabaseClient } from '@/app/lib/supabaseClient'
 import { Box, Typography, useMediaQuery, Drawer, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'

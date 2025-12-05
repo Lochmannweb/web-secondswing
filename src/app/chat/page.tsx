@@ -6,7 +6,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import ImageIcon from "@mui/icons-material/Image"
 import SendIcon from "@mui/icons-material/Send"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import type { RealtimeChannel } from "@supabase/supabase-js"
 import Image from "next/image"
 
@@ -51,19 +51,21 @@ export default function ChatLayout() {
   const dbChannelRef = useRef<RealtimeChannel | null>(null)
   const bottomRef = useRef<HTMLDivElement | null>(null)
 
+  const supabase = getSupabaseClient()
+
   // Load user
   useEffect(() => {
     (async () => {
-      const { data: { user } } = await getSupabaseClient.auth.getUser()
+      const { data: { user } } = await supabase.auth.getUser()
       if (user) setUserId(user.id)
     })()
-  }, [])
+  }, [supabase.auth])
 
   // Load chats
   useEffect(() => {
     if (!userId) return
     async function loadChats() {
-      const { data, error } = await getSupabaseClient
+      const { data, error } = await supabase
         .from("chats")
         .select(`
           id,
@@ -107,13 +109,13 @@ export default function ChatLayout() {
       setChats(normalized)
     }
     loadChats()
-  }, [userId])
+  }, [userId, supabase])
 
   // Load messages for active chat
   useEffect(() => {
     if (!activeChatId) return
     (async () => {
-      const { data, error } = await getSupabaseClient
+      const { data, error } = await supabase
         .from("messages")
         .select("*")
         .eq("chat_id", activeChatId)
@@ -125,13 +127,13 @@ export default function ChatLayout() {
       }
       setMessages(data || [])
     })()
-  }, [activeChatId])
+  }, [activeChatId, supabase])
 
   // Load chat meta for active chat
   useEffect(() => {
     if (!activeChatId || !userId) return
     (async () => {
-      const { data } = await getSupabaseClient
+      const { data } = await supabase
         .from("chats")
         .select(`
           id,
@@ -157,7 +159,7 @@ export default function ChatLayout() {
         sellerName: data.seller?.[0].display_name ?? "Unknown seller",
       })
     })()
-  }, [activeChatId, userId])
+  }, [activeChatId, userId, supabase])
 
 
 
@@ -166,7 +168,7 @@ export default function ChatLayout() {
   // Realtime messages
   useEffect(() => {
     if (!activeChatId) return
-    const dbChannel = getSupabaseClient.channel(`db:chat-${activeChatId}`)
+    const dbChannel = supabase.channel(`db:chat-${activeChatId}`)
     dbChannel.on(
       "postgres_changes",
       { event: "INSERT", schema: "public", table: "messages", filter: `chat_id=eq.${activeChatId}` },
@@ -180,10 +182,10 @@ export default function ChatLayout() {
     dbChannel.subscribe()
     dbChannelRef.current = dbChannel
     return () => {
-      getSupabaseClient.removeChannel(dbChannel)
+      supabase.removeChannel(dbChannel)
       dbChannelRef.current = null
     }
-  }, [activeChatId, userId])
+  }, [activeChatId, userId, supabase])
 
 
 
@@ -194,7 +196,7 @@ export default function ChatLayout() {
     const text = newMessage
     setNewMessage("")
 
-    const { data, error } = await getSupabaseClient
+    const { data, error } = await supabase
       .from("messages")
       .insert([{ chat_id: activeChatId, sender_id: userId, content: text }])
       .select()

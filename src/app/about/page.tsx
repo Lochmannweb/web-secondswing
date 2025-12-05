@@ -1,5 +1,5 @@
 
-import { aboutData } from "@/Content/about"
+import { aboutData } from "@/./app/Content/about"
 import { Box, Divider } from "@mui/material";
 
 export default function Home() {

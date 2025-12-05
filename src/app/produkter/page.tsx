@@ -1,6 +1,6 @@
 "use client"
 
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress, Grid, Divider, Button } from "@mui/material"
 import Link from "next/link"
 import { useState, useEffect } from "react"

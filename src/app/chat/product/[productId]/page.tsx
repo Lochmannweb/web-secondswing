@@ -7,7 +7,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import ImageIcon from "@mui/icons-material/Image"
 import SendIcon from "@mui/icons-material/Send"
 import { useParams } from "next/navigation"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 
 type Message = {
   id: string

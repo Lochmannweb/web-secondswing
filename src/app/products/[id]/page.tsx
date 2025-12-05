@@ -1,5 +1,5 @@
 
-import { getSupabaseServerClient } from "@/lib/supabaseServer"
+import { getSupabaseBrowser } from "@/app/lib/supabaseBrowser"
 import { Box, Button, Divider, Typography } from "@mui/material"
 import Image from "next/image"
 
@@ -7,7 +7,7 @@ import Image from "next/image"
 
 export default async function ProductPage({ params }: { params: { id: string } }) {
   const id = params.id
-  const supabase = await getSupabaseServerClient()
+  const supabase = getSupabaseBrowser()
 
 
   // hent produkt + ejerens profil i ét query

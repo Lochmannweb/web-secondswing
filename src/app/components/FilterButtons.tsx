@@ -1,6 +1,6 @@
 "use client"
 
-import { getButtonStyles } from "@/utils/filterStyles"
+import { getButtonStyles } from "@/app/utils/filterStyles"
 import { Stack, Button } from "@mui/material"
 
 interface FilterButtonsProps {

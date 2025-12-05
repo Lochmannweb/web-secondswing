@@ -1,6 +1,6 @@
 'use client'
 
-import { getSupabaseClient } from '@/lib/supabaseClient'
+import { getSupabaseClient } from '@/app/lib/supabaseClient'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Box, Button, Divider } from '@mui/material'
