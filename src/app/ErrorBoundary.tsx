@@ -1,4 +1,5 @@
-"use client";
+"use client"
+
 import * as Sentry from "@sentry/nextjs";
 
 export default function ErrorBoundary({ children }: { children: React.ReactNode }) {

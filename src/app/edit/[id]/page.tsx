@@ -1,7 +1,7 @@
 "use client"
 
-import { getSupabase } from "@/lib/supabaseClient"
-import { updateProduct } from "@/lib/crud"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
+import { updateProduct } from "@/app/lib/crud"
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import Image from "next/image"
@@ -15,7 +15,6 @@ import {
   InputLabel,
   FormControl,
   OutlinedInput,
-  ButtonGroupButtonContext,
 } from "@mui/material"
 
 type FormState = {
@@ -32,7 +31,7 @@ type FormState = {
 export default function EditProductPage() {
   const params = useParams()
   const productId = params.id as string | undefined
-  const supabase = getSupabase()
+  const supabase = getSupabaseClient()
 
   const [form, setForm] = useState<FormState>({
     title: "",

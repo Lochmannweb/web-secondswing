@@ -4,7 +4,7 @@ import { Canvas, useFrame, useThree, useLoader } from "@react-three/fiber";
 import { Suspense, useRef, useState } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
-import { useSentry } from "@/hooks/useSentry";
+import { useSentry } from "@/app/hooks/useSentry";
 
 
 interface ImageSphereProps {

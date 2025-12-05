@@ -3,7 +3,7 @@
 
 "use client"
 
-import { getSupabase } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { Box, TextField, Button, Alert, MenuItem, Select, InputLabel, FormControl } from "@mui/material"
 import Image from "next/image"
 import { useEffect, useState } from "react"
@@ -21,8 +21,7 @@ export default function EditProduct({ productId }: EditProductProps) {
   const [imagePreview, setImagePreview] = useState<string>("/placeholderprofile.jpg")
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
-
-  const supabase = getSupabase()
+  const supabase = getSupabaseClient()
 
   useEffect(() => {
     const fetchProduct = async () => {

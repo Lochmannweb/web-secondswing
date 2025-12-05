@@ -1,4 +1,5 @@
 "use client"
+
 import { useEffect, useRef, useState } from "react"
 import { Box, TextField, Typography } from "@mui/material"
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos"
@@ -7,7 +8,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import ImageIcon from "@mui/icons-material/Image"
 import SendIcon from "@mui/icons-material/Send"
 import { useParams, useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import type { RealtimeChannel } from "@supabase/supabase-js"
 
 type Message = {
@@ -37,13 +38,15 @@ export default function ChatPage() {
   const dbChannelRef = useRef<RealtimeChannel | null>(null)
   const bottomRef = useRef<HTMLDivElement | null>(null)
 
+  const supabase = getSupabaseClient()
+
   // Load current user
   useEffect(() => {
     ;(async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) setUserId(user.id)
     })()
-  }, [])
+  }, [supabase.auth])
 
   // Load chat participants + product
   useEffect(() => {
@@ -80,7 +83,7 @@ export default function ChatPage() {
         sellerName: data.seller?.[0].display_name ?? "Unknown seller",
       })
     })()
-  }, [chatId, userId])
+  }, [chatId, userId, supabase])
 
   // Load messages
   useEffect(() => {
@@ -98,7 +101,7 @@ export default function ChatPage() {
       }
       setMessages((data || []) as Message[])
     })()
-  }, [chatId])
+  }, [chatId, supabase])
 
   // Realtime DB messages
   useEffect(() => {
@@ -120,7 +123,7 @@ export default function ChatPage() {
       supabase.removeChannel(dbChannel)
       dbChannelRef.current = null
     }
-  }, [chatId, userId])
+  }, [chatId, userId, supabase])
 
   async function sendMessage() {
     if (!newMessage.trim() || !chatId || !userId) return

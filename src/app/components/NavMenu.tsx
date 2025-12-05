@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabaseClient'
+import { getSupabaseClient } from '@/app/lib/supabaseClient'
 import { Box, Typography, useMediaQuery, Drawer, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
@@ -18,6 +18,7 @@ export default function BasicMenu() {
   const router = useRouter()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [open, setOpen] = useState(false)
+  const supabase = getSupabaseClient()
 
   const theme = useTheme()
   const isTabletUp = useMediaQuery(theme.breakpoints.up('sm'))
@@ -34,7 +35,7 @@ export default function BasicMenu() {
     return () => {
       listener.subscription.unsubscribe()
     }
-  }, [])
+  }, [supabase.auth])
 
   const handleClose = () => setOpen(false)
   const handleOpenMenu = () => setOpen(true)

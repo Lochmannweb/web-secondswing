@@ -1,6 +1,4 @@
-"use client"
-
-import ImageSphere from "@/components/ImageSphere";
+import ImageSphere from "@/app/components/ImageSphere";
 
 export default function Home() {
   return (

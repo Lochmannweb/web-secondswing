@@ -1,13 +1,14 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Box, Button, Divider, Typography } from '@mui/material'
-import { supabase } from '@/lib/supabaseClient'
+import { Box, Button, Divider } from '@mui/material'
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { useRouter } from 'next/navigation'
 
 function Indstillinger() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const router = useRouter()
+  const supabase = getSupabaseClient()
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -16,77 +17,82 @@ function Indstillinger() {
   }
 
   return (
-    <Box position={"absolute"} top={"5rem"} p={2} sx={{ color: "white" }}>
-      <Typography>Indstillinger</Typography> 
-      <Divider sx={{ backgroundColor: "white" }} />
+    <Box sx={{ color: "white" }} p={2} display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} height={{ sm: "100vh" }}>
+      <Box pt={"5rem"} alignSelf={{ sm: "center" }} width={{ sm: "50vh" }} height={{ sm: "40vh" }} sx={{ borderRight: { sm: "1px solid gray" } }}>
+        <h1>Indstillinger</h1> 
+        <Divider sx={{ backgroundColor: "white", mb: 2 }} />
 
-      <Box position={"absolute"} top={"5rem"}>
-        <Button
-          href='/indstillinger/profileoplysninger'
-          sx={{
-            backgroundColor: "transparent",
-            color: "white",
-            cursor: "pointer",
-            width: "94%",
-            justifySelf: "normal",
-            alignSelf: "start",
-            "&:hover": {
-              backgroundColor: "#00ff001c",
-            }
-          }}
-        >
-          Profiloplysninger
-        </Button>
+        <Box display={"grid"} width={"100%"}>
+          <Button
+            href='/indstillinger/profileoplysninger'
+            sx={{
+              backgroundColor: "transparent",
+              color: "white",
+              cursor: "pointer",
+              display: "flow",
+              "&:hover": {
+                backgroundColor: "#00ff001c",
+              }
+            }}
+          >
+            Profiloplysninger
+          </Button>
 
-        <Button
-          href='/indstillinger/kontoindstillinger'
-          sx={{
-            backgroundColor: "transparent",
-            color: "white",
-            cursor: "pointer",
-            width: "94%",
-            justifySelf: "normal",
-            alignSelf: "start",
-            "&:hover": {
-              backgroundColor: "#00ff001c",
-            }
-          }}
-        >
-          Kontooplysninger
-        </Button>
+          <Button
+            href='/indstillinger/kontoindstillinger'
+            sx={{
+              backgroundColor: "transparent",
+              color: "white",
+              cursor: "pointer",
+              display: "flow",
+              "&:hover": {
+                backgroundColor: "#00ff001c",
+              }
+            }}
+          >
+            Kontooplysninger
+          </Button>
 
-        <Button
-          href='/indstillinger/sikkerhed'
-          sx={{
-            backgroundColor: "transparent",
-            color: "white",
-            cursor: "pointer",
-            "&:hover": {
-              backgroundColor: "#00ff001c",
-            }
-          }}
-        >
-          Sikkerhed
-        </Button>
+          <Button
+            href='/indstillinger/sikkerhed'
+            sx={{
+              backgroundColor: "transparent",
+              color: "white",
+              cursor: "pointer",
+              display: "flow",
+              "&:hover": {
+                backgroundColor: "#00ff001c",
+              }
+            }}
+          >
+            Sikkerhed
+            </Button>
+
+
+          <Button
+            onClick={handleLogout}
+            sx={{
+              backgroundColor: "transparent",
+              color: "white",
+              cursor: "pointer",
+              textAlign: "start",
+              width: "100%",
+              display: "flow",
+              "&:hover": {
+                backgroundColor: "#00ff001c",
+              }
+            }}
+          >
+            Log ud
+          </Button>
+      </Box>
       </Box>
 
-      <Box sx={{ marginTop: "12rem" }}>
-        <Button
-          onClick={handleLogout}
-          sx={{
-            backgroundColor: "transparent",
-            color: "white",
-            cursor: "pointer",
-            textAlign: "start",
-            width: "100%",
-            "&:hover": {
-              backgroundColor: "#00ff001c",
-            }
-          }}
-        >
-          Log ud
-        </Button>
+      {/* only apper om tablet/desktop else send to a href */}
+      <Box width={{ sm: "30vh" }} sx={{ height: "50vh" }} alignSelf={{ sm: "center" }}>
+            {/* show content for the specific setting */}
       </Box>
+
     </Box>
   )
 }

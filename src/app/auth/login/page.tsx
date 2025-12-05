@@ -1,8 +1,10 @@
-'use client'
-import { supabase } from '@/lib/supabaseClient'
-import { useEffect, useState } from 'react'
+
+'use client';
+
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Box, Button, Typography } from '@mui/material'
+import { getSupabaseBrowser } from '@/app/lib/supabaseBrowser'
 
 declare global {
   interface Window {
@@ -19,6 +21,8 @@ export default function LoginPage() {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
 
+  // login flow (client -> supabase -> tilbage til client)
+    const supabase = await getSupabaseBrowser();
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
@@ -34,43 +38,43 @@ export default function LoginPage() {
     }
   }
 
-  // Google login setup
-  useEffect(() => {
-    const script = document.createElement('script')
-    script.src = "https://accounts.google.com/gsi/client"
-    script.async = true
-    script.onload = () => {
-      if (window.google) {
-        window.google.accounts.id.initialize({
-          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          callback: async (response: any) => {
-            const { credential } = response
+  // // Google login setup
+  // useEffect(() => {
+  //   const script = document.createElement('script')
+  //   script.src = "https://accounts.google.com/gsi/client"
+  //   script.async = true
+  //   script.onload = () => {
+  //     if (window.google) {
+  //       window.google.accounts.id.initialize({
+  //         client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+  //         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //         callback: async (response: any) => {
+  //           const { credential } = response
 
-            const { data, error } = await supabase.auth.signInWithIdToken({
-              provider: 'google',
-              token: credential,
-            })
+  //           const { data, error } = await getSupabaseClient.auth.signInWithIdToken({
+  //             provider: 'google',
+  //             token: credential,
+  //           })
 
-            if (error) {
-              console.error(error)
-              alert("Fejl ved Google login: " + error.message)
-            } else {
-              console.log('Supabase user:', data)
-              router.push('/profile')
-            }
-          },
-        })
+  //           if (error) {
+  //             console.error(error)
+  //             alert("Fejl ved Google login: " + error.message)
+  //           } else {
+  //             console.log('Supabase user:', data)
+  //             router.push('/profile')
+  //           }
+  //         },
+  //       })
 
-        // Google renderer knappen selv
-        window.google.accounts.id.renderButton(
-          document.getElementById("google-login-btn"),
-          { theme: "outline", size: "large", text: "continue_with" }
-        )
-      }
-    }
-    document.body.appendChild(script)
-  }, [router])
+  //       // Google renderer knappen selv
+  //       window.google.accounts.id.renderButton(
+  //         document.getElementById("google-login-btn"),
+  //         { theme: "outline", size: "large", text: "continue_with" }
+  //       )
+  //     }
+  //   }
+  //   document.body.appendChild(script)
+  // }, [router])
 
   return (
     <Box sx={{ padding: "1rem", height: "100vh", alignContent: "center", backgroundColor: "black", color: "white" }}>
@@ -101,6 +105,8 @@ export default function LoginPage() {
           onChange={e => setPassword(e.target.value)}
         />
 
+
+        {/* Google login knap – renderer automatisk af Google */}
         <Button
           sx={{ 
             padding: "1rem",
@@ -115,8 +121,7 @@ export default function LoginPage() {
           type="submit">
             Login
         </Button>
-
-        {/* Google login knap – renderer automatisk af Google */}
+        
         <Box 
           id="google-login-btn" 
           sx={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}

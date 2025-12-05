@@ -6,7 +6,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import ImageIcon from "@mui/icons-material/Image"
 import SendIcon from "@mui/icons-material/Send"
-import { supabase } from "@/lib/supabaseClient"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import type { RealtimeChannel } from "@supabase/supabase-js"
 import Image from "next/image"
 
@@ -51,13 +51,15 @@ export default function ChatLayout() {
   const dbChannelRef = useRef<RealtimeChannel | null>(null)
   const bottomRef = useRef<HTMLDivElement | null>(null)
 
+  const supabase = getSupabaseClient()
+
   // Load user
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) setUserId(user.id)
     })()
-  }, [])
+  }, [supabase.auth])
 
   // Load chats
   useEffect(() => {
@@ -107,7 +109,7 @@ export default function ChatLayout() {
       setChats(normalized)
     }
     loadChats()
-  }, [userId])
+  }, [userId, supabase])
 
   // Load messages for active chat
   useEffect(() => {
@@ -125,13 +127,13 @@ export default function ChatLayout() {
       }
       setMessages(data || [])
     })()
-  }, [activeChatId])
+  }, [activeChatId, supabase])
 
   // Load chat meta for active chat
   useEffect(() => {
     if (!activeChatId || !userId) return
     (async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("chats")
         .select(`
           id,
@@ -144,10 +146,9 @@ export default function ChatLayout() {
         .eq("id", activeChatId)
         .maybeSingle()
 
-      if (error) {
-        console.error("Failed to load chat info:", error)
-        return
-      }
+      // if (error) {
+      //   console.error("Failed to load chat info:", error)
+      // }
       if (!data) return
 
       const amIBuyer = data.buyer_id === userId
@@ -158,7 +159,7 @@ export default function ChatLayout() {
         sellerName: data.seller?.[0].display_name ?? "Unknown seller",
       })
     })()
-  }, [activeChatId, userId])
+  }, [activeChatId, userId, supabase])
 
 
 
@@ -184,7 +185,7 @@ export default function ChatLayout() {
       supabase.removeChannel(dbChannel)
       dbChannelRef.current = null
     }
-  }, [activeChatId, userId])
+  }, [activeChatId, userId, supabase])
 
 
 

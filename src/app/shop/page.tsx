@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { getSupabase } from "@/lib/supabaseClient"
-import SearchBar from "@/components/SearchBar"
-import AllProducts from "@/components/AllProducts"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
+import SearchBar from "@/app/components/SearchBar"
+import AllProducts from "@/app/components/AllProducts"
 import { Alert, Box, CircularProgress } from "@mui/material"
-import FilterButtons from "@/components/FilterButtons"
+import FilterButtons from "@/app/components/FilterButtons"
 
 interface Product {
   id: string
@@ -25,6 +25,7 @@ export default function ShopPage() {
   const [error, setError] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
   const [activeFilter, setActiveFilter] = useState<"all" | "male" | "female">("all")
+  const supabase = getSupabaseClient()
 
   // Læs filter fra URL ved mount
   useEffect(() => {
@@ -39,7 +40,6 @@ export default function ShopPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const supabase = getSupabase()
 
         // Hent logget ind bruger
         const { data: sessionData } = await supabase.auth.getSession()
@@ -63,7 +63,7 @@ export default function ShopPage() {
     }
 
     fetchProducts()
-  }, [])
+  }, [supabase])
 
   useEffect(() => {
     let results = [...products]
