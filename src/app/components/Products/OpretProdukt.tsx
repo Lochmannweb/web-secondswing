@@ -29,11 +29,13 @@ export default function CreateProduct() {
   })
 
 
+
+  // State Management
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
-
+  
   const supabase = getSupabaseClient();
 
 
@@ -94,7 +96,7 @@ export default function CreateProduct() {
 
     try {
       // Check user
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      const { data: { user }, error: userError } = await supabase.auth.getUser() // Grundstruktur af error handling i frontend
       if (userError || !user) throw new Error("Du skal være logget ind først")
 
       // Upload image
@@ -103,14 +105,14 @@ export default function CreateProduct() {
 
 
 
-      // CRUD - Create product
+      // CRUD - Create product 
       await createProduct({
         user_id: user.id,
         ...form,
         price: Number(form.price),
         image_url: imageUrl
       });
-      setMessage({ type: "success", text: "Produkt blev oprettet!" })
+      setMessage({ type: "success", text: "Produkt blev oprettet!" }) // viser error besked på skærmen, en del af error handling via frontend
 
 
 
