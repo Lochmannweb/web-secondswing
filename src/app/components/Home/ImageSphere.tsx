@@ -19,35 +19,17 @@ export default function ImageSphere({ radius = 3 }: ImageSphereProps) {
 
   
   const images = [
-    "golfsæt.jpg",
-    "golfsætold.jpg",
-    "golfkøle.jpg",
-    "golfsætold2.jpg",
-    "golfsæt.jpg",
-    "golfsætold.jpg",
-    "golfkøle.jpg",
-    "golfsætold2.jpg",
-    "golfsæt.jpg",
-    "golfsætold.jpg",
-    "golfkøle.jpg",
-    "golfsætold2.jpg",
-    "golfsæt.jpg",
-    "golfsætold.jpg",
-    "golfkøle.jpg",
-    "golfsætold2.jpg",
-    "golfsæt.jpg",
-    "golfsætold.jpg",
-    "golfkøle.jpg",
-    "golfsætold2.jpg",
-    "golfsæt.jpg",
-    "golfsætold.jpg",
-    "golfkøle.jpg",
-    "golfsætold2.jpg",
+    "golfsæt.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
+    "golfsæt.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
+    "golfsæt.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
+    "golfsæt.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
+    "golfsæt.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
+    "golfsæt.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
   ];
 
   return (
-    <div style={{ width: "100%", height: "100vh", position: "relative", zIndex: 1 }}>
-      <Canvas camera={{ position: [0, 0, radius * 3.3], fov: 50 }}>
+    <div style={{ width: "100%", height: "100vh", position: "relative", zIndex: 0 }}>
+      <Canvas camera={{ position: [0, 0, radius * 3.3], fov: 50 }} dpr={[1, 1.5]}>
         <ambientLight intensity={1} />
         <directionalLight position={[5, 5, 5]} intensity={1.2} />
 

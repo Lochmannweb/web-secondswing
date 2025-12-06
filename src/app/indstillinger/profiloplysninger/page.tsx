@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react"
 import { Box, Button, Alert, TextField } from "@mui/material"
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 export default function Profiloplysninger() {
   const [displayName, setDisplayName] = useState<string>("")
@@ -14,6 +15,7 @@ export default function Profiloplysninger() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
   const supabase = getSupabaseClient()
+  const router = useRouter()
 
   const inputStyle = {
     mb: 2,
@@ -89,15 +91,21 @@ export default function Profiloplysninger() {
       }
 
       // Opdater ALT hvad der er ændret
-      const updates = {
-        avatar_url: newAvatarUrl,
-        display_name: displayName,
-        updated_at: new Date(),
-      };
+      // const updates = {
+      //   id: user.id,
+      //   avatar_url: newAvatarUrl,
+      //   display_name: displayName,
+      //   updated_at: new Date(),
+      // };
 
       const { error: updateError } = await supabase
         .from("profiles")
-        .update(updates)
+        .update({
+          id: user.id,
+          avatar_url: newAvatarUrl,
+          display_name: displayName,
+          updated_at: new Date(),
+        })
         .eq("id", user.id);
 
       if (updateError) throw new Error(updateError.message);
@@ -106,6 +114,7 @@ export default function Profiloplysninger() {
       setImageFile(null);
 
       setMessage({ type: "success", text: "Profil opdateret!" });
+      router.refresh()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setMessage({ type: "error", text: err.message || "Der opstod en fejl" });
@@ -135,6 +144,7 @@ export default function Profiloplysninger() {
                 marginTop: "4rem",
                 borderRadius: "1rem",
             }}
+            priority
         />
       </Box>
 

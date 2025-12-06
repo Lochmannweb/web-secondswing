@@ -1,4 +1,4 @@
-import OpretProdukt from '@/app/components/OpretProdukt'
+import OpretProdukt from '@/app/components/Products/OpretProdukt'
 import React from 'react'
 
 function page() {

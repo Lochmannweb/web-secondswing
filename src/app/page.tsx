@@ -1,4 +1,4 @@
-import ImageSphere from "@/app/components/ImageSphere";
+import ImageSphere from "@/app/components/Home/ImageSphere";
 
 export default function Home() {
   return (

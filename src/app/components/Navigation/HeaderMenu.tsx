@@ -2,66 +2,46 @@
 
 
 import { getSupabaseClient } from '@/app/lib/supabaseClient';
-import { Box, Button, Menu, MenuItem, Modal, TextField, Typography } from '@mui/material'
+import { Box, Button, Menu, MenuItem } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
 function HeaderMenu() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [openLoginModal, setOpenLoginModal] = useState(false)
 
     const supabase = getSupabaseClient()
     const menuOpen = Boolean(anchorEl)
 
-    // Email + password state
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-
+    // Tracke session
     useEffect(() => {
         supabase.auth.getSession().then(({ data }) => {
             setIsLoggedIn(!!data.session)
         })
 
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-            setIsLoggedIn(!!session)
-        })
+        const { data: subscription } = supabase.auth.onAuthStateChange(
+            (_event, session) => {
+                setIsLoggedIn(!!session)
+        });
 
-        return () => listener.subscription.unsubscribe()
-    }, [supabase.auth])
+        return () => subscription.subscription.unsubscribe()
+    })
 
-    function openLogin() {
-        setOpenLoginModal(true)
-    }
 
-    function closeLogin() {
-        setOpenLoginModal(false)
-    }
-
+    // Google-login
     async function handleGoogleLogin() {
-        await supabase.auth.signInWithOAuth({
+        const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
                 redirectTo: `${window.location.origin}/shop`,
                 queryParams: { prompt: 'select_account' }
-            }
-        })
+            },
+        });
+
+        if (error) {
+            console.error("Google login error: ", error.message);
+        }
     }
 
-    async function handleEmailLogin() {
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        })
-        if (!error) closeLogin()
-    }
-
-    async function handleEmailSignup() {
-        const { error } = await supabase.auth.signUp({
-            email,
-            password,
-        })
-        if (!error) closeLogin()
-    }
 
     const handleProfileClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget)
@@ -131,75 +111,13 @@ function HeaderMenu() {
                 ) : (
                     <Button
                         sx={{ color: "white", borderBottom: "1px solid white" }}
-                        onClick={openLogin}
+                        onClick={handleGoogleLogin}
                     >
                         Login / Signup
                     </Button>
                 )}
             </Box>
         </Box>
-
-        {/* LOGIN POPUP */}
-        <Modal open={openLoginModal} onClose={closeLogin}>
-            <Box 
-                sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: 320,
-                    bgcolor: "#121212",
-                    borderRadius: 2,
-                    boxShadow: 24,
-                    p: 4,
-                    color: "white",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2
-                }}
-            >
-                <Typography variant="h6" textAlign="center">
-                    Login / Signup
-                </Typography>
-
-                <Button 
-                    variant="contained" 
-                    onClick={handleGoogleLogin}
-                    sx={{ bgcolor: "#4285F4" }}
-                >
-                    Login med Google
-                </Button>
-
-                <Typography textAlign="center">eller</Typography>
-
-                <TextField 
-                    label="Email" 
-                    variant="outlined" 
-                    fullWidth 
-                    onChange={(e) => setEmail(e.target.value)}
-                    InputLabelProps={{ style: { color: "white" } }}
-                    inputProps={{ style: { color: "white" } }}
-                />
-
-                <TextField 
-                    label="Password" 
-                    variant="outlined"
-                    type="password"
-                    fullWidth
-                    onChange={(e) => setPassword(e.target.value)}
-                    InputLabelProps={{ style: { color: "white" } }}
-                    inputProps={{ style: { color: "white" } }}
-                />
-
-                <Button variant="contained" onClick={handleEmailLogin}>
-                    Login med email
-                </Button>
-
-                <Button variant="outlined" onClick={handleEmailSignup} sx={{ borderColor: "white", color: "white" }}>
-                    Opret konto
-                </Button>
-            </Box>
-        </Modal>
         </>
     )
 }

@@ -2,7 +2,7 @@ import { getSupabaseClient } from "./supabaseClient";
 
 const supabase = getSupabaseClient();
 
-// CRUD - CREATE
+// CRUD - CREATE + error handling i backend
 export async function createProduct(product: unknown) {
 
     const { data, error } = await supabase
@@ -11,21 +11,20 @@ export async function createProduct(product: unknown) {
         .select()
         .single();
 
-
         if (error) {
             console.error("-- SUPABASE INSERT ERROR --")
             console.error("Message:", error.message)
             console.error("Details:", error.details)
             console.error("Hint:", error.hint)
             console.error("Code:", error.code)
-          throw new Error(error.message) 
+            throw new Error(error.message) 
         }
 
         return data;
 }
 
 
-// CRUD - READ
+// CRUD - READ + error handling i backend
 export async function getProduct() {
     const { data, error } = await supabase
         .from("products")
@@ -41,7 +40,7 @@ export async function getProduct() {
 
 
 
-// CRUD - UPDATE
+// CRUD - UPDATE + error handling i backend
 export async function updateProduct(id: string, updates: unknown) {
     const { data, error } = await supabase
         .from("products")
@@ -61,7 +60,7 @@ export async function updateProduct(id: string, updates: unknown) {
 
 
 
-// CRUD - DELETE
+// CRUD - DELETE + error handling i backend
 export async function deleteProduct(id: string) {
     const { data, error } = await supabase
         .from("products")
