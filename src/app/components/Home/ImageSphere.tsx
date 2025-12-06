@@ -5,6 +5,7 @@ import { Suspense, useRef, useState } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
 import { useSentry } from "@/app/hooks/useSentry";
+import { Box } from "@mui/material";
 
 
 interface ImageSphereProps {
@@ -14,22 +15,23 @@ interface ImageSphereProps {
 
 export default function ImageSphere({ radius = 3 }: ImageSphereProps) {
   const [enterCenter, setEnterCenter] = useState(false);
+  const [showText, setShowText] = useState(false);
   const [showFirstText, setShowFirstText] = useState(false);
   const [showSecondText, setShowSecondText] = useState(false);
 
   
   const images = [
     "golfsæt.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
-    "golfsæt.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
-    "golfsæt.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
-    "golfsæt.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
-    "golfsæt.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
-    "golfsæt.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
+    "golfsalg.jpg", "golfsalg1.jpg", "golfsalg2.jpg", "golfsalg3.jpg",
+    "golfsalg4.jpg", "golfsalg5.jpg", "golfsalg6.jpg", "golfsalg7.jpg",
+    "golfsalg8.jpg", "golfsalg9.jpg", "golfsalg10.jpg", "golfsalg11.jpg",
+    "golfsalg12.jpg", "golfsalg13.jpg", "golfsalg14.jpg", "golfsalg15.jpg",
+    "golfsalg16.jpg", "golfsætold.jpg", "golfkøle.jpg", "golfsætold2.jpg",
   ];
 
   return (
     <div style={{ width: "100%", height: "100vh", position: "relative", zIndex: 0 }}>
-      <Canvas camera={{ position: [0, 0, radius * 3.3], fov: 50 }} dpr={[1, 1.5]}>
+      <Canvas camera={{ position: [0, 0, radius * 3], fov: 60 }} >
         <ambientLight intensity={1} />
         <directionalLight position={[5, 5, 5]} intensity={1.2} />
 
@@ -38,40 +40,68 @@ export default function ImageSphere({ radius = 3 }: ImageSphereProps) {
             images={images} 
             radius={radius} 
             enterCenter={enterCenter} 
-            setEnterCenter={setEnterCenter} 
+            showText={showText} 
             showFirstText={showFirstText} 
-            setShowFirstText={setShowFirstText} 
             showSecondText={showSecondText} 
+            setEnterCenter={setEnterCenter} 
+            setShowText={setShowText} 
+            setShowFirstText={setShowFirstText} 
             setShowSecondText={setShowSecondText} 
             />
         </Suspense>
       </Canvas>
 
-      {showFirstText && (
-        <div
-          style={{
+      {showText && (
+        <Box
+          sx={{
             position: "absolute",
-            top: "45%",
+            top: "42%",
             color: "white",
             justifySelf: "center",
-            textAlign: "center",
+            fontSize: "3rem",
+            backgroundColor: "#003d0f64",
+            padding: "2rem",
+            borderRadius: "0.5rem",
           }}
         >
-          <h2>First text</h2>
-        </div>
+          <h2>Velkommen til Second Swing</h2>
+        </Box>
       )}
-      {showSecondText && (
-        <div
-          style={{
+
+      {showFirstText && (
+        <Box
+          sx={{
             position: "absolute",
-            top: "45%",
+            top: "44%",
             color: "white",
             justifySelf: "center",
             textAlign: "center",
+            fontSize: "2rem",
+            backgroundColor: "#003d0f64",
+            padding: "2rem",
+            borderRadius: "0.5rem",
           }}
         >
-          <h2>Second text</h2>
-        </div>
+          <h2>Sælg dit golf udstyr hurtigt og sikkert.</h2>
+        </Box>
+      )}
+
+      {showSecondText && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: "44%",
+            color: "white",
+            justifySelf: "center",
+            textAlign: "center",
+            fontSize: "2rem",
+            backgroundColor: "#003d0f64",
+            padding: "2rem",
+            borderRadius: "0.5rem",
+          }}
+        >
+          <h2>Opret en annonce på få minutter.</h2>
+        </Box>
       )}
     </div>
   );
@@ -86,8 +116,10 @@ interface SphereContentProps {
   images: string[];
   radius: number;
   enterCenter: boolean;
+  showText: boolean;
   showFirstText: boolean;
   showSecondText: boolean;
+  setShowText: (v: boolean) => void;
   setEnterCenter: (v: boolean) => void;
   setShowFirstText: (v: boolean) => void;
   setShowSecondText: (v: boolean) => void;
@@ -98,6 +130,7 @@ function SphereContent({
   images,
   radius,
   setEnterCenter,
+  setShowText,
   setShowFirstText,
   setShowSecondText,
 }: SphereContentProps) {
@@ -107,17 +140,12 @@ function SphereContent({
   const { log, logWarning, logError } = useSentry();
   const [clicks, setClicks] = useState(0);
 
-
-
   // Når textures er loaded - logging
   textures.forEach((tex, index) => {
     if (!tex) {
       logWarning("Texture failed to load", { file: images[index] });
     }
   });
-
-
-
 
   const moveCamera = (x: number, y: number, z: number, done?: () => void) => {
     gsap.to(camera.position, {
@@ -170,6 +198,7 @@ function SphereContent({
 
     if (next === 1) {
       moveCamera(0, 0, 3, () => {
+        setShowText(false);
         setEnterCenter(true);
         setShowFirstText(true);
       });
@@ -177,19 +206,22 @@ function SphereContent({
 
     if (next === 2) {
       moveCamera(0, 0, 3, () => {
+        setShowText(false);
         setShowFirstText(false);
         setShowSecondText(true);
       });
     }
 
     if (next === 3) {
-      moveCamera(0, 0, radius * 4, () => {
+      moveCamera(0, 0, radius * 3, () => {
         setClicks(0);
+        setShowText(true);
         setEnterCenter(false);
         setShowFirstText(false);
         setShowSecondText(false);
       });
     }
+
 
     // logging med sentry
     try{

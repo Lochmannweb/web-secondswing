@@ -5,7 +5,7 @@ import { Box, Button, Divider } from '@mui/material'
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { useRouter } from 'next/navigation'
 
-function Indstillinger() {
+export default function Indstillinger() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const router = useRouter()
   const supabase = getSupabaseClient()
@@ -18,9 +18,9 @@ function Indstillinger() {
 
   return (
     <Box sx={{ color: "white" }} p={2} display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} height={{ sm: "100vh" }}>
-      <Box pt={"5rem"} alignSelf={{ sm: "center" }} width={{ sm: "50vh" }} height={{ sm: "40vh" }} sx={{ borderRight: { sm: "1px solid gray" } }}>
+      <Box pt={"5rem"} alignSelf={{ sm: "center" }} width={{ sm: "50vh" }} height={{ sm: "40vh" }} >
         <h1>Indstillinger</h1> 
-        <Divider sx={{ backgroundColor: "white", mb: 2 }} />
+        <Divider sx={{ backgroundColor: "gray", mb: 2 }} />
 
         <Box display={"grid"} width={"100%"}>
           <Button
@@ -97,4 +97,4 @@ function Indstillinger() {
   )
 }
 
-export default Indstillinger
+

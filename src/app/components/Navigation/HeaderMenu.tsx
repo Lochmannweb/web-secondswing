@@ -3,6 +3,7 @@
 
 import { getSupabaseClient } from '@/app/lib/supabaseClient';
 import { Box, Button, Menu, MenuItem } from '@mui/material'
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
 function HeaderMenu() {
@@ -11,6 +12,20 @@ function HeaderMenu() {
 
     const supabase = getSupabaseClient()
     const menuOpen = Boolean(anchorEl)
+
+    const router = useRouter();
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+    const handleNav = (link: string) => {
+        if (isMobile) {
+            // mobil → normal navigation
+            router.push(link)
+        } else {
+            // desktop → ingen reload, bare navigation
+            router.push(link) 
+            handleProfileClose()
+        }
+    }
 
     // Tracke session
     useEffect(() => {
@@ -71,18 +86,43 @@ function HeaderMenu() {
                     sx={{ 
                         color: "white", 
                         borderBottom: "1px solid white", 
-                        fontSize: { xs: "0.5rem", sm: "0.7rem" }, 
+                        fontSize: { xs: "0.5rem", sm: "1rem" }, 
                         "&:hover": { 
                             backgroundColor: "transparent", 
-                            borderBottom: "1px solid darkgreen" 
+                            borderBottom: "1px solid darkgreen",
                         } 
                     }}
                 >Second Swing</Button>
             </Box>
 
             <Box sx={{ display: "flex", gap: "1rem" }}>
-                <Button href="/about" sx={{ color: "white", borderBottom: "1px solid white" }}>About</Button>
-                <Button href="/shop" sx={{ color: "white", borderBottom: "1px solid white" }}>Shop</Button>
+                <Button 
+                    href="/about" 
+                    sx={{ 
+                        color: "white", 
+                        borderBottom: "1px solid white",
+                        fontSize: { xs: "0.5rem", sm: "1rem" },
+                        "&:hover": { 
+                            backgroundColor: "transparent", 
+                            borderBottom: "1px solid darkgreen" 
+                        }  
+                    }}>
+                        Om os
+                </Button>
+
+                <Button 
+                    href="/shop" 
+                    sx={{ 
+                        color: "white", 
+                        borderBottom: "1px solid white",
+                        fontSize: { xs: "0.5rem", sm: "1rem" },
+                        "&:hover": { 
+                            backgroundColor: "transparent", 
+                            borderBottom: "1px solid darkgreen" 
+                        } 
+                    }}>
+                        Shop
+                </Button>
             </Box>
 
             <Box sx={{ display: "flex", gap: "1rem" }}>
@@ -90,22 +130,30 @@ function HeaderMenu() {
                     <>
                         <Button
                             onClick={handleProfileClick}
-                            sx={{ color: "white", borderBottom: "1px solid white" }}
+                            sx={{ 
+                                color: "white", 
+                                borderBottom: "1px solid white",
+                                fontSize: { xs: "0.5rem", sm: "1rem" },
+                                "&:hover": { 
+                                    backgroundColor: "transparent", 
+                                    borderBottom: "1px solid darkgreen" 
+                                }
+                            }}
                         >
-                            Profile
+                            Profil
                         </Button>
 
                         <Menu
                             anchorEl={anchorEl}
                             open={menuOpen}
                             onClose={handleProfileClose}
-                            MenuListProps={{ sx: { backgroundColor: "#0f0f0fff", color: "white" } }}
+                            MenuListProps={{ sx: { backgroundColor: "black", color: "white", display: "grid", gap: "1rem" } }}
                         >
-                            <MenuItem component="a" href="/profile">Se profil</MenuItem>
-                            <MenuItem component="a" href="/indstillinger/profiloplysninger">Rediger profil</MenuItem>
-                            <MenuItem component="a" href="/produkter">Mine produkter</MenuItem>
-                            <MenuItem component="a" href="/favoriter">Favoritter</MenuItem>
-                            <MenuItem component="a" href="/chat">Chat historik</MenuItem>
+                            <MenuItem onClick={() => handleNav("/profile")} sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Se profil</MenuItem>
+                            <MenuItem onClick={() => handleNav("/indstillinger/profiloplysninger")} sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Rediger profil</MenuItem>
+                            <MenuItem component="a" href="/produkter" sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Mine produkter</MenuItem>
+                            <MenuItem component="a" href="/favoriter" sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Favoritter</MenuItem>
+                            <MenuItem component="a" href="/chat" sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Chat historik</MenuItem>
                         </Menu>
                     </>
                 ) : (

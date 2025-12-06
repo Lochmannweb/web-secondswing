@@ -159,7 +159,7 @@ export default function CreateProduct() {
               alt="Valgt billede"
               width={600}
               height={100}
-              style={{ height: "70vh", objectFit: "cover", borderRadius: "0.5rem" }}
+              style={{ width: "100%", height: "66vh", objectFit: "cover", borderRadius: "0.5rem" }}
             />
           </Box>
         {/* )} */}
@@ -308,10 +308,10 @@ export default function CreateProduct() {
             sx={{
               mb: 2,
               backgroundColor: "transparent",
-              border: "1px solid gray",
+              // border: loading ? "1px solid gray" : "1px solid black",
               "&:hover": {
                 backgroundColor: "#00ff001c",
-                border: "1px solid #00ff001c"
+                // border: "1px solid #00ff001c"
               }
             }}
           >

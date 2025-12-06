@@ -1,10 +1,10 @@
 import { Box, Divider, Typography } from '@mui/material'
 import React from 'react'
 
-function sikkerhed() {
+export default function Sikkerhed() {
   return (
     <>
-        <Box sx={{ color: " black"}}>
+        <Box sx={{ color: "white"}}>
             <Typography 
                 sx={{ 
                     padding: "1rem 1rem 0rem 1rem ",
@@ -66,4 +66,4 @@ function sikkerhed() {
   )
 }
 
-export default sikkerhed
+ 

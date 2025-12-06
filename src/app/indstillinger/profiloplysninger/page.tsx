@@ -130,7 +130,7 @@ export default function Profiloplysninger() {
   }
 
   return (
-    <Box p={2} display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} gap={2} height={{ sm: "100vh" }}>
+    <Box p={2} display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} gap={2} height={{ sm: "80vh" }}>
       <Box alignSelf={{sm: "center"}}>
         <Image
             src={upgradeGoogleAvatar(imagePreview)}
