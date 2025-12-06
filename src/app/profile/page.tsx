@@ -8,8 +8,6 @@ import Image from 'next/image'
 import Profiloplysninger from '../indstillinger/profiloplysninger/page'
 import OpretProdukt from '../components/Products/OpretProdukt'
 import ProdukterPage from '../produkter/page'
-import Indstillinger from '../indstillinger/page'
-import Home from '../about/page'
 import Kontoindstillinger from '../indstillinger/kontoindstillinger/page'
 import Sikkerhed from '../indstillinger/sikkerhed/page'
 
@@ -28,6 +26,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [needsLogin, setNeedsLogin] = useState(false)
   const supabase = getSupabaseClient()  
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const [activeSection, setActiveSection] = useState<string>("profil")
   const isMobile = typeof window !== "undefined" && window.innerWidth < 599
@@ -114,6 +113,12 @@ export default function ProfilePage() {
         </Button>
       </Box>
     )
+  }
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    setIsLoggedIn(false)
+    router.push('/') // redirect til homepage
   }
 
 
@@ -224,7 +229,7 @@ export default function ProfilePage() {
                       backgroundColor: "#00ff001c" 
                       } 
                     }} 
-                    onClick={() => handleNavigation("about", "/about")}
+                    onClick={handleLogout}
                     >
                       Log ud
                 </Button>
