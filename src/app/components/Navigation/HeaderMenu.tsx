@@ -2,16 +2,29 @@
 
 
 import { getSupabaseClient } from '@/app/lib/supabaseClient';
-import { Box, Button } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { Box, Button, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material'
+import { useEffect, useState } from 'react'
 
 function HeaderMenu() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-
     const supabase = getSupabaseClient()
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [hydrated, setHydrated] = useState(false);
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    
+    // menu state (mobil)
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(e.currentTarget);
+    };
+    const handleClose = () => setAnchorEl(null);
+
 
     // Tracke session
     useEffect(() => {
+        setHydrated(true);
+
         supabase.auth.getSession().then(({ data }) => {
             setIsLoggedIn(!!data.session)
         })
@@ -23,6 +36,8 @@ function HeaderMenu() {
 
         return () => subscription.subscription.unsubscribe()
     })
+
+    if (!hydrated) return null;
 
 
     // Google-login
@@ -60,7 +75,7 @@ function HeaderMenu() {
                     sx={{ 
                         color: "white", 
                         borderBottom: "1px solid white", 
-                        fontSize: { xs: "0.5rem", sm: "1rem" }, 
+                        fontSize: { xs: "0.5rem", sm: "0.7rem" }, 
                         "&:hover": { 
                             backgroundColor: "transparent", 
                             borderBottom: "1px solid darkgreen",
@@ -70,70 +85,135 @@ function HeaderMenu() {
             </Box>
 
             <Box sx={{ display: "flex", gap: "1rem" }}>
-                <Button 
-                    href="/about" 
-                    sx={{ 
-                        color: "white", 
-                        borderBottom: "1px solid white",
-                        fontSize: { xs: "0.5rem", sm: "1rem" },
-                        "&:hover": { 
-                            backgroundColor: "transparent", 
-                            borderBottom: "1px solid darkgreen" 
-                        }  
-                    }}>
-                        Om os
-                </Button>
+                {!isMobile && (
+                    <>
+                        <Button 
+                            href="/about" 
+                            sx={{ 
+                                color: "white", 
+                                borderBottom: "1px solid white",
+                                fontSize: { xs: "0.5rem", sm: "0.7rem" },
+                                "&:hover": { 
+                                    backgroundColor: "transparent", 
+                                    borderBottom: "1px solid darkgreen" 
+                                }  
+                            }}>
+                                Om os
+                        </Button>
+                        
+                        <Button 
+                            href="/shop" 
+                            sx={{ 
+                                color: "white", 
+                                borderBottom: "1px solid white",
+                                fontSize: { xs: "0.5rem", sm: "0.7rem" },
+                                "&:hover": { 
+                                    backgroundColor: "transparent", 
+                                    borderBottom: "1px solid darkgreen" 
+                                } 
+                            }}>
+                                Shop
+                        </Button>
+                        {isLoggedIn ? (
+                            <Button 
+                                href="/favoriter" 
+                                sx={{ 
+                                    color: "white", 
+                                    borderBottom: "1px solid white",
+                                    fontSize: { xs: "0.5rem", sm: "0.7rem" },
+                                    "&:hover": { 
+                                        backgroundColor: "transparent", 
+                                        borderBottom: "1px solid darkgreen" 
+                                    } 
+                                }}>
+                                    Favoriter
+                            </Button>
+                        ) : ( <></> )}
+                    </>
+                )}
 
-                <Button 
-                    href="/shop" 
-                    sx={{ 
-                        color: "white", 
-                        borderBottom: "1px solid white",
-                        fontSize: { xs: "0.5rem", sm: "1rem" },
-                        "&:hover": { 
-                            backgroundColor: "transparent", 
-                            borderBottom: "1px solid darkgreen" 
-                        } 
-                    }}>
-                        Shop
-                </Button>
-
-                {isLoggedIn ? (
-                    <Button 
-                        href="/favoriter" 
-                        sx={{ 
-                            color: "white", 
-                            borderBottom: "1px solid white",
-                            fontSize: { xs: "0.5rem", sm: "1rem" },
-                            "&:hover": { 
-                                backgroundColor: "transparent", 
-                                borderBottom: "1px solid darkgreen" 
-                            } 
-                        }}>
-                            Favoriter
-                    </Button>
-                ) : ( <></> )}
             </Box>
 
             <Box sx={{ display: "flex", gap: "1rem" }}>
                 {isLoggedIn ? (
-                    <>
-                        <Button
-                            // onClick={handleProfileClick}
-                            href='/profile'
-                            sx={{ 
-                                color: "white", 
-                                borderBottom: "1px solid white",
-                                fontSize: { xs: "0.5rem", sm: "1rem" },
-                                "&:hover": { 
-                                    backgroundColor: "transparent", 
-                                    borderBottom: "1px solid darkgreen" 
-                                }
-                            }}
-                        >
-                            Profil
-                        </Button>
-                    </>
+                        <>
+                            {/* DESKTOP */}
+                            {!isMobile && (
+                                <Button
+                                    href='/profile'
+                                    sx={{ 
+                                        color: "white", 
+                                        borderBottom: "1px solid white",
+                                        fontSize: { xs: "0.5rem", sm: "0.7rem" },
+                                        "&:hover": { 
+                                            backgroundColor: "transparent", 
+                                            borderBottom: "1px solid darkgreen" 
+                                        }
+                                    }}
+                                >
+                                    Profil
+                                </Button>
+                            )}
+
+                            {/* MOBIL */}
+                            {isMobile && (
+                                <>
+                                    <Button
+                                        onClick={handleOpen}
+                                        sx={{
+                                            color: "white",
+                                            borderBottom: "1px solid white",
+                                            fontSize: { xs: "0.5rem", sm: "1rem" },
+                                        }}
+                                    >
+                                        Profil
+                                    </Button>
+
+                                    <Menu
+                                        anchorEl={anchorEl}
+                                        open={Boolean(anchorEl)}
+                                        onClose={handleClose}
+                                        sx={{ 
+                                            "& .MuiList-root": {
+                                                backgroundColor: "#131313ff",
+                                                color: "gray",
+                                                width: "15vh",
+                                                padding: 0
+                                            }
+                                        }}
+                                    >
+                                        <MenuItem
+                                            component="a"
+                                            href="/profile"
+                                            onClick={handleClose}
+                                        >
+                                            Profil
+                                        </MenuItem>
+                                        <MenuItem
+                                            component="a"
+                                            href="/shop"
+                                            onClick={handleClose}
+                                        >
+                                            Shop
+                                        </MenuItem>
+                                        <MenuItem
+                                            component="a"
+                                            href="/favoriter"
+                                            onClick={handleClose}
+                                        >
+                                            Favoriter
+                                        </MenuItem>
+                                        <MenuItem
+                                            component="a"
+                                            href="/about"
+                                            onClick={handleClose}
+                                        >
+                                            Om us
+                                        </MenuItem>
+                                    </Menu>
+                                </>
+                            )}
+                        </>
                 ) : (
                     <Button
                         sx={{ color: "white", borderBottom: "1px solid white", fontSize: { xs: "0.5rem", sm: "1rem" }, }}
