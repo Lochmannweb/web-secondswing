@@ -9,7 +9,6 @@ import Profiloplysninger from '../indstillinger/profiloplysninger/page'
 import OpretProdukt from '../components/Products/OpretProdukt'
 import ProdukterPage from '../produkter/page'
 import Kontoindstillinger from '../indstillinger/kontoindstillinger/page'
-import Sikkerhed from '../indstillinger/sikkerhed/page'
 import Favoriter from '../favoriter/page'
 
 
