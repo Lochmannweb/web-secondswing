@@ -53,15 +53,14 @@ export default function EditProductPage() {
 
   //  Shared mui props
   const inputStyle = {
-    mb: 2,
     "& .MuiOutlinedInput-root": {
       color: "white",
-      "& fieldset": { borderColor: "gray" },
-      "&:hover fieldset": { borderColor: "gray" },
-      "&.Mui-focused fieldset": { borderColor: "gray" },
+      "& fieldset": { borderColor: "none" },
+      "&:hover fieldset": { borderColor: "none" },
+      "&.Mui-focused fieldset": { borderColor: "none" },
     },
-    "& .MuiInputLabel-root": { color: "white" },
-    "& .MuiInputLabel-root.Mui-focused": { color: "white" },
+    "& .MuiInputLabel-root": { color: "gray" },
+    "& .MuiInputLabel-root.Mui-focused": { color: "gray" },
   }
 
   const updateField = (key: keyof FormState, value: string) => {
@@ -213,7 +212,7 @@ export default function EditProductPage() {
   }
  
   return (
-    <Box component="form" onSubmit={handleSubmit} position={"absolute"} p={2} top={{ xs: "8rem", sm: "6rem" }} display={"grid"} gridTemplateColumns={{ sm: "1fr 1fr" }}>
+    <Box component="form" onSubmit={handleSubmit} position={"absolute"} p={2} top={{ xs: "8rem", sm: "6rem" }} display={{ sm: "flex" }} justifyContent={{ sm: "center" }} gap={{ sm: "2rem" }} height={{ sm: "80vh" }}>
 
       <Box justifySelf={"center"} alignSelf={"center"}>
           <Box mb={2}>
@@ -222,12 +221,12 @@ export default function EditProductPage() {
               alt="preview"
               width={420} 
               height={100} 
-              style={{ height: "auto", objectFit: "cover", borderRadius: "0.5rem" }} 
+              style={{ width: "100%", height: "auto", objectFit: "cover", borderRadius: "0.5rem" }} 
             />
           </Box>
       </Box>
 
-      <Box width={{ sm: "70%" }}>
+      <Box sx={{ marginTop: "1rem", backgroundColor: "#121212ff", borderRadius: "0.3rem", width: { sm:"30%" }}}>
       <TextField
         label="Titel"
         value={form.title}
@@ -343,12 +342,40 @@ export default function EditProductPage() {
         sx={inputStyle}
       />
 
-      <Button variant="outlined" component="label" fullWidth sx={inputStyle}>
-        Skift billede
-        <input type="file" hidden accept="image/*" onChange={handleImageChange} />
+      <Button 
+        variant="outlined" 
+        component="label" 
+        fullWidth 
+        sx={{
+          justifyContent: "left",
+          color: "gray",
+          border: "none",
+          "&:hover": { 
+            backgroundColor: "#0b0b0bc3" 
+          } 
+        }}>
+          Skift billede
+        <input 
+          type="file" 
+          hidden accept="image/*" 
+          onChange={handleImageChange} 
+        />
       </Button>
 
-      <Button type="submit" variant="contained" fullWidth disabled={loading}>
+      <Button 
+        type="submit" 
+        fullWidth 
+        disabled={loading}
+        sx={{
+          justifyContent: "left",
+          color: "gray",
+          border: "none",
+          mt: "2rem",
+          "&:hover": { 
+            backgroundColor: "#0b0b0bc3" 
+          } 
+        }}
+        >
         {loading ? "Opdaterer…" : "Gem ændringer"}
       </Button>
 

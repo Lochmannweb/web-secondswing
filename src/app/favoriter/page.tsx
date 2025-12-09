@@ -23,6 +23,7 @@ interface Product {
   price: number | null
   image_url: string | null
   created_at: string
+  sold: boolean | null;
 }
 
 export default function Favoriter() {
@@ -108,7 +109,14 @@ export default function Favoriter() {
         <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id}>
           <Card sx={{ height: { xs: "50vh", sm: "45vh" }, position: "relative", backgroundColor: "transparent" }}>
             {product.image_url && (
-              <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
+              <Box>
+                {product.sold && (
+                <Box position={"absolute"} p={2} sx={{ backgroundColor: "#000000c9", color: "white" }} width={"auto"}>
+                    <Typography textTransform={"uppercase"} alignSelf={"center"} justifySelf={"center"}>Solgt</Typography>
+                </Box>
+                )}
+                <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
+              </Box>
             )}
             <CardContent sx={{ color: "white" }}>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>

@@ -10,6 +10,7 @@ import OpretProdukt from '../components/Products/OpretProdukt'
 import ProdukterPage from '../produkter/page'
 import Kontoindstillinger from '../indstillinger/kontoindstillinger/page'
 import Sikkerhed from '../indstillinger/sikkerhed/page'
+import Favoriter from '../favoriter/page'
 
 
 type UserProfile = {
@@ -126,7 +127,15 @@ export default function ProfilePage() {
 
   return (
     <>
-      <Box sx={{ display: { xs: "grid", sm: "flex" }, justifyContent: { sm: "center" }, height: { sm: "100vh" }, gap: { sm: "5rem" }, pt: { xs: "5rem" } }} p={2}>
+      <Box 
+        sx={{ 
+          display: { xs: "grid", sm: "flex" }, 
+          justifyContent: { sm: "center" }, 
+          gap: { sm: "1rem" },
+          height: { sm: "100vh" }, 
+          pt: { xs: "5rem" } }} 
+          p={2}
+        >
         <Box alignSelf={{ sm: "center" }} width={{ sm: "20%" }}>
           {profile ? (
             <Box
@@ -134,42 +143,42 @@ export default function ProfilePage() {
                 color: "white",
               }}
             >
-              <Box sx={{ display: "flex", gap: "3rem", mb: 2 }}>
+              <Box sx={{ display: "flex", gap: "1rem", mb: 2 }}>
                 <Image 
                   src={upgradeGoogleAvatar(profile.avatar_url || "/placeholderprofile.jpg")}
                   alt="Profilbillede"
                   width={800}
                   height={100}
-                  style={{ width: "20%", height: "auto", borderRadius: "50%" }}
+                  style={{ width: "10%", height: "auto", borderRadius: "50%" }}
                   priority
                   />
-                <h2 style={{ textTransform: "uppercase", alignSelf: "center" }}>{profile.display_name ?? 'Ikke udfyldt'}</h2>
+                <h2 style={{ fontSize: "1rem", alignSelf: "center" }}>{profile.display_name ?? 'Ikke udfyldt'}</h2>
               </Box>
               <Divider color="gray"/>
 
-              <Box sx={{ paddingTop: "1rem", marginTop: "1rem" }}>
+              <Box sx={{ marginTop: "1rem", backgroundColor: "#121212ff", borderRadius: "0.3rem"}}>
                 <Button 
                   sx={{
-                    width: { xs: "48vh", sm: "50vh" }, 
+                    width: "100%", 
                     color: "white", 
                     justifyContent: "normal", 
                     "&:hover": { 
-                      backgroundColor: "#00ff001c" 
+                      backgroundColor: "#0b0b0bc3" 
                     } 
                   }} 
                   onClick={() => handleNavigation("editProfile", "/indstillinger/profiloplysninger")}
                   >
-                    Profiloplysninger
+                    Rediger Profil
                 </Button>
 
 
                 <Button 
                   sx={{
-                    width: { xs: "48vh", sm: "50vh" }, 
+                    width: "100%", 
                     color: "white", 
                     justifyContent: "normal", 
                     "&:hover": { 
-                      backgroundColor: "#00ff001c" 
+                      backgroundColor: "#0b0b0bc3"
                       } 
                     }} 
                     onClick={() => handleNavigation("createProduct", "/opretProdukt")}
@@ -180,11 +189,11 @@ export default function ProfilePage() {
 
                 <Button 
                   sx={{
-                    width: { xs: "48vh", sm: "50vh" }, 
+                    width: "100%", 
                     color: "white", 
                     justifyContent: "normal", 
                     "&:hover": { 
-                      backgroundColor: "#00ff001c" 
+                      backgroundColor: "#0b0b0bc3"
                       } 
                     }} 
                     onClick={() => handleNavigation("myProducts", "/produkter")}
@@ -194,46 +203,47 @@ export default function ProfilePage() {
 
                 <Button 
                   sx={{
-                    width: { xs: "48vh", sm: "50vh" }, 
+                    width: "100%", 
                     color: "white", 
                     justifyContent: "normal", 
                     "&:hover": { 
-                      backgroundColor: "#00ff001c" 
+                      backgroundColor: "#0b0b0bc3"
                       } 
                     }} 
-                    onClick={() => handleNavigation("Kontooplysninger", "/indstillinger/Kontooplysninger")}
+                    onClick={() => handleNavigation("fav", "/favoriter")}
+                    >
+                      Mine Favoriter
+                </Button>
+
+                <Button 
+                  sx={{
+                    width: "100%",
+                    color: "white", 
+                    justifyContent: "normal", 
+                    "&:hover": { 
+                      backgroundColor: "#0b0b0bc3"
+                      } 
+                    }} 
+                    onClick={() => handleNavigation("Kontooplysninger", "/indstillinger/kontoindstillinger")}
                     >
                       Kontooplysninger
                 </Button>
+              </Box>
 
+              <Box sx={{ marginTop: "1rem", backgroundColor: "#121212ff", borderRadius: "0.3rem"}}>
                 <Button 
                   sx={{
-                    width: { xs: "48vh", sm: "50vh" }, 
+                    width: "100%", 
                     color: "white", 
                     justifyContent: "normal", 
                     "&:hover": { 
-                      backgroundColor: "#00ff001c" 
-                      } 
-                    }} 
-                    onClick={() => handleNavigation("sikkerhed", "/indstillinger/sikkerhed")}
-                    >
-                      Sikkerhed
-                </Button>
-
-                <Button 
-                  sx={{
-                    width: { xs: "48vh", sm: "50vh" }, 
-                    color: "white", 
-                    justifyContent: "normal", 
-                    "&:hover": { 
-                      backgroundColor: "#00ff001c" 
+                      backgroundColor: "#0b0b0bc3"
                       } 
                     }} 
                     onClick={handleLogout}
                     >
                       Log ud
                 </Button>
-
               </Box>
             </Box>
           ) : (
@@ -247,8 +257,9 @@ export default function ProfilePage() {
             {activeSection === "editProfile" && <Profiloplysninger />}
             {activeSection === "createProduct" && <OpretProdukt />}
             {activeSection === "myProducts" && <ProdukterPage />}
+            {activeSection === "fav" && <Favoriter />}
             {activeSection === "Kontooplysninger" && <Kontoindstillinger />}
-            {activeSection === "sikkerhed" && <Sikkerhed />}
+            {/* {activeSection === "sikkerhed" && <Sikkerhed />} */}
         </Box>
       </Box>
     </>

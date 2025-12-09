@@ -123,13 +123,30 @@ function HeaderMenu() {
                     }}>
                         Shop
                 </Button>
+
+                {isLoggedIn ? (
+                    <Button 
+                        href="/favoriter" 
+                        sx={{ 
+                            color: "white", 
+                            borderBottom: "1px solid white",
+                            fontSize: { xs: "0.5rem", sm: "1rem" },
+                            "&:hover": { 
+                                backgroundColor: "transparent", 
+                                borderBottom: "1px solid darkgreen" 
+                            } 
+                        }}>
+                            Favoriter
+                    </Button>
+                ) : ( <></> )}
             </Box>
 
             <Box sx={{ display: "flex", gap: "1rem" }}>
                 {isLoggedIn ? (
                     <>
                         <Button
-                            onClick={handleProfileClick}
+                            // onClick={handleProfileClick}
+                            href='/profile'
                             sx={{ 
                                 color: "white", 
                                 borderBottom: "1px solid white",
@@ -143,22 +160,20 @@ function HeaderMenu() {
                             Profil
                         </Button>
 
-                        <Menu
+                        {/* <Menu
                             anchorEl={anchorEl}
                             open={menuOpen}
                             onClose={handleProfileClose}
                             MenuListProps={{ sx: { backgroundColor: "black", color: "white", display: "grid", gap: "1rem" } }}
                         >
                             <MenuItem onClick={() => handleNav("/profile")} sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Se profil</MenuItem>
-                            <MenuItem onClick={() => handleNav("/indstillinger/profiloplysninger")} sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Rediger profil</MenuItem>
                             <MenuItem component="a" href="/produkter" sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Mine produkter</MenuItem>
                             <MenuItem component="a" href="/favoriter" sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Favoritter</MenuItem>
-                            <MenuItem component="a" href="/chat" sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Chat historik</MenuItem>
-                        </Menu>
+                        </Menu> */}
                     </>
                 ) : (
                     <Button
-                        sx={{ color: "white", borderBottom: "1px solid white" }}
+                        sx={{ color: "white", borderBottom: "1px solid white", fontSize: { xs: "0.5rem", sm: "1rem" }, }}
                         onClick={handleGoogleLogin}
                     >
                         Login / Signup

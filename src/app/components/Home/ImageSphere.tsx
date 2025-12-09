@@ -51,14 +51,15 @@ export default function ImageSphere({ radius = 3 }: ImageSphereProps) {
         </Suspense>
       </Canvas>
 
-      {showText && (
+      {showText &&(
         <Box
           sx={{
             position: "absolute",
-            top: "42%",
+            top: { xs: "46%", sm: "42%" },
             color: "white",
+            textAlign: "center",
             justifySelf: "center",
-            fontSize: "3rem",
+            fontSize: { sx: "1.5rem", m: "3rem" },
             backgroundColor: "#003d0f64",
             padding: "2rem",
             borderRadius: "0.5rem",
@@ -72,11 +73,11 @@ export default function ImageSphere({ radius = 3 }: ImageSphereProps) {
         <Box
           sx={{
             position: "absolute",
-            top: "44%",
+            top: { xs: "46%", sm: "42%" },
             color: "white",
-            justifySelf: "center",
             textAlign: "center",
-            fontSize: "2rem",
+            justifySelf: "center",
+            fontSize: { sx: "1.5rem", m: "3rem" },
             backgroundColor: "#003d0f64",
             padding: "2rem",
             borderRadius: "0.5rem",
@@ -90,11 +91,11 @@ export default function ImageSphere({ radius = 3 }: ImageSphereProps) {
         <Box
           sx={{
             position: "absolute",
-            top: "44%",
+            top: { xs: "46%", sm: "42%" },
             color: "white",
-            justifySelf: "center",
             textAlign: "center",
-            fontSize: "2rem",
+            justifySelf: "center",
+            fontSize: { sx: "1.5rem", m: "3rem" },
             backgroundColor: "#003d0f64",
             padding: "2rem",
             borderRadius: "0.5rem",
