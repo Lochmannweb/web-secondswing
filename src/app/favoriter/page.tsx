@@ -54,7 +54,7 @@ export default function Favoriter() {
         return
       }
 
-      const productIds = favData.map(f => f.product_id)
+      const productIds = favData.map((f: { product_id: any }) => f.product_id)
 
       if (!productIds.length) {
         setProducts([])
