@@ -2,15 +2,13 @@
 
 
 import { getSupabaseClient } from '@/app/lib/supabaseClient';
-import { Box, Button, Menu, MenuItem } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
 function HeaderMenu() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const supabase = getSupabaseClient()
-    const menuOpen = Boolean(anchorEl)
 
     // Tracke session
     useEffect(() => {
@@ -42,15 +40,6 @@ function HeaderMenu() {
         }
     }
 
-
-    const handleProfileClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget)
-    }
-
-    const handleProfileClose = () => {
-        setAnchorEl(null)
-    }
-
     return (
         <>
         {/* TOP MENU */}
@@ -71,46 +60,83 @@ function HeaderMenu() {
                     sx={{ 
                         color: "white", 
                         borderBottom: "1px solid white", 
-                        fontSize: { xs: "0.5rem", sm: "0.7rem" }, 
+                        fontSize: { xs: "0.5rem", sm: "1rem" }, 
                         "&:hover": { 
                             backgroundColor: "transparent", 
-                            borderBottom: "1px solid darkgreen" 
+                            borderBottom: "1px solid darkgreen",
                         } 
                     }}
                 >Second Swing</Button>
             </Box>
 
             <Box sx={{ display: "flex", gap: "1rem" }}>
-                <Button href="/about" sx={{ color: "white", borderBottom: "1px solid white" }}>About</Button>
-                <Button href="/shop" sx={{ color: "white", borderBottom: "1px solid white" }}>Shop</Button>
+                <Button 
+                    href="/about" 
+                    sx={{ 
+                        color: "white", 
+                        borderBottom: "1px solid white",
+                        fontSize: { xs: "0.5rem", sm: "1rem" },
+                        "&:hover": { 
+                            backgroundColor: "transparent", 
+                            borderBottom: "1px solid darkgreen" 
+                        }  
+                    }}>
+                        Om os
+                </Button>
+
+                <Button 
+                    href="/shop" 
+                    sx={{ 
+                        color: "white", 
+                        borderBottom: "1px solid white",
+                        fontSize: { xs: "0.5rem", sm: "1rem" },
+                        "&:hover": { 
+                            backgroundColor: "transparent", 
+                            borderBottom: "1px solid darkgreen" 
+                        } 
+                    }}>
+                        Shop
+                </Button>
+
+                {isLoggedIn ? (
+                    <Button 
+                        href="/favoriter" 
+                        sx={{ 
+                            color: "white", 
+                            borderBottom: "1px solid white",
+                            fontSize: { xs: "0.5rem", sm: "1rem" },
+                            "&:hover": { 
+                                backgroundColor: "transparent", 
+                                borderBottom: "1px solid darkgreen" 
+                            } 
+                        }}>
+                            Favoriter
+                    </Button>
+                ) : ( <></> )}
             </Box>
 
             <Box sx={{ display: "flex", gap: "1rem" }}>
                 {isLoggedIn ? (
                     <>
                         <Button
-                            onClick={handleProfileClick}
-                            sx={{ color: "white", borderBottom: "1px solid white" }}
+                            // onClick={handleProfileClick}
+                            href='/profile'
+                            sx={{ 
+                                color: "white", 
+                                borderBottom: "1px solid white",
+                                fontSize: { xs: "0.5rem", sm: "1rem" },
+                                "&:hover": { 
+                                    backgroundColor: "transparent", 
+                                    borderBottom: "1px solid darkgreen" 
+                                }
+                            }}
                         >
-                            Profile
+                            Profil
                         </Button>
-
-                        <Menu
-                            anchorEl={anchorEl}
-                            open={menuOpen}
-                            onClose={handleProfileClose}
-                            MenuListProps={{ sx: { backgroundColor: "#0f0f0fff", color: "white" } }}
-                        >
-                            <MenuItem component="a" href="/profile">Se profil</MenuItem>
-                            <MenuItem component="a" href="/indstillinger/profiloplysninger">Rediger profil</MenuItem>
-                            <MenuItem component="a" href="/produkter">Mine produkter</MenuItem>
-                            <MenuItem component="a" href="/favoriter">Favoritter</MenuItem>
-                            <MenuItem component="a" href="/chat">Chat historik</MenuItem>
-                        </Menu>
                     </>
                 ) : (
                     <Button
-                        sx={{ color: "white", borderBottom: "1px solid white" }}
+                        sx={{ color: "white", borderBottom: "1px solid white", fontSize: { xs: "0.5rem", sm: "1rem" }, }}
                         onClick={handleGoogleLogin}
                     >
                         Login / Signup

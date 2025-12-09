@@ -35,6 +35,5 @@ export async function updateSession(request: NextRequest) {
 
   // This refreshes the auth token if it's expired
   await supabase.auth.getUser();
-
   return supabaseResponse;
 }

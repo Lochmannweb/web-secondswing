@@ -10,7 +10,8 @@ import {
   Grid, 
   Button,
   Alert, 
-  IconButton
+  IconButton,
+  Box
 } from "@mui/material"
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
@@ -25,6 +26,7 @@ interface Product {
   created_at: string
   user_id: string
   gender?: "male" | "female" | "unisex" | null
+  sold: boolean | null;
 }
 
 interface AllProductsProps {
@@ -35,6 +37,9 @@ export default function AllProducts({ products }: AllProductsProps) {
   const [favorites, setFavorites] = useState<string[]>([])
   const [userId, setUserId] = useState<string | null>(null)
   const supabase = getSupabaseClient()
+
+
+
 
 useEffect(() => {
   const fetchFavorites = async () => {
@@ -52,6 +57,9 @@ useEffect(() => {
   }
   fetchFavorites()
 }, [supabase])
+
+
+
 
 const toggleFavorite = async (productId: string) => {
   if (!userId) return
@@ -78,17 +86,30 @@ const toggleFavorite = async (productId: string) => {
 }
 
 
+
+
+
   if (!products || products.length === 0) {
     return <Alert severity="info">Der er ingen produkter tilgængelige i øjeblikket.</Alert>
   }
+
+
+
 
   return (
     <Grid container spacing={2}>
       {products.map((product) => (
         <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id}>
-          <Card sx={{ height: "45vh", backgroundColor: "transparent" }}>
+          <Card sx={{ height: "60vh", backgroundColor: "transparent" }}>
             {product.image_url && (
-              <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
+              <Box>
+                {product.sold && (
+                <Box position={"absolute"} p={2} sx={{ backgroundColor: "#000000c9", color: "white" }} width={"auto"}>
+                    <Typography textTransform={"uppercase"} alignSelf={"center"} justifySelf={"center"}>Solgt</Typography>
+                </Box>
+                )}
+                <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
+              </Box>
             )}
             <CardContent sx={{ color: "white" }}>
                 <Typography sx={{ fontSize: "15px" }} component="h2">

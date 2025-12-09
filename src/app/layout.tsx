@@ -1,6 +1,7 @@
+// Server side 
 import HeaderMenu from "@/app/components/Navigation/HeaderMenu";
 import "./globals.css";
-import ErrorBoundary from "./ErrorBoundary";
+import ErrorBoundary from "../../ErrorBoundary";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
 

@@ -7,9 +7,12 @@ export default function Home() {
     <>
     <Box 
         sx={{
-            padding: { xs: "6rem 1rem", sm: "6rem 20rem" },
+            width: { xs: "90%", sm: "50%" },
+            pt: { xs: "6rem", sm: "8rem" },
+            pb: { xs: "6rem" },
             display: "grid",
-            gap: "2rem"
+            gap: "2rem",
+            m: "auto"
         }} >
             <Box>
                 <h2 style={{ color: "white", transform: "uppercase" }}>{aboutData.Company.title}</h2>

@@ -5,6 +5,11 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Box, Button, Divider } from '@mui/material'
 import Image from 'next/image'
+import Profiloplysninger from '../indstillinger/profiloplysninger/page'
+import OpretProdukt from '../components/Products/OpretProdukt'
+import ProdukterPage from '../produkter/page'
+import Kontoindstillinger from '../indstillinger/kontoindstillinger/page'
+import Favoriter from '../favoriter/page'
 
 
 type UserProfile = {
@@ -21,6 +26,20 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [needsLogin, setNeedsLogin] = useState(false)
   const supabase = getSupabaseClient()  
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  const [activeSection, setActiveSection] = useState<string>("profil")
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 599
+
+
+  // funktion der skifter mellem indhold eller links
+  const handleNavigation = (target: string, link: string) => {
+    if(isMobile) {
+      router.push(link)
+    } else {
+      setActiveSection(target)
+    }
+  }
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -96,65 +115,152 @@ export default function ProfilePage() {
     )
   }
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    setIsLoggedIn(false)
+    router.push('/') // redirect til homepage
+  }
+
 
   if (loading) return <p>Loading...</p>
 
   return (
     <>
-      <Box sx={{ display: { xs: "grid", sm: "flex" }, justifyContent: { sm: "center" }, height: { sm: "100vh" }, gap: { sm: "5rem" }, pt: { xs: "5rem" } }} p={2}>
-        <Box alignSelf={{ sm: "center" }}>
+      <Box 
+        sx={{ 
+          display: { xs: "grid", sm: "flex" }, 
+          justifyContent: { sm: "center" }, 
+          gap: { sm: "1rem" },
+          height: { sm: "100vh" }, 
+          pt: { xs: "5rem" } }} 
+          p={2}
+        >
+        <Box alignSelf={{ sm: "center" }} width={{ sm: "20%" }}>
           {profile ? (
-            <Box>
+            <Box
+              sx={{
+                color: "white",
+              }}
+            >
+              <Box sx={{ display: "flex", gap: "1rem", mb: 2 }}>
                 <Image 
                   src={upgradeGoogleAvatar(profile.avatar_url || "/placeholderprofile.jpg")}
                   alt="Profilbillede"
                   width={800}
                   height={100}
-                  style={{ width: "100%", height: "auto", borderRadius: "1rem" }}
+                  style={{ width: "10%", height: "auto", borderRadius: "50%" }}
                   priority
                   />
+                <h2 style={{ fontSize: "1rem", alignSelf: "center" }}>{profile.display_name ?? 'Ikke udfyldt'}</h2>
+              </Box>
+              <Divider color="gray"/>
+
+              <Box sx={{ marginTop: "1rem", backgroundColor: "#121212ff", borderRadius: "0.3rem"}}>
+                <Button 
+                  sx={{
+                    width: "100%", 
+                    color: "white", 
+                    justifyContent: "normal", 
+                    "&:hover": { 
+                      backgroundColor: "#0b0b0bc3" 
+                    } 
+                  }} 
+                  onClick={() => handleNavigation("editProfile", "/indstillinger/profiloplysninger")}
+                  >
+                    Rediger Profil
+                </Button>
+
+
+                <Button 
+                  sx={{
+                    width: "100%", 
+                    color: "white", 
+                    justifyContent: "normal", 
+                    "&:hover": { 
+                      backgroundColor: "#0b0b0bc3"
+                      } 
+                    }} 
+                    onClick={() => handleNavigation("createProduct", "/opretProdukt")}
+                    >
+                      Opret produkt
+                </Button>
+
+
+                <Button 
+                  sx={{
+                    width: "100%", 
+                    color: "white", 
+                    justifyContent: "normal", 
+                    "&:hover": { 
+                      backgroundColor: "#0b0b0bc3"
+                      } 
+                    }} 
+                    onClick={() => handleNavigation("myProducts", "/produkter")}
+                    >
+                      Mine Produkter
+                </Button>
+
+                <Button 
+                  sx={{
+                    width: "100%", 
+                    color: "white", 
+                    justifyContent: "normal", 
+                    "&:hover": { 
+                      backgroundColor: "#0b0b0bc3"
+                      } 
+                    }} 
+                    onClick={() => handleNavigation("fav", "/favoriter")}
+                    >
+                      Mine Favoriter
+                </Button>
+
+                <Button 
+                  sx={{
+                    width: "100%",
+                    color: "white", 
+                    justifyContent: "normal", 
+                    "&:hover": { 
+                      backgroundColor: "#0b0b0bc3"
+                      } 
+                    }} 
+                    onClick={() => handleNavigation("Kontooplysninger", "/indstillinger/kontoindstillinger")}
+                    >
+                      Kontooplysninger
+                </Button>
+              </Box>
+
+              <Box sx={{ marginTop: "1rem", backgroundColor: "#121212ff", borderRadius: "0.3rem"}}>
+                <Button 
+                  sx={{
+                    width: "100%", 
+                    color: "white", 
+                    justifyContent: "normal", 
+                    "&:hover": { 
+                      backgroundColor: "#0b0b0bc3"
+                      } 
+                    }} 
+                    onClick={handleLogout}
+                    >
+                      Log ud
+                </Button>
+              </Box>
             </Box>
           ) : (
             <p>Ingen profil fundet</p>
           )}
         </Box>
-        
-        <Box alignSelf={{ sm: "center" }} width={{ sm: "15%" }}>
-          {profile ? (
-            <Box
-              sx={{
-                backgroundColor: "black",
-                padding: "1rem",
-                color: "white",
-                position: "absolute",
-                alignSelf: { sm: "center" }
-                
-              }}
-            >
-              <Box sx={{ display: "grid", gap: "0.5rem" }}>
-                <p>{profile.display_name ?? 'Ikke udfyldt'}</p>
-                <Divider color="white"/>
-              </Box>
-              <Box sx={{ paddingTop: "1rem", marginTop: "1rem" }}>
-                <Divider />
-                <Button sx={{width: { xs: "48vh", sm: "50vh" }, color: "white", justifyContent: "normal", "&:hover": { backgroundColor: "#00ff001c" } }} href="/indstillinger/profiloplysninger">Rediger Profil</Button>
-                <Divider />
-                <Button sx={{width: { xs: "48vh", sm: "50vh" }, color: "white", justifyContent: "normal", "&:hover": { backgroundColor: "#00ff001c" } }} href="/opretProdukt">Opret produkt</Button>
-                <Divider />
-                <Button sx={{width: { xs: "48vh", sm: "50vh" }, color: "white", justifyContent: "normal", "&:hover": { backgroundColor: "#00ff001c" } }} href="/produkter">Mine Produkter</Button>
-                <Divider />
-                <Button sx={{width: { xs: "48vh", sm: "50vh" }, color: "white", justifyContent: "normal","&:hover": { backgroundColor: "#00ff001c" } }} href="indstillinger">Indstillinger</Button>
-                <Divider />
-                <Button sx={{width: { xs: "48vh", sm: "50vh" }, color: "white", justifyContent: "normal", "&:hover": { backgroundColor: "#00ff001c" } }} href="/about">Om Second Swing</Button>
-                <Divider />
-              </Box>
-            </Box>
-          ) : (
-            <p>Ingen profil fundet</p>
-          )}
+
+        {/* vi indhold udfra den setting der bliver valgt */}
+        <Box width={"40%"} color={"white"} alignSelf={{ sm: "center" }}>
+            {/* {activeSection === "profil" && <p>Vælg noget fra menuen.</p>} */}
+            {activeSection === "editProfile" && <Profiloplysninger />}
+            {activeSection === "createProduct" && <OpretProdukt />}
+            {activeSection === "myProducts" && <ProdukterPage />}
+            {activeSection === "fav" && <Favoriter />}
+            {activeSection === "Kontooplysninger" && <Kontoindstillinger />}
+            {/* {activeSection === "sikkerhed" && <Sikkerhed />} */}
         </Box>
       </Box>
-
     </>
   )
 }

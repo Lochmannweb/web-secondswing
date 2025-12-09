@@ -16,6 +16,7 @@ interface Product {
   created_at: string
   user_id: string
   gender: "male" | "female" | "unisex" | null
+  sold: boolean | null
 }
 
 export default function ShopPage() {

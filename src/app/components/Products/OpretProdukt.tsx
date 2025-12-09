@@ -41,16 +41,16 @@ export default function CreateProduct() {
 
   //  Shared mui props
   const inputStyle = {
-    mb: 2,
     "& .MuiOutlinedInput-root": {
       color: "white",
-      "& fieldset": { borderColor: "gray" },
-      "&:hover fieldset": { borderColor: "gray" },
-      "&.Mui-focused fieldset": { borderColor: "gray" },
+      "& fieldset": { borderColor: "none" },
+      "&:hover fieldset": { borderColor: "none",  },
+      "&.Mui-focused fieldset": { borderColor: "none" },
     },
-    "& .MuiInputLabel-root": { color: "white" },
-    "& .MuiInputLabel-root.Mui-focused": { color: "white" },
+    "& .MuiInputLabel-root": { color: "gray" },
+    "& .MuiInputLabel-root.Mui-focused": { color: "gray" },
   }
+
 
   
 
@@ -143,31 +143,26 @@ export default function CreateProduct() {
     <Box 
       component="form" 
       onSubmit={handleSubmit} 
-      position={"absolute"} 
-      p={2} 
-      top={{ xs: "8rem" }} 
-      display={"grid"} 
-      gridTemplateColumns={{ sm: "1fr 1fr" }} 
-      gap={2}
+      p={2}
+      pt={{ xs: "5rem" }} 
+      display={{ xs: "grid", sm: "flex" }} 
+      gap={"2rem"}
       >
-      <Box justifySelf={"center"} alignSelf={"center"}>
-        {/* vis valgte billeder her */}
-        {/* {imagePreview && ( */}
-          <Box sx={{ mb: 2 }}>
+      <Box justifySelf={"center"} alignSelf={"center"} width={"100%"}>
+          <Box>
             <Image
               src={imagePreview || "/placeholderprofile.jpg"}
               alt="Valgt billede"
-              width={600}
+              width={800}
               height={100}
-              style={{ height: "70vh", objectFit: "cover", borderRadius: "0.5rem" }}
+              style={{ width: "100%", height: "60vh", objectFit: "cover", borderRadius: "0.3rem" }}
             />
           </Box>
-        {/* )} */}
       </Box>
 
-      <Box width={{ sm: "80%" }} alignSelf={"center"}>
-          <TextField 
-            label="Titel" 
+      <Box sx={{ width: "100%", backgroundColor: "#121212ff", borderRadius: "0.3rem"}}>
+          <TextField
+            label="Title *"
             variant="outlined"
             value={form.title} 
             onChange={(e) => updateField("title", e.target.value)} 
@@ -177,7 +172,7 @@ export default function CreateProduct() {
           />
 
           <TextField 
-            label="Beskrivelse" 
+            label="Beskrivelse *"
             variant="outlined"
             value={form.description} 
             onChange={(e) => updateField("description", e.target.value)} 
@@ -255,7 +250,6 @@ export default function CreateProduct() {
               value={form.stand}
               onChange={(e) => updateField("stand", e.target.value as "Nyt" | "Brugt" | "Brugspor")}
               input={ <OutlinedInput label="Tilstand" /> }
-              sx={{ color: "white" }}
             >
               <MenuItem value="Nyt">Nyt</MenuItem>
               <MenuItem value="Brugt">Brugt</MenuItem>
@@ -279,13 +273,13 @@ export default function CreateProduct() {
             component="label"
             fullWidth
             sx={{
-              mb: 2,
               backgroundColor: "transparent",
-              border: "1px solid gray",
-              color: "white",
+              justifyContent: "left",
+              border: "none",
+              color: "gray",
               "&:hover": {
-                backgroundColor: "#00ff001c",
-                border: "1px solid #00ff001c"
+                backgroundColor: "#0a0a0aff",
+                border: "none"
               }
             }}
             >
@@ -306,12 +300,12 @@ export default function CreateProduct() {
             fullWidth
             disabled={!form.title || !form.description || !form.color || !form.size || !form.gender || !form.stand || !form.price || !imageFile}
             sx={{
-              mb: 2,
               backgroundColor: "transparent",
-              border: "1px solid gray",
+              justifyContent: "left",
+              color: "gray",
+              marginTop: "2rem",
               "&:hover": {
-                backgroundColor: "#00ff001c",
-                border: "1px solid #00ff001c"
+                backgroundColor: "#0a0a0aff",
               }
             }}
           >
@@ -320,7 +314,7 @@ export default function CreateProduct() {
 
 
           {message && (
-            <Alert severity={message.type} sx={{ mb: 2 }}>
+            <Alert severity={message.type} sx={{ pb: 2 }}>
               {message.text}
             </Alert>
           )}

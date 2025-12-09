@@ -1,48 +1,107 @@
+"use client"
 
-import { getSupabaseBrowser } from "@/app/lib/supabaseBrowser"
-import { Box, Button, Divider, Typography } from "@mui/material"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
+import { Box, Button, Typography } from "@mui/material"
 import Image from "next/image"
+import { useParams } from "next/navigation"
+import { useEffect, useState } from "react"
 
 
+export default function ProductPage() {
+  const params = useParams()
+  const produktId = params.id as string | undefined
+  const supabase = getSupabaseClient()
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  const id = params.id
-  const supabase = getSupabaseBrowser()
+  const [loading, setLoading] = useState(true)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [product, setProduct] = useState<any>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!produktId) {
+      setError("Intet produkt id")
+      setLoading(false)
+      return
+    }
+
+    const load = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("id", produktId)
+          .single()
+
+          if (error) throw new Error(error.message)
+            setProduct(data)
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Fejl ved hentning"
+        setError(msg)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    
+    load()
+  }, [produktId, supabase])
+  
 
 
-  // hent produkt + ejerens profil i ét query
-  const { data: product, error } = await supabase
-    .from("products")
-    .select(`
-      *,
-      profiles (
-        display_name
-      )
-    `)
-    .eq("id", id)
-    .single()
+  // marker produkt som solgt hvis det bliver købt
+  const soldProduct = async () => {
+    // tjek om brugeren er logget ind
+    const { data: { user }, } = await supabase.auth.getUser();
 
-  if (error || !product) {
-    return <p>Produkt ikke fundet.</p>
+    if(!user) {
+      alert("Du skal være logget ind for at kunne købe et produkt.")
+      return
+    }
+
+    const { data, error } = await supabase
+      .from("products")
+      .update({ sold: true })
+      .eq("id", produktId)
+      .select();
+
+      if (error) {
+        alert("Kunne ikke markere som solgt");
+        return;
+      }
+
+      setProduct({ ...product, sold: true });
+      console.log("UPDATE RESULT:", { data, error });
   }
 
-  const profileDisplayName = product.profiles?.display_name ?? "Ukendt bruger"
+
+  if (loading) return <p style={{ padding: 20 }}>Henter produkt...</p>
+  if (error) return <p style={{ padding: 20 }}>{error}</p>
+  if (!product) return <p style={{ padding: 20 }}>Produkt ikke fundet.</p>
   
+
+
+
   return (
-    <Box display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} gap={{ sm: "2rem" }} pt={{ xs: "8rem" }} p={2} height={{ sm: "100vh" }}>
-      <Box alignSelf={{ sm: "center" }}>  
+    <Box display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} gap={{ sm: "2rem" }} pt={{ xs: "8rem" }} p={2} height={{ sm: "100vh" }} mb={{ xs: "2rem" }}>
+      <Box alignSelf={{ sm: "center" }} mb={{ xs: "1rem" }}>  
           {product.image_url && (
             <Image
-              src={product.image_url}
+              src={product.image_url} 
               alt={product.title}
               width={500}
               height={100}
               style={{
                 width: "100%",
-                height: "70vh",
-                borderRadius: "1rem",
+                height: "80vh",
+                borderRadius: "0.3rem",
               }}        
             />
+          )}
+
+          {product.sold && (
+          <Box position={"absolute"} bottom={"2.5rem"} p={2} sx={{ backgroundColor: "#000000c9", color: "white" }} width={"auto"}>
+              <Typography textTransform={"uppercase"} alignSelf={"center"} justifySelf={"center"}>Solgt</Typography>
+          </Box>
           )}
       </Box>
 
@@ -50,73 +109,64 @@ export default async function ProductPage({ params }: { params: { id: string } }
         <Box
           sx={{
             color: "white",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            textTransform: "uppercase",
-          }}
-        >
-          <p>{profileDisplayName}</p>
-          <Button
-            style={{ cursor: "pointer", color: "white" }}
-            href={`/chat/product/${product.id}`}
-          >
-            Start chat
-          </Button>
-        </Box>
-        <Divider sx={{ backgroundColor: "white", width: "100%", mb: 3 }} />
-
-        <Box
-          sx={{
-            color: "white",
-            width: { sm: "300px" }
+            backgroundColor: "#1a1a1aff",
+            padding: "1rem",
+            borderRadius: "0.3rem",
+            mb: 2,
+            width: { sm: "100%" }
           }}
         >
           <h1 style={{ fontSize: "1rem" }}>{product.title}</h1>
+          <p style={{ color: "gray" }}>{product.color} - {product.stand}</p>
+          <p style={{ color: "gray", marginTop: "1rem" }}>{product.price?.toFixed(2)} Kr.</p>
         </Box>
 
         <Box
           sx={{
             color: "gray",
-            marginTop: "1rem",
+            backgroundColor: "#1a1a1aff",
+            padding: "1rem",
+            borderRadius: "0.3rem",
+            width: { sm: "100%" },
             display: "grid",
-            gap: "0.5rem",
+            mb: 2,
+            gap: "2rem",
           }}
         >
-          <p>
-            Produkt beskrivelse: <br />
-            {product.desc} {/* rettet fra product.description */}
-          </p>
-          <p>Farve: {product.color}</p>
-          <p>Brand: {product.brand}</p>
-          <p>Tilstand: {product.stand}</p>
+          <p>Beskrivelse</p>
+          <p>{product.description}</p>
         </Box>
 
-        <Divider sx={{ backgroundColor: "white", width: "100%", mb: 3, mt: 3 }} />
-
-        <Box 
+        <Box
           sx={{
-            color: "white",
-            display: { xs: "flex", sm: "flex" },
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}>
-          <Typography>Price: </Typography>
-          <Typography>{product.price?.toFixed(2)} DKK</Typography>
+            color: "gray",
+            backgroundColor: "#1a1a1aff",
+            padding: "1rem",
+            borderRadius: "0.3rem",
+            width: { sm: "100%" },
+            display: "flex",
+            justifyContent: "space-between"
+          }}
+        >
+          <p>Fee</p>
+          <p>10%</p>
         </Box>
 
         <Button
+          onClick={soldProduct}
+          // disabled={product.sold}
           sx={{
             width: "100%",
             backgroundColor: "transparent",
             border: "1px solid grey",
             color: "white",
-            top: "1.5rem",
+            top: "1rem",
             position: "relative",
-            "&:hover": { backgroundColor: "darkGreen", color: "white",border: "1px solid darkGreen" },
+            cursor: product.sold ? "none" : "pointer",
+            "&:hover": { backgroundColor: product.sold ? "none" : "darkGreen", color: "white", border: product.sold ? "1px solid gray" : "1px solid darkGreen" },
           }}
         >
-          Køb
+          {product.sold ? "Solgt" : "Køb"}
         </Button>
       </Box>
     </Box>

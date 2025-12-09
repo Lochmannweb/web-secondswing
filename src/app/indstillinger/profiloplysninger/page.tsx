@@ -18,12 +18,11 @@ export default function Profiloplysninger() {
   const router = useRouter()
 
   const inputStyle = {
-    mb: 2,
     "& .MuiOutlinedInput-root": {
       color: "white",
-      "& fieldset": { borderColor: "gray" },
-      "&:hover fieldset": { borderColor: "gray" },
-      "&.Mui-focused fieldset": { borderColor: "gray" },
+      "& fieldset": { borderColor: "none" },
+      "&:hover fieldset": { borderColor: "none" },
+      "&.Mui-focused fieldset": { borderColor: "none" },
     },
     "& .MuiInputLabel-root": { color: "white" },
     "& .MuiInputLabel-root.Mui-focused": { color: "white" },
@@ -130,7 +129,7 @@ export default function Profiloplysninger() {
   }
 
   return (
-    <Box p={2} display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} gap={2} height={{ sm: "100vh" }}>
+    <Box p={2} display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} gap={2} height={{ sm: "80vh" }}>
       <Box alignSelf={{sm: "center"}}>
         <Image
             src={upgradeGoogleAvatar(imagePreview)}
@@ -142,39 +141,35 @@ export default function Profiloplysninger() {
                 height: "50vh",
                 objectFit: "cover",
                 marginTop: "4rem",
-                borderRadius: "1rem",
+                borderRadius: "0.3rem",
             }}
             priority
         />
       </Box>
 
-      <Box sx={{ alignSelf: { sm: "center" } }}>
+      <Box sx={{ backgroundColor: "#121212ff", borderRadius: "0.3rem"}} alignSelf={{ sm: "center" }} >
         <Button 
             variant="outlined" 
             component="label"
             fullWidth 
             sx={{ 
-                color: "white",
+                color: "gray",
                 border: "none",
-                top: "1rem",
-                marginBottom: "2rem",
-                justifySelf: "center",
-                display: "flex",
+                justifyContent: "left",
                 "&:hover": {
-                    backgroundColor: "white",
-                    color: "black"
+                    backgroundColor: "#0b0b0bc3",
                 }
             }}>
-            Skift profil billede
+              Skift profil billede
             <input type="file" hidden accept="image/*" onChange={handleImageChange} />
         </Button>
 
         <TextField 
-          label="Navn"
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
           fullWidth
           sx={inputStyle}
+          placeholder="Navn: "
         />
 
         <Button
@@ -183,13 +178,11 @@ export default function Profiloplysninger() {
             onClick={handleSubmit}
             // disabled={loading || !imageFile}
             sx={{
-              border: "1px solid white",
               backgroundColor: "transparent",
-              borderRadius: "0.5rem",
-              mb: 2,
+              justifyContent: "left",
+              color: "gray",
               "&:hover": {
-                backgroundColor: "darkGreen",
-                border: "1px solid darkGreen",
+                backgroundColor: "#0b0b0bc3",
               }
             }}
         >
