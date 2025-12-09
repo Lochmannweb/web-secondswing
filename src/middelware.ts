@@ -2,10 +2,38 @@ import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "./app/lib/supabaseMiddleware";
 
 export async function middleware(request: NextRequest) {
-  // kør supabase middelware som normalt
+  // ----- CSRF VALIDERING (Origin/Referer) -----
+  const method = request.method;
+
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
+    const origin = request.headers.get("origin");
+    const referer = request.headers.get("referer");
+
+    const allowed = process.env.NEXT_PUBLIC_BASE_URL;
+
+    // hvis environment variabel mangler → skip CSRF-check
+    if (!allowed) {
+      console.warn("CSRF: NEXT_PUBLIC_BASE_URL mangler");
+      return NextResponse.json(
+        { error: "Server config error (missing NEXT_PUBLIC_BASE_URL)" },
+        { status: 500 }
+      );
+    }
+
+    const validOrigin = origin === allowed;
+    const validReferer = referer?.startsWith(allowed) ?? false; // bliver automatisk kaldt hver gang typerne POST, PUT, PATCH, DELETE rammer serveren 
+
+    if (!validOrigin && !validReferer) {
+      return new NextResponse("Forbidden – CSRF Blocked", { status: 403 });
+    }
+  }
+
+
+
+  // kør supabase middelware (refresh, cookies, session)
   const response = await updateSession(request);
 
-  // tilføj sikkerhedsheaders
+  // tilføj sikkerhedsheaders (CSP)
   response.headers.set(
     "Content-Security-Policy",
     [
@@ -36,6 +64,7 @@ export async function middleware(request: NextRequest) {
   );
 
 
+  // sikkerhes headers
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set("Permissions-Policy", "Camera=(), microphone=(), geolocation=()");

@@ -18,7 +18,7 @@ export async function updateSession(request: NextRequest) {
         setAll(cookiesToSet) {
           // 1. Set cookies on the request (so the server sees them now)
           cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
+            request.cookies.set(name, value) // ændrer kun serverens view
           );
           
           // 2. Set cookies on the response (so the browser sees them later)
@@ -26,7 +26,7 @@ export async function updateSession(request: NextRequest) {
             request,
           });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, options) // sender dem til browseren
           );
         },
       },
@@ -34,6 +34,9 @@ export async function updateSession(request: NextRequest) {
   );
 
   // This refreshes the auth token if it's expired
+  // Loader supabase-session fra cookies (HTTP-only)
+  // Hvis access-token er udløbet, henter Supabase automatisk en ny JWT + ny refresh token
+  // Sætter de nye cookies på både: request(så serverkoden har adgang samme request) og response(så browseren får opdaterede tokens)
   await supabase.auth.getUser();
   return supabaseResponse;
 }
