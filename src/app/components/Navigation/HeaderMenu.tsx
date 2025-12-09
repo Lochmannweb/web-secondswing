@@ -2,30 +2,13 @@
 
 
 import { getSupabaseClient } from '@/app/lib/supabaseClient';
-import { Box, Button, Menu, MenuItem } from '@mui/material'
-import { useRouter } from 'next/navigation';
+import { Box, Button } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
 function HeaderMenu() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const supabase = getSupabaseClient()
-    const menuOpen = Boolean(anchorEl)
-
-    const router = useRouter();
-    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-
-    const handleNav = (link: string) => {
-        if (isMobile) {
-            // mobil → normal navigation
-            router.push(link)
-        } else {
-            // desktop → ingen reload, bare navigation
-            router.push(link) 
-            handleProfileClose()
-        }
-    }
 
     // Tracke session
     useEffect(() => {
@@ -55,15 +38,6 @@ function HeaderMenu() {
         if (error) {
             console.error("Google login error: ", error.message);
         }
-    }
-
-
-    const handleProfileClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget)
-    }
-
-    const handleProfileClose = () => {
-        setAnchorEl(null)
     }
 
     return (
@@ -159,17 +133,6 @@ function HeaderMenu() {
                         >
                             Profil
                         </Button>
-
-                        {/* <Menu
-                            anchorEl={anchorEl}
-                            open={menuOpen}
-                            onClose={handleProfileClose}
-                            MenuListProps={{ sx: { backgroundColor: "black", color: "white", display: "grid", gap: "1rem" } }}
-                        >
-                            <MenuItem onClick={() => handleNav("/profile")} sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Se profil</MenuItem>
-                            <MenuItem component="a" href="/produkter" sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Mine produkter</MenuItem>
-                            <MenuItem component="a" href="/favoriter" sx={{ "&:hover": { backgroundColor: "#00ff001c" } }}>Favoritter</MenuItem>
-                        </Menu> */}
                     </>
                 ) : (
                     <Button
