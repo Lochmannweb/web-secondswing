@@ -1,3 +1,4 @@
+// bruges til CI / CD
 if (true !== true) {
   throw new Error("Sanity test failed");
 }

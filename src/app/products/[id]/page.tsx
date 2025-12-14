@@ -82,7 +82,7 @@ export default function ProductPage() {
 
 
   return (
-    <Box display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} gap={{ sm: "2rem" }} pt={{ xs: "8rem" }} p={2} height={{ sm: "100vh" }} mb={{ xs: "2rem" }}>
+    <Box display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} gap={{ sm: "2rem" }} pt={{ xs: "8rem" }} p={2} height={{ sm: "90vh" }} mb={{ xs: "2rem" }}>
       <Box alignSelf={{ sm: "center" }} mb={{ xs: "1rem" }}>  
           {product.image_url && (
             <Image
@@ -92,14 +92,14 @@ export default function ProductPage() {
               height={100}
               style={{
                 width: "100%",
-                height: "80vh",
+                height: "auto",
                 borderRadius: "0.3rem",
               }}        
             />
           )}
 
           {product.sold && (
-          <Box position={"absolute"} bottom={"2.5rem"} p={2} sx={{ backgroundColor: "#000000c9", color: "white" }} width={"auto"}>
+          <Box position={"absolute"} top={{ xs: "8rem", sm: "15.2rem" }} p={2} sx={{ backgroundColor: "#000000c9", color: "white" }} width={"auto"}>
               <Typography textTransform={"uppercase"} alignSelf={"center"} justifySelf={"center"}>Solgt</Typography>
           </Box>
           )}

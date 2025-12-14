@@ -221,7 +221,7 @@ export default function EditProductPage() {
               alt="preview"
               width={420} 
               height={100} 
-              style={{ width: "100%", height: "auto", objectFit: "cover", borderRadius: "0.5rem" }} 
+              style={{ width: "100%", height: "70vh", objectFit: "cover", borderRadius: "0.5rem" }} 
             />
           </Box>
       </Box>

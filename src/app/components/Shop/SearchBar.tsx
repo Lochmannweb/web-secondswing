@@ -32,13 +32,13 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                     "& .MuiOutlinedInput-root": {
                     borderRadius: "0.5rem",
                     "& fieldset": {
-                      borderColor: "gray", // default border
+                        borderColor: "gray", 
                     },
                     "&:hover fieldset": {
-                      borderColor: "white", // hover border
+                        borderColor: "white",
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: "white", // focused border (blue one you see)
+                        borderColor: "white", 
                     },
                     },
                     input: { color: "white" },
