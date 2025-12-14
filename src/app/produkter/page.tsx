@@ -4,6 +4,7 @@ import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress, Grid, Divider, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import Link from "next/link"
 import { useState, useEffect } from "react"
+import { deleteProduct } from "../lib/crud"
 
 
 interface Product {
@@ -74,16 +75,18 @@ export default function ProdukterPage() {
   const deleteProdukt = async () => {
     if (!selectedProductId) return;
 
-    const { error } = await supabase
-      .from("products")
-      .delete()
-      .eq("id", selectedProductId)
-      .single();
-      
-      if(error) {
-        alert("Kunne ikke slette produktet");
-        return;
-      }
+    try {
+      await deleteProduct(selectedProductId);
+    
+      // Opdater UI
+      setProducts((prev) =>
+        prev.filter((p) => p.id !== selectedProductId)
+      );
+    
+      setOpenDialog(false);
+    } catch (error) {
+      alert("Kunne ikke slette produktet");
+    }
 
       // Fjern produktet fra browser uden reload
       setProducts((prev) => prev.filter((p) => p.id !== selectedProductId));

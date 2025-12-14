@@ -1,4 +1,4 @@
-import { getButtonStyles } from "./filterStyles";
+// import { getButtonStyles } from "./filterStyles";
 
 // test("aktiv knap får highlight-styling", () => {
 //   const styles = getButtonStyles("male", "male");
