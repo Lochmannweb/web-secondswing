@@ -1,4 +1,3 @@
-"use client"
 
 import ImageSphere from "@/app/components/Home/ImageSphere";
 

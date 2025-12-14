@@ -124,7 +124,7 @@ const toggleFavorite = async (productId: string) => {
                   onClick={() => toggleFavorite(product.id)}
                   sx={{ 
                     color: favorites.includes(product.id) ? 'white' : 'white', 
-                    left: "10rem", 
+                    left: { xs: "10rem", sm: "14rem" }, 
                     position: "relative",  
                     top: "-3rem", 
                   }}

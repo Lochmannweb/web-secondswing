@@ -1,6 +1,7 @@
 "use client"
 
 
+import { useNavigationTracking } from '@/app/hooks/useNavigationTracking';
 import { getSupabaseClient } from '@/app/lib/supabaseClient';
 import { Box, Button, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material'
 import Link from 'next/link';
@@ -8,6 +9,7 @@ import { useEffect, useState } from 'react'
 
 function HeaderMenu() {
     const supabase = getSupabaseClient()
+    useNavigationTracking();
    
 
     const [isLoggedIn, setIsLoggedIn] = useState(false)
