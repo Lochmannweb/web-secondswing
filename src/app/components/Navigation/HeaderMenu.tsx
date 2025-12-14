@@ -3,6 +3,7 @@
 
 import { getSupabaseClient } from '@/app/lib/supabaseClient';
 import { Box, Button, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material'
+import Link from 'next/link';
 import { useEffect, useState } from 'react'
 
 function HeaderMenu() {
@@ -74,6 +75,7 @@ function HeaderMenu() {
         >
             <Box>
                 <Button 
+                    component={Link}
                     href="/" 
                     sx={{ 
                         color: "white", 
@@ -91,6 +93,7 @@ function HeaderMenu() {
                 {!isMobile && (
                     <>
                         <Button 
+                            component={Link}
                             href="/about" 
                             sx={{ 
                                 color: "white", 
@@ -106,6 +109,7 @@ function HeaderMenu() {
                         
                         <Button 
                             href="/shop" 
+                            component={Link}
                             sx={{ 
                                 color: "white", 
                                 borderBottom: "1px solid white",
@@ -120,6 +124,7 @@ function HeaderMenu() {
                         {isLoggedIn ? (
                             <Button 
                                 href="/favoriter" 
+                                component={Link}
                                 sx={{ 
                                     color: "white", 
                                     borderBottom: "1px solid white",
@@ -144,6 +149,7 @@ function HeaderMenu() {
                             {!isMobile && (
                                 <Button
                                     href='/profile'
+                                    component={Link}
                                     sx={{ 
                                         color: "white", 
                                         borderBottom: "1px solid white",
@@ -186,28 +192,28 @@ function HeaderMenu() {
                                         }}
                                     >
                                         <MenuItem
-                                            component="a"
+                                            component={Link}
                                             href="/profile"
                                             onClick={handleClose}
                                         >
                                             Profil
                                         </MenuItem>
                                         <MenuItem
-                                            component="a"
+                                            component={Link}
                                             href="/shop"
                                             onClick={handleClose}
                                         >
                                             Shop
                                         </MenuItem>
                                         <MenuItem
-                                            component="a"
+                                            component={Link}
                                             href="/favoriter"
                                             onClick={handleClose}
                                         >
                                             Favoriter
                                         </MenuItem>
                                         <MenuItem
-                                            component="a"
+                                            component={Link}
                                             href="/about"
                                             onClick={handleClose}
                                         >
