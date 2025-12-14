@@ -148,7 +148,7 @@ export default function ProfilePage() {
                   alt="Profilbillede"
                   width={800}
                   height={100}
-                  style={{ width: "10%", height: "auto", borderRadius: "50%" }}
+                  style={{ width: "15%", height: "auto", borderRadius: "50%" }}
                   priority
                   />
                 <h2 style={{ fontSize: "1rem", alignSelf: "center" }}>{profile.display_name ?? 'Ikke udfyldt'}</h2>
@@ -214,7 +214,7 @@ export default function ProfilePage() {
                       Mine Favoriter
                 </Button>
 
-                <Button 
+                {/* <Button 
                   sx={{
                     width: "100%",
                     color: "white", 
@@ -226,7 +226,7 @@ export default function ProfilePage() {
                     onClick={() => handleNavigation("Kontooplysninger", "/indstillinger/kontoindstillinger")}
                     >
                       Kontooplysninger
-                </Button>
+                </Button> */}
               </Box>
 
               <Box sx={{ marginTop: "1rem", backgroundColor: "#121212ff", borderRadius: "0.3rem"}}>
@@ -251,13 +251,13 @@ export default function ProfilePage() {
         </Box>
 
         {/* vi indhold udfra den setting der bliver valgt */}
-        <Box width={"40%"} color={"white"} alignSelf={{ sm: "center" }}>
+        <Box width={"50%"} color={"white"} alignSelf={{ sm: "center" }}>
             {/* {activeSection === "profil" && <p>Vælg noget fra menuen.</p>} */}
             {activeSection === "editProfile" && <Profiloplysninger />}
             {activeSection === "createProduct" && <OpretProdukt />}
             {activeSection === "myProducts" && <ProdukterPage />}
             {activeSection === "fav" && <Favoriter />}
-            {activeSection === "Kontooplysninger" && <Kontoindstillinger />}
+            {/* {activeSection === "Kontooplysninger" && <Kontoindstillinger />} */}
             {/* {activeSection === "sikkerhed" && <Sikkerhed />} */}
         </Box>
       </Box>

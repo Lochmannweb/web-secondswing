@@ -1,3 +1,5 @@
+
+
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
@@ -23,3 +25,8 @@ export function supabaseServer() {
     }
   );
 }
+
+// const supabase = supabaseServer();
+// const { data } = await supabase.auth.getSession()
+// console.log("get session: ", data.session?.access_token);
+

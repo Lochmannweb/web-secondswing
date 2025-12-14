@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import SearchBar from "@/app/components/Shop/SearchBar"
 import AllProducts from "@/app/components/Products/AllProducts"
-import { Alert, Box, CircularProgress } from "@mui/material"
+import { Alert, Box } from "@mui/material"
 import FilterButtons from "@/app/components/Shop/FilterButtons"
 
 interface Product {
@@ -26,7 +26,10 @@ export default function ShopPage() {
   const [error, setError] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
   const [activeFilter, setActiveFilter] = useState<"all" | "male" | "female">("all")
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClient();
+
+
+
 
   // Læs filter fra URL ved mount
   useEffect(() => {
@@ -46,6 +49,10 @@ export default function ShopPage() {
         const { data: sessionData } = await supabase.auth.getSession()
         const loggedInUserId = sessionData.session?.user.id ?? null
         setUserId(loggedInUserId)
+
+        // const accessToken = sessionData.session?.access_token
+        // console.log("accessToken: ", accessToken);
+        
 
         // Hent alle produkter
         const { data, error } = await supabase
@@ -85,7 +92,7 @@ export default function ShopPage() {
     setActiveFilter(filter)
   }
 
-  if (loading) return <CircularProgress />
+  // if (loading) return <CircularProgress />
   if (error) return <Alert severity="error">{error}</Alert>
 
   return (

@@ -1,4 +1,5 @@
 // Server side 
+
 import HeaderMenu from "@/app/components/Navigation/HeaderMenu";
 import "./globals.css";
 import ErrorBoundary from "../../ErrorBoundary";

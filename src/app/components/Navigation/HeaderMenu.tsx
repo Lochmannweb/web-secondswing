@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react'
 
 function HeaderMenu() {
     const supabase = getSupabaseClient()
+   
+
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [hydrated, setHydrated] = useState(false);
 
@@ -67,6 +69,7 @@ function HeaderMenu() {
                 position: "absolute", 
                 padding: 2, 
                 width: "100%",  
+                backgroundColor: "#00000070"
             }}
         >
             <Box>
@@ -216,7 +219,7 @@ function HeaderMenu() {
                         </>
                 ) : (
                     <Button
-                        sx={{ color: "white", borderBottom: "1px solid white", fontSize: { xs: "0.5rem", sm: "1rem" }, }}
+                        sx={{ color: "white", borderBottom: "1px solid white", fontSize: { xs: "0.5rem", sm: "0.7rem" }, }}
                         onClick={handleGoogleLogin}
                     >
                         Login / Signup
