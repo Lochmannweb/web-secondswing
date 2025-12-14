@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 
 import { aboutData } from "@/./app/Content/about"
 import { Box, Divider } from "@mui/material";
