@@ -1,4 +1,5 @@
 // Server side 
+export const dynamic = "force-dynamic";
 
 import "./globals.css";
 import ErrorBoundary from "../../ErrorBoundary";

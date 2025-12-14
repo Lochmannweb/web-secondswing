@@ -4,6 +4,10 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 export function supabaseServer() {
+  // if (process.env.NEXT_PHASE === "phase-production-build") {
+  //   throw new Error("supabaseServer called during build");
+  // }
+
   const cookieStore = cookies(); // sync
 
   return createServerClient(
@@ -25,8 +29,3 @@ export function supabaseServer() {
     }
   );
 }
-
-// const supabase = supabaseServer();
-// const { data } = await supabase.auth.getSession()
-// console.log("get session: ", data.session?.access_token);
-
