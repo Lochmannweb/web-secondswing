@@ -1,3 +1,5 @@
+// tsconfig.json styrer hvordan Typescript oversætter og analyserer koden
+// det handler om typekontrol, modulhåndtering og udvikleroplevelse.
 {
   "compilerOptions": {
     "target": "ES2017",
@@ -40,3 +42,31 @@
     "node_modules"
   ]
 }
+
+
+// tsconfig.json bruges til at styre, hvordan TypeScript analyserer og forstår projektets kode. 
+// I et Next.js-projekt laver TypeScript ikke selve transpileringen til JavaScript, men leverer 
+// typekontrol, modulhåndtering og udviklingsfejl, mens Next.js står for resten. 
+// Derfor er flere af indstillingerne tilpasset Next’ egen build-proces.
+
+// Indstillingen target: "ES2017" fortæller TypeScript, 
+// hvilket JavaScript-niveau koden skal forstås som, og det passer til moderne miljøer som Next.js. 
+// Under lib angiver man hvilke globale API’er der eksisterer i projektet, fx browserens DOM og de nyeste JavaScript-funktioner. 
+// allowJs: true gør det muligt at blande JavaScript- og TypeScript-filer
+// skipLibCheck: true springer typekontrol over i node_modules for at gøre build hurtigere. 
+// strict: true aktiverer alle TypeScripts strengeste regler og giver mere robust kode.
+
+// noEmit: true betyder, at TypeScript ikke må generere outputfiler, fordi Next.js håndterer det selv. 
+// esModuleInterop: true sørger for, at import af både CommonJS og ES-moduler fungerer problemfrit. 
+// module: "esnext" og moduleResolution: "bundler" matcher den måde Next.js forventer at håndtere imports på. 
+// resolveJsonModule: true gør det muligt at importere JSON-filer direkte. 
+// isolatedModules: true kræves af Next.js, fordi hver fil skal kunne transpiles separat. 
+// jsx: "react-jsx" aktiverer Reacts nyere JSX-transform, som ikke kræver import React øverst i filerne. 
+// incremental: true giver hurtigere fremtidige builds ved at gemme tidligere typechecks. 
+// Pluginet "next" tilføjer ekstra regler og hjælp fra Next.js’ egen TypeScript-integration.
+
+// paths giver mulighed for at bruge import-aliaser, så man kan skrive @/components/Button i stedet for lange relative stier. 
+// Under include beskriver man, hvilke filer TypeScript skal kigge på, fx projektets TypeScript-filer, Next.js’ egne typefiler og enkelte konfigurationsfiler. 
+// exclude fortæller, hvad der skal ignoreres, og node_modules er udelukket, fordi de pakker allerede er kompileret.
+
+// Samlet set definerer filen, hvordan TypeScript skal analysere, forstå og hjælpe med at kvalitetssikre projektets kode, mens selve transpileringen og bundlingen håndteres af Next.js.

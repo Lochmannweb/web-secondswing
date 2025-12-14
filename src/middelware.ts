@@ -46,13 +46,10 @@ export async function middleware(request: NextRequest) {
       "style-src 'self' 'unsafe-inline' 'unsafe-eval' blob: 'wasm-unsafe-eval'",
 
       // Supabase API's + Google OAuth redirect
-      "connect-src 'self' https://*.supabase.co hhts://accounts.google.com https://oauth2.googleapis.com",
+      "connect-src 'self' https://*.supabase.co ht ts://accounts.google.com https://oauth2.googleapis.com",
 
       // Next Image + Supabase storage 
       "img-src 'self'  blob: data: https://*.supabase.co",
-
-      // Inline styles tilladt 
-      "style-src 'self' 'unsafe-inline'",
 
       // Fonts må gerne komme os selv
       "font-src 'self'",
@@ -70,6 +67,7 @@ export async function middleware(request: NextRequest) {
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set("Permissions-Policy", "Camera=(), microphone=(), geolocation=()");
+  response.headers.set("X-Frame-Options", "SAMEORIGIN");
 
   return response;
 }
