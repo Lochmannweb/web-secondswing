@@ -1,8 +1,8 @@
 // Server side 
 
-import HeaderMenu from "@/app/components/Navigation/HeaderMenu";
 import "./globals.css";
 import ErrorBoundary from "../../ErrorBoundary";
+import { Providers } from "./providers";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
 
@@ -10,8 +10,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body>
         <ErrorBoundary>
-          <HeaderMenu />
-          {children}
+          <Providers>{children}</Providers> 
         </ErrorBoundary>
       </body>
     </html>
