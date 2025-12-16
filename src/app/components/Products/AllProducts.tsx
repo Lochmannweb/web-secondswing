@@ -89,8 +89,12 @@ const toggleFavorite = async (productId: string) => {
 
 
 
-  if (!products || products.length === 0) {
-    return <Alert severity="info">Der er ingen produkter tilgængelige i øjeblikket.</Alert>
+  // if (!products || products.length === 0) {
+  //   return <Alert severity="info">Der er ingen produkter tilgængelige i øjeblikket.</Alert>
+  // }
+
+  if (!userId) {
+    return <Alert severity="info">Du skal være logget ind for at kunne se produkter</Alert>
   }
 
 

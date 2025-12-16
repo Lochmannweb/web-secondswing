@@ -92,7 +92,7 @@ function HeaderMenu() {
             </Box>
 
             <Box sx={{ display: "flex", gap: "1rem" }}>
-                {!isMobile && (
+                {!isMobile && isLoggedIn && (
                     <>
                         <Button 
                             component={Link}
@@ -123,25 +123,22 @@ function HeaderMenu() {
                             }}>
                                 Shop
                         </Button>
-                        {isLoggedIn ? (
-                            <Button 
-                                href="/favoriter" 
-                                component={Link}
-                                sx={{ 
-                                    color: "white", 
-                                    borderBottom: "1px solid white",
-                                    fontSize: { xs: "0.5rem", sm: "0.7rem" },
-                                    "&:hover": { 
-                                        backgroundColor: "transparent", 
-                                        borderBottom: "1px solid darkgreen" 
-                                    } 
-                                }}>
-                                    Favoriter
-                            </Button>
-                        ) : ( <></> )}
+                        <Button 
+                            href="/favoriter" 
+                            component={Link}
+                            sx={{ 
+                                color: "white", 
+                                borderBottom: "1px solid white",
+                                fontSize: { xs: "0.5rem", sm: "0.7rem" },
+                                "&:hover": { 
+                                    backgroundColor: "transparent", 
+                                    borderBottom: "1px solid darkgreen" 
+                                } 
+                            }}>
+                                Favoriter
+                        </Button>
                     </>
                 )}
-
             </Box>
 
             <Box sx={{ display: "flex", gap: "1rem" }}>
