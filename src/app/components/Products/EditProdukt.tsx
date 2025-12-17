@@ -3,6 +3,7 @@
 
 "use client"
 
+import { updateProfile } from "@/app/actions"
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { Box, TextField, Button, Alert, MenuItem, Select, InputLabel, FormControl } from "@mui/material"
 import Image from "next/image"
@@ -108,7 +109,7 @@ export default function EditProduct({ productId }: EditProductProps) {
   }
 
   return (
-    <Box component="form" onSubmit={handleSubmit}>
+    <Box component="form" action={updateProfile} onSubmit={handleSubmit}>
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
         <Image
           src={imagePreview || "/placeholder.svg"}

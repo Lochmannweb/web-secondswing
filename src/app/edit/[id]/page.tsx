@@ -16,6 +16,7 @@ import {
   FormControl,
   OutlinedInput,
 } from "@mui/material"
+import { updateProfile } from "@/app/actions"
 
 type FormState = {
   title: string
@@ -212,7 +213,7 @@ export default function EditProductPage() {
   }
  
   return (
-    <Box component="form" onSubmit={handleSubmit} position={"absolute"} p={2} top={{ xs: "8rem", sm: "6rem" }} display={{ sm: "flex" }} justifyContent={{ sm: "center" }} gap={{ sm: "2rem" }} height={{ sm: "80vh" }}>
+    <Box component="form" action={updateProfile}  onSubmit={handleSubmit} position={"absolute"} p={2} top={{ xs: "8rem", sm: "6rem" }} display={{ sm: "flex" }} justifyContent={{ sm: "center" }} gap={{ sm: "2rem" }} height={{ sm: "80vh" }}>
 
       <Box justifySelf={"center"} alignSelf={"center"}>
           <Box mb={2}>
