@@ -16,6 +16,7 @@ import {
   OutlinedInput 
 } from "@mui/material"
 import Image from "next/image"
+import { updateProfile } from "@/app/actions"
 
 export default function CreateProduct() {
   const [ form, setForm ] = useState({
@@ -142,6 +143,7 @@ export default function CreateProduct() {
   return (
     <Box 
       component="form" 
+      action={updateProfile}
       onSubmit={handleSubmit} 
       p={2}
       pt={{ xs: "5rem" }} 
