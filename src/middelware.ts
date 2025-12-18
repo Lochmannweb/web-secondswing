@@ -46,20 +46,24 @@ export async function middleware(request: NextRequest) {
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "base-uri, 'self'",
+
+      "base-uri 'self'",
       "object-src 'none'",
       "frame-ancestors 'none'",
 
       // Next script og hydration
-      "style-src 'self' 'unsafe-inline' 'unsafe-eval' blob: 'wasm-unsafe-eval'",
+      "style-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'",
 
-      // Supabase API's + Google OAuth redirect
+      // styles
+      "style-src 'self' 'unsafe-inline'",
+
+      // Supabase API's + Google OAuth redirect / fetch / websocket
       "connect-src 'self' https://*.supabase.co htts://accounts.google.com https://oauth2.googleapis.com",
 
-      // Next Image + Supabase storage 
-      "img-src 'self'  blob: data: https://*.supabase.co",
+      // Images
+      "img-src 'self' data: blob: https://*.supabase.co",
 
-      // Fonts må gerne komme os selv
+      // Fonts
       "font-src 'self'",
 
       // Tillad Google 0Auth redirect
@@ -80,15 +84,15 @@ export async function middleware(request: NextRequest) {
 
   response.headers.set(
     "Referrer-Policy", 
-    "strict-origin-when-cross-origin"
+    "strict-origin-when-cross-origin",
   );
 
   response.headers.set(
     "Permissions-Policy", 
-    "Camera=(), microphone=(), geolocation=()"
+    "camera=(), microphone=(), geolocation=()"
   );
 
-  response.headers.set("X-Frame-Options", "SAMEORIGIN");
+  response.headers.set("X-Frame-Options", "DENY");
 
   return response;
 }
