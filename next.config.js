@@ -60,7 +60,10 @@ const nextConfig = {
               "base-uri 'self'",
               "object-src 'none'",
               "frame-ancestors 'none'",
+              
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'",
+              "worker-src 'self' blob:",
+
               "style-src 'self' 'unsafe-inline'",
               "connect-src 'self' https://*.supabase.co https://accounts.google.com https://oauth2.googleapis.com",
               "img-src 'self' data: blob: https://*.supabase.co https://lh3.googleusercontent.com",
