@@ -6,6 +6,7 @@ import { getSupabaseClient } from '@/app/lib/supabaseClient';
 import { Box, Button, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material'
 import Link from 'next/link';
 import { useEffect, useState } from 'react'
+import { div } from 'three/tsl';
 
 function HeaderMenu() {
     const supabase = getSupabaseClient()
@@ -63,103 +64,80 @@ function HeaderMenu() {
     return (
         <>
         {/* TOP MENU */}
-        <Box 
-            sx={{ 
-                display: "flex", 
-                justifyContent: "space-between", 
-                gap: 2, 
-                zIndex: 10, 
-                position: "absolute", 
-                padding: 2, 
-                width: "100%",  
-                backgroundColor: "#00000070"
-            }}
-        >
-            <Box>
+        <Box className="header-menu" >
+            <Box alignSelf={"center"}>
                 <Button 
                     component={Link}
                     href="/" 
                     sx={{ 
                         color: "white", 
-                        borderBottom: "1px solid white", 
-                        fontSize: { xs: "0.5rem", sm: "0.7rem" }, 
+                        padding: 0,
+                        fontSize: { xs: "10px", sm: "0.7rem" }, 
+                        textTransform: "uppercase",
                         "&:hover": { 
                             backgroundColor: "transparent", 
-                            borderBottom: "1px solid darkgreen",
                         } 
                     }}
-                >Second Swing</Button>
+                >
+                    <p>Second Swing</p>
+                </Button>
             </Box>
 
-            <Box sx={{ display: "flex", gap: "1rem" }}>
+            <Box sx={{ display: "flex" }}>
                 {!isMobile && isLoggedIn && (
                     <>
                         <Button 
-                            component={Link}
-                            href="/about" 
-                            sx={{ 
-                                color: "white", 
-                                borderBottom: "1px solid white",
-                                fontSize: { xs: "0.5rem", sm: "0.7rem" },
-                                "&:hover": { 
-                                    backgroundColor: "transparent", 
-                                    borderBottom: "1px solid darkgreen" 
-                                }  
-                            }}>
-                                Om os
-                        </Button>
-                        
-                        <Button 
                             href="/shop" 
+                            startIcon={
+                                <img src="/ikoner/home.png" alt="home" width={20} height={20} />
+                            }
                             component={Link}
                             sx={{ 
                                 color: "white", 
-                                borderBottom: "1px solid white",
+                                padding: 0,
                                 fontSize: { xs: "0.5rem", sm: "0.7rem" },
                                 "&:hover": { 
                                     backgroundColor: "transparent", 
-                                    borderBottom: "1px solid darkgreen" 
                                 } 
                             }}>
-                                Shop
                         </Button>
                         <Button 
                             href="/favoriter" 
+                            startIcon={
+                                <img src="/ikoner/fav.png" alt="fav" width={20} height={20} />
+                            }
                             component={Link}
                             sx={{ 
                                 color: "white", 
-                                borderBottom: "1px solid white",
+                                padding: 0,
                                 fontSize: { xs: "0.5rem", sm: "0.7rem" },
                                 "&:hover": { 
                                     backgroundColor: "transparent", 
-                                    borderBottom: "1px solid darkgreen" 
                                 } 
                             }}>
-                                Favoriter
                         </Button>
                     </>
                 )}
-            </Box>
 
-            <Box sx={{ display: "flex", gap: "1rem" }}>
                 {isLoggedIn ? (
                         <>
                             {/* DESKTOP */}
                             {!isMobile && (
                                 <Button
                                     href='/profile'
+                                    startIcon={
+                                        <img src="/ikoner/profile.png" alt="profile" width={20} height={20} />
+                                    }
                                     component={Link}
                                     sx={{ 
                                         color: "white", 
-                                        borderBottom: "1px solid white",
+                                        padding: 0,
                                         fontSize: { xs: "0.5rem", sm: "0.7rem" },
                                         "&:hover": { 
                                             backgroundColor: "transparent", 
-                                            borderBottom: "1px solid darkgreen" 
                                         }
                                     }}
                                 >
-                                    Profil
                                 </Button>
                             )}
 
@@ -170,7 +148,6 @@ function HeaderMenu() {
                                         onClick={handleOpen}
                                         sx={{
                                             color: "white",
-                                            borderBottom: "1px solid white",
                                             fontSize: { xs: "0.5rem", sm: "1rem" },
                                         }}
                                     >
@@ -223,12 +200,34 @@ function HeaderMenu() {
                             )}
                         </>
                 ) : (
-                    <Button
-                        sx={{ color: "white", borderBottom: "1px solid white", fontSize: { xs: "0.5rem", sm: "0.7rem" }, }}
-                        onClick={handleGoogleLogin}
-                    >
-                        Login / Signup
-                    </Button>
+                    <div>
+                        <Button
+                            startIcon={
+                                <img src="/ikoner/profile.png" alt="login" width={20} height={20} />
+                            }
+                            sx={{ color: "white", fontSize: { xs: "10px", sm: "0.7rem" }, }}
+                            onClick={handleGoogleLogin}
+                        >
+                        </Button>
+                    </div>
+                    // <div>
+                    //     <Button
+                    //         startIcon={
+                    //             <img src="/ikoner/profile.png" alt="login" width={10} height={10} />
+                    //         }
+                    //         sx={{ color: "white", fontSize: { xs: "10px", sm: "0.7rem" }, }}
+                    //         onClick={handleGoogleLogin}
+                    //     >
+                    //         Login
+                    //     </Button>
+                    //     |
+                    //     <Button
+                    //         sx={{ color: "white", fontSize: { xs: "10px", sm: "0.7rem" }, }}
+                    //         onClick={handleGoogleLogin}
+                    //     >
+                    //         Signup
+                    //     </Button>
+                    // </div>
                 )}
             </Box>
         </Box>

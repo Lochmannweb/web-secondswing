@@ -108,8 +108,8 @@ const toggleFavorite = async (productId: string) => {
             {product.image_url && (
               <Box>
                 {product.sold && (
-                <Box position={"absolute"} p={2} sx={{ backgroundColor: "#000000c9", color: "white" }} width={"auto"}>
-                    <Typography textTransform={"uppercase"} alignSelf={"center"} justifySelf={"center"}>Solgt</Typography>
+                <Box className="shop-soldout">
+                    <p>Solgt</p>
                 </Box>
                 )}
                 <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />

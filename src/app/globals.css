@@ -5,6 +5,102 @@
 }
 
 body {
-  background-color: black;
-  color: "white";
+  background-color: #191919;
+  color: #FFFFFF;
+}
+
+.header-menu {
+  display: flex;
+  justify-content: space-between; 
+  border-radius: 5px;
+  width: stretch;
+  z-index: 10;
+  position: fixed; 
+  margin: 0;
+  bottom: 0;
+  padding: 10px 0px 10px 25px;
+  background-color: #00000080;
+}
+
+.frontpage-bg {
+  background-image: url('/golf-bg-mobile.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 92.5vh;
+  color: black;
+  text-align: center;
+}
+
+.frontpage-div {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding-top: 10%;
+} 
+
+.frontpage-div h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+} 
+
+.frontpage-div p {
+  /* color: #f2f2f2; */
+  color: black;
+} 
+
+.frontpage-div p:first-of-type {
+  margin-bottom: 5px;
+} 
+
+/* solgt */
+.shop-soldout {
+  position: absolute; 
+  padding: 8px 25px; 
+  margin: 5px;
+  border-radius: 2px;
+  background-color: #0000004d; 
+  color: white; 
+  width: auto;
+}
+.shop-soldout p {
+  font-size: 10px;
+  text-transform: uppercase; 
+  font-family: sans-serif;
+}
+
+
+@media (min-width: 599px) {
+  .header-menu {
+    margin: 20px;
+    bottom: auto;
+    background-color: #00000036;
+  }
+
+  .frontpage-bg {
+    background-image: url('/golf-bg.jpg');
+    transform: scaleX(-1);
+    height: 100vh;
+  }
+
+  .frontpage-div {
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    align-items: start;
+    transform: scaleX(-1);
+    height: 100vh;
+    padding: 50px;
+    justify-content: center;
+    right: 0;
+  } 
+
+  .frontpage-div h1 {
+    font-size: 5rem;
+    margin-bottom: 20px;
+  } 
+
+  .frontpage-div p {
+    font-size: 20px;
+  }
 }
