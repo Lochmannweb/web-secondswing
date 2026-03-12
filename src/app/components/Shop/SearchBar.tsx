@@ -53,7 +53,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                     endAdornment: (
                         <InputAdornment position="end">
                             <IconButton type="submit" edge="end">
-                                <SearchIcon />
+                                <SearchIcon sx={{ color: "white" }} />
                             </IconButton>
                         </InputAdornment>
                     ),
