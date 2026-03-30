@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import SearchBar from "@/app/components/Shop/SearchBar"
 import AllProducts from "@/app/components/Products/AllProducts"
-import { Alert, Box } from "@mui/material"
+import { Alert, Box, Typography } from "@mui/material"
 import FilterButtons from "@/app/components/Shop/FilterButtons"
 
 interface Product {
@@ -92,16 +92,35 @@ export default function ShopPage() {
     setActiveFilter(filter)
   }
 
-  // if (loading) return <CircularProgress />
+  if (loading) return <Alert severity="info">Henter produkter...</Alert>
   if (error) return <Alert severity="error">{error}</Alert>
 
   return (
-    <Box 
-      sx={{ maxWidth: 1200, mx: "auto", p: 2, pb: "6rem" }}
-    >
-      <SearchBar onSearch={handleSearch} />
-      <FilterButtons activeFilter={activeFilter} onFilterChange={handleFilter} />
-      <AllProducts products={filteredProducts} />
+    <Box className={"shop-page"}>
+      <Box className="shop-page-header">
+        <Typography variant="overline" className="shop-page-kicker">
+          Shop
+        </Typography>
+        <Typography variant="h3" className="shop-page-title">
+          Brugt golfudstyr klar til næste runde.
+        </Typography>
+        <Typography className="shop-page-description">
+          Brugt golfudstyr, klar til næste runde.
+        </Typography>
+      </Box>
+      <Box className="shop-page-layout">
+        <Box className="shop-page-sidebar">
+          <SearchBar onSearch={handleSearch} />
+          <FilterButtons activeFilter={activeFilter} onFilterChange={handleFilter} />
+        </Box>
+        <Box className="shop-page-products">
+          {filteredProducts.length === 0 ? (
+            <Alert severity="info">Ingen produkter matcher din søgning endnu.</Alert>
+          ) : (
+            <AllProducts products={filteredProducts} />
+          )}
+        </Box>
+      </Box>
     </Box>
   )
 }

@@ -1,94 +1,62 @@
 export const dynamic = 'force-dynamic';
 
 import { aboutData } from "@/./app/Content/about"
-import { Box, Divider } from "@mui/material";
 
 export default function Home() {
   return (
-    <>
-    <Box 
-        sx={{
-            width: { xs: "90%", sm: "50%" },
-            pt: { xs: "6rem", sm: "8rem" },
-            pb: { xs: "6rem" },
-            display: "grid",
-            gap: "2rem",
-            m: "auto"
-        }} >
-            <Box>
-                <h2 style={{ color: "white", transform: "uppercase" }}>{aboutData.Company.title}</h2>
-                <Divider sx={{ backgroundColor: "white", width: "100%", mb: 1 }} />
-                <Box 
-                    sx={{
-                        color: "gray",
-                        mb: 2,
-                        "& > p:not(:last-child)": { mb: 2 }
-                    }}>
-                    <p>{aboutData.Company.contentTop}</p>                
-                    <p>{aboutData.Company.contentMidt}</p>                
-                    <p>{aboutData.Company.contentBottom}</p>  
-                </Box>              
-            </Box>
+        <main className="about-page">
+            <section className="about-layout">
+                <div className="about-visual">
+                    <div className="about-visual-overlay" />
+                    <div className="about-visual-copy">
+                        <p className="about-visual-kicker">About</p>
+                        <h1>Second Swing</h1>
+                    </div>
+                </div>
 
-            <Box>
-                <h2 style={{ color: "white" }}>{aboutData.OurMission.title}</h2>
-                <Divider sx={{ backgroundColor: "white", width: "100%", mb: 1 }} />
-                <Box 
-                    sx={{
-                        color: "gray",
-                        mb: 2,
-                        "& > p:not(:last-child)": { mb: 2 }
-                    }}>
-                    <p>{aboutData.OurMission.contentTop}</p>                
-                    <p>{aboutData.OurMission.contentMidt}</p>                
-                </Box>              
-            </Box>
+                <aside className="about-panel">
+                    <div className="about-panel-scroll">
+                        <section className="about-section-block">
+                            <h2>Our Company</h2>
+                            <p>{aboutData.Company.contentTop}</p>
+                            <p>{aboutData.Company.contentMidt}</p>
+                            <p>{aboutData.Company.contentBottom}</p>
+                        </section>
 
-            <Box>
-                <h2 style={{ color: "white" }}>{aboutData.OurTeam.title}</h2>
-                <Divider sx={{ backgroundColor: "white", width: "100%", mb: 1 }} />
-                <Box 
-                    sx={{
-                        color: "gray",
-                        mb: 2,
-                        "& > p:not(:last-child)": { mb: 2 }
-                    }}>
-                    <p>{aboutData.OurTeam.contentTop}</p>                
-                    <p>{aboutData.OurTeam.contentMidt}</p>                
-                </Box>              
-            </Box>
+                        <section className="about-section-block">
+                            <h2>Our Mission</h2>
+                            <p>{aboutData.OurMission.contentTop}</p>
+                            <p>{aboutData.OurMission.contentMidt}</p>
+                        </section>
 
-            <Box>
-                <h2 style={{ color: "white" }}>{aboutData.ChooseUs.title}</h2>
-                <Divider sx={{ backgroundColor: "white", width: "100%", mb: 1 }} />
-                <Box 
-                    sx={{
-                        color: "gray",
-                        display: "grid",
-                        gap: "1rem"
-                    }}>
-                        <Box>
-                            <h5 style={{ color: "white" }}>{aboutData.ChooseUs.reasonOne.title}</h5>                
-                            <p>{aboutData.ChooseUs.reasonOne.content}</p>                
-                        </Box>
+                        <section className="about-section-block">
+                            <h2>The Team</h2>
+                            <p>{aboutData.OurTeam.contentTop}</p>
+                            <p>{aboutData.OurTeam.contentMidt}</p>
+                        </section>
 
-                        <Box>
-                            <h5 style={{ color: "white" }}>{aboutData.ChooseUs.reasonTwo.title}</h5>                
-                            <p>{aboutData.ChooseUs.reasonTwo.content}</p>                
-                        </Box>
-
-                        <Box>
-                            <h5 style={{ color: "white" }}>{aboutData.ChooseUs.reasonThree.title}</h5>                
-                            <p>{aboutData.ChooseUs.reasonThree.content}</p>                
-                        </Box>
-
-                        <Box>
-                            <h5 style={{ color: "white" }}>{aboutData.ChooseUs.reasonFour.title}</h5>                
-                            <p>{aboutData.ChooseUs.reasonFour.content}</p>                
-                        </Box>
-                </Box>              
-            </Box>
-    </Box>
-    </>
+                        <section className="about-section-block about-reasons">
+                            <h2>Why Choose Us</h2>
+                            <div>
+                                <h3>{aboutData.ChooseUs.reasonOne.title}</h3>
+                                <p>{aboutData.ChooseUs.reasonOne.content}</p>
+                            </div>
+                            <div>
+                                <h3>{aboutData.ChooseUs.reasonTwo.title}</h3>
+                                <p>{aboutData.ChooseUs.reasonTwo.content}</p>
+                            </div>
+                            <div>
+                                <h3>{aboutData.ChooseUs.reasonThree.title}</h3>
+                                <p>{aboutData.ChooseUs.reasonThree.content}</p>
+                            </div>
+                            <div>
+                                <h3>{aboutData.ChooseUs.reasonFour.title}</h3>
+                                <p>{aboutData.ChooseUs.reasonFour.content}</p>
+                            </div>
+                        </section>
+                    </div>
+                </aside>
+            </section>
+        </main>
   );
 }

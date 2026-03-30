@@ -6,7 +6,6 @@ import { getSupabaseClient } from '@/app/lib/supabaseClient';
 import { Box, Button, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material'
 import Link from 'next/link';
 import { useEffect, useState } from 'react'
-import { div } from 'three/tsl';
 
 function HeaderMenu() {
     const supabase = getSupabaseClient()
@@ -69,53 +68,35 @@ function HeaderMenu() {
                 <Button 
                     component={Link}
                     href="/" 
-                    sx={{ 
-                        color: "white", 
-                        padding: 0,
-                        fontSize: { xs: "10px", sm: "0.7rem" }, 
-                        textTransform: "uppercase",
-                        "&:hover": { 
-                            backgroundColor: "transparent", 
-                        } 
-                    }}
+                    className="header-menu-logo"
                 >
                     <p>Second Swing</p>
                 </Button>
             </Box>
 
-            <Box sx={{ display: "flex" }}>
-                {!isMobile && isLoggedIn && (
+            <Box className="header-menu-container">
+                {!isMobile && (
                     <>
                         <Button 
                             href="/shop" 
-                            startIcon={
-                                <img src="/ikoner/home.png" alt="home" width={20} height={20} />
-                            }
                             component={Link}
-                            sx={{ 
-                                color: "white", 
-                                padding: 0,
-                                fontSize: { xs: "0.5rem", sm: "0.7rem" },
-                                "&:hover": { 
-                                    backgroundColor: "transparent", 
-                                } 
-                            }}>
+                            className="header-menu-nav-link">
+                            Shop
                         </Button>
                         <Button 
-                            href="/favoriter" 
-                            startIcon={
-                                <img src="/ikoner/fav.png" alt="fav" width={20} height={20} />
-                            }
+                            href="/about" 
                             component={Link}
-                            sx={{ 
-                                color: "white", 
-                                padding: 0,
-                                fontSize: { xs: "0.5rem", sm: "0.7rem" },
-                                "&:hover": { 
-                                    backgroundColor: "transparent", 
-                                } 
-                            }}>
+                            className="header-menu-nav-link">
+                            Om os
                         </Button>
+                        {isLoggedIn && (
+                            <Button 
+                                href="/favoriter" 
+                                component={Link}
+                                className="header-menu-nav-link">
+                                Favoritter
+                            </Button>
+                        )}
                     </>
                 )}
 
@@ -123,22 +104,22 @@ function HeaderMenu() {
                         <>
                             {/* DESKTOP */}
                             {!isMobile && (
-                                <Button
-                                    href='/profile'
-                                    startIcon={
-                                        <img src="/ikoner/profile.png" alt="profile" width={20} height={20} />
-                                    }
-                                    component={Link}
-                                    sx={{ 
-                                        color: "white", 
-                                        padding: 0,
-                                        fontSize: { xs: "0.5rem", sm: "0.7rem" },
-                                        "&:hover": { 
-                                            backgroundColor: "transparent", 
-                                        }
-                                    }}
-                                >
-                                </Button>
+                                <>
+                                    <Button
+                                        href='/profile?section=createProduct'
+                                        component={Link}
+                                        className="header-menu-sell-button"
+                                    >
+                                        Sælg udstyr
+                                    </Button>
+                                    <Button
+                                        href='/profile'
+                                        component={Link}
+                                        className="header-menu-profile-button"
+                                    >
+                                        Profil
+                                    </Button>
+                                </>
                             )}
 
                             {/* MOBIL */}
@@ -146,10 +127,7 @@ function HeaderMenu() {
                                 <>
                                     <Button
                                         onClick={handleOpen}
-                                        sx={{
-                                            color: "white",
-                                            fontSize: { xs: "0.5rem", sm: "1rem" },
-                                        }}
+                                        className="header-menu-profile-mobile"
                                     >
                                         Profil
                                     </Button>
@@ -193,7 +171,35 @@ function HeaderMenu() {
                                             href="/about"
                                             onClick={handleClose}
                                         >
-                                            Om us
+                                            Om os
+                                        </MenuItem>
+                                        <MenuItem
+                                            component={Link}
+                                            href="/faq"
+                                            onClick={handleClose}
+                                        >
+                                            FAQ
+                                        </MenuItem>
+                                        <MenuItem
+                                            component={Link}
+                                            href="/kontakt"
+                                            onClick={handleClose}
+                                        >
+                                            Kontakt
+                                        </MenuItem>
+                                        <MenuItem
+                                            component={Link}
+                                            href="/saelger"
+                                            onClick={handleClose}
+                                        >
+                                            Saelgerguide
+                                        </MenuItem>
+                                        <MenuItem
+                                            component={Link}
+                                            href="/profile?section=createProduct"
+                                            onClick={handleClose}
+                                        >
+                                            Sælg udstyr
                                         </MenuItem>
                                     </Menu>
                                 </>
@@ -202,32 +208,12 @@ function HeaderMenu() {
                 ) : (
                     <div>
                         <Button
-                            startIcon={
-                                <img src="/ikoner/profile.png" alt="login" width={20} height={20} />
-                            }
-                            sx={{ color: "white", fontSize: { xs: "10px", sm: "0.7rem" }, }}
+                            className="header-menu-login-button"
                             onClick={handleGoogleLogin}
                         >
+                            Log ind
                         </Button>
                     </div>
-                    // <div>
-                    //     <Button
-                    //         startIcon={
-                    //             <img src="/ikoner/profile.png" alt="login" width={10} height={10} />
-                    //         }
-                    //         sx={{ color: "white", fontSize: { xs: "10px", sm: "0.7rem" }, }}
-                    //         onClick={handleGoogleLogin}
-                    //     >
-                    //         Login
-                    //     </Button>
-                    //     |
-                    //     <Button
-                    //         sx={{ color: "white", fontSize: { xs: "10px", sm: "0.7rem" }, }}
-                    //         onClick={handleGoogleLogin}
-                    //     >
-                    //         Signup
-                    //     </Button>
-                    // </div>
                 )}
             </Box>
         </Box>

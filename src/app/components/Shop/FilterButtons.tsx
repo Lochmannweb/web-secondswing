@@ -14,14 +14,10 @@ export default function FilterButtons({ activeFilter, onFilterChange }: FilterBu
       direction="row" 
       spacing={2} 
       justifyContent="start" 
-      sx={{ mb: 3, borderRadius: "3rem" }}
+      sx={{ mb: 3 }}
       >
 
       <Button 
-        style={{ 
-          borderRadius: "3rem", 
-          padding: "0 1rem" 
-        }} 
         sx={getButtonStyles(activeFilter, "all")} 
         onClick={() => onFilterChange("all")}
         >
@@ -29,10 +25,6 @@ export default function FilterButtons({ activeFilter, onFilterChange }: FilterBu
       </Button>
 
       <Button 
-        style={{ 
-          borderRadius: "3rem", 
-          padding: "0 1rem" 
-        }} 
         sx={getButtonStyles(activeFilter, "female")} 
         onClick={() => onFilterChange("female")}
         >
@@ -40,10 +32,6 @@ export default function FilterButtons({ activeFilter, onFilterChange }: FilterBu
         </Button>
 
       <Button 
-        style={{ 
-          borderRadius: "3rem", 
-          padding: "0 1rem" 
-        }}
         sx={getButtonStyles(activeFilter, "male")} 
         onClick={() => onFilterChange("male")}
         >

@@ -20,40 +20,20 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         <Box
             component="form"
             onSubmit={handleSubmit}
-            sx={{ mb: 3, mt: { xs: "5rem", s: "3rem" }, display: "flex", justifyContent: "center", border: "none" }}
+            className="SearchBar-form"
         >   
             <TextField
                 variant="outlined"
                 placeholder="Søg efter produkter..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                sx={{
-                    width: "100%",
-                    "& .MuiOutlinedInput-root": {
-                    borderRadius: "0.5rem",
-                    "& fieldset": {
-                        borderColor: "gray", 
-                    },
-                    "&:hover fieldset": {
-                        borderColor: "white",
-                    },
-                    "&.Mui-focused fieldset": {
-                        borderColor: "white", 
-                    },
-                    },
-                    input: { color: "white" },
-                }}
+                className="SearchBar-field"
                 InputProps={{
-                    sx: { 
-                        color: "white",
-                        "&:hover": {
-                            border: "none"
-                        }
-                    },
+                    className: "SearchBar-input",
                     endAdornment: (
                         <InputAdornment position="end">
-                            <IconButton type="submit" edge="end">
-                                <SearchIcon sx={{ color: "white" }} />
+                            <IconButton type="submit" edge="end" className="SearchBar-button">
+                                <SearchIcon className="SearchBar-icon" />
                             </IconButton>
                         </InputAdornment>
                     ),

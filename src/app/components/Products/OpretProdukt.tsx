@@ -40,17 +40,7 @@ export default function CreateProduct() {
   const supabase = getSupabaseClient();
 
 
-  //  Shared mui props
-  const inputStyle = {
-    "& .MuiOutlinedInput-root": {
-      color: "white",
-      "& fieldset": { borderColor: "none" },
-      "&:hover fieldset": { borderColor: "none",  },
-      "&.Mui-focused fieldset": { borderColor: "none" },
-    },
-    "& .MuiInputLabel-root": { color: "gray" },
-    "& .MuiInputLabel-root.Mui-focused": { color: "gray" },
-  }
+
 
 
   
@@ -144,25 +134,20 @@ export default function CreateProduct() {
     <Box 
       component="form" 
       action={updateProfile}
-      onSubmit={handleSubmit} 
-      p={2}
-      pt={{ xs: "5rem" }} 
-      display={{ xs: "grid", sm: "flex" }} 
-      gap={"2rem"}
+      onSubmit={handleSubmit}
+      className="opret-form"
       >
-      <Box justifySelf={"center"} alignSelf={"center"} width={"100%"}>
-          <Box>
-            <Image
-              src={imagePreview || "/placeholderprofile.jpg"}
-              alt="Valgt billede"
-              width={800}
-              height={100}
-              style={{ width: "100%", height: "60vh", objectFit: "cover", borderRadius: "0.3rem" }}
-            />
-          </Box>
+      <Box className="opret-image-wrap">
+          <Image
+            src={imagePreview || "/placeholderprofile.jpg"}
+            alt="Valgt billede"
+            width={800}
+            height={100}
+            className="opret-image"
+          />
       </Box>
 
-      <Box sx={{ width: "100%", backgroundColor: "#121212ff", borderRadius: "0.3rem"}}>
+      <Box className="opret-fields">
           <TextField
             label="Title *"
             variant="outlined"
@@ -170,7 +155,7 @@ export default function CreateProduct() {
             onChange={(e) => updateField("title", e.target.value)} 
             required 
             fullWidth
-            sx={inputStyle}
+            className="opret-input-field"
           />
 
           <TextField 
@@ -180,13 +165,13 @@ export default function CreateProduct() {
             onChange={(e) => updateField("description", e.target.value)} 
             required 
             fullWidth
-            sx={inputStyle}
+            className="opret-input-field"
           />
 
           <FormControl 
             fullWidth 
             required 
-            sx={inputStyle}
+            className="opret-select-field"
           >
             <InputLabel>Farve</InputLabel>
             <Select
@@ -203,7 +188,7 @@ export default function CreateProduct() {
           <FormControl 
             fullWidth 
             required 
-            sx={inputStyle}
+            className="opret-select-field"
           >
             <InputLabel>Størrelse</InputLabel>
           
@@ -212,7 +197,6 @@ export default function CreateProduct() {
               value={form.size}
               onChange={(e) => updateField("size", e.target.value as "XS" | "S" | "M" | "L" | "XL")}
               input={ <OutlinedInput label="Størrelse" /> }
-              sx={{ color: "white" }}
             >
               <MenuItem value="XS">XS</MenuItem>
               <MenuItem value="S">S</MenuItem>
@@ -225,7 +209,7 @@ export default function CreateProduct() {
           <FormControl 
             fullWidth 
             required 
-            sx={inputStyle}
+            className="opret-select-field"
           >
             <InputLabel>Køn</InputLabel>
           
@@ -233,7 +217,6 @@ export default function CreateProduct() {
               value={form.gender}
               onChange={(e) => updateField("gender", e.target.value as "female" | "male")}
               input={ <OutlinedInput label="Gender" /> }
-              sx={{ color: "white" }}
             >
               <MenuItem value="female">Female</MenuItem>
               <MenuItem value="male">Male</MenuItem>
@@ -243,7 +226,7 @@ export default function CreateProduct() {
           <FormControl 
             fullWidth 
             required 
-            sx={inputStyle}
+            className="opret-select-field"
           >
             <InputLabel>Tilstand</InputLabel>
           
@@ -266,7 +249,7 @@ export default function CreateProduct() {
             onChange={(e) => updateField("price", e.target.value)} 
             required 
             fullWidth
-            sx={inputStyle}
+            className="opret-input-field"
           />
 
 
@@ -274,16 +257,7 @@ export default function CreateProduct() {
             variant="outlined" 
             component="label"
             fullWidth
-            sx={{
-              backgroundColor: "transparent",
-              justifyContent: "left",
-              border: "none",
-              color: "gray",
-              "&:hover": {
-                backgroundColor: "#0a0a0aff",
-                border: "none"
-              }
-            }}
+            className="opret-image-button"
             >
               Vælg billede
 
@@ -300,23 +274,15 @@ export default function CreateProduct() {
             variant="contained" 
             size="large" 
             fullWidth
+            className="opret-submit-button"
             disabled={!form.title || !form.description || !form.color || !form.size || !form.gender || !form.stand || !form.price || !imageFile}
-            sx={{
-              backgroundColor: "transparent",
-              justifyContent: "left",
-              color: "gray",
-              marginTop: "2rem",
-              "&:hover": {
-                backgroundColor: "#0a0a0aff",
-              }
-            }}
           >
             {loading ? "Opretter..." : "Opret Produkt"}
           </Button>
 
 
           {message && (
-            <Alert severity={message.type} sx={{ pb: 2 }}>
+            <Alert severity={message.type}>
               {message.text}
             </Alert>
           )}

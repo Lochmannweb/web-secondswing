@@ -5,53 +5,508 @@
 }
 
 body {
-  background-color: #191919;
+  /* background-color: #191919; */
+  background-color: black;
   color: #FFFFFF;
+  font-family: Arial, Helvetica, sans-serif;
 }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background-color: #ffffff14;
+}
+
 
 .header-menu {
   display: flex;
-  justify-content: space-between; 
-  border-radius: 5px;
-  width: stretch;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+  width: calc(100% - 24px);
   z-index: 10;
-  position: fixed; 
-  margin: 0;
-  bottom: 0;
-  padding: 10px 0px 10px 25px;
-  background-color: #00000080;
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  top: 12px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  background-color: #00000026;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.frontpage-bg {
-  background-image: url('/golf-bg-mobile.jpg');
+.header-menu-logo {
+  color: white !important;
+  padding: 0;
+  font-size: 0.6rem !important;
+  text-transform: uppercase;
+}
+
+.header-menu-logo:hover {
+  background-color: transparent;
+}
+
+.header-menu-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-menu-nav-link {
+  color: white !important;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.6rem !important;
+}
+
+.header-menu-nav-link:hover {
+  background-color: transparent;
+}
+
+.header-menu-sell-button {
+  color: white !important;
+  background-color: #251d15 !important;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.6rem !important;
+}
+
+.header-menu-sell-button:hover {
+  background-color: #120e0a !important;
+}
+
+.header-menu-profile-button {
+  color: white !important;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.6rem !important;
+}
+
+.header-menu-profile-button:hover {
+  background-color: transparent;
+}
+
+.header-menu-profile-mobile {
+  color: white !important;
+  font-size: 0.6rem !important;
+}
+
+.header-menu-shop-button {
+  color: white !important;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.6rem !important;
+}
+
+.header-menu-shop-button:hover {
+  background-color: transparent;
+}
+
+.header-menu-login-button {
+  color: white !important;
+  font-size: 0.6rem !important;
+}
+
+.header-menu-mobile-menu {
+  background-color: #131313ff;
+  color: gray;
+  width: 15vh;
+  padding: 0;
+}
+
+.landing-page {
+  padding: 0;
+}
+
+.landing-hero {
+  position: relative;
+  overflow: hidden;
+  /* border-radius: 24px; */
+  min-height: 78vh;
+}
+
+.landing-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(135deg, rgba(8, 20, 11, 0.88), rgba(18, 18, 18, 0.52)), url('/golf-bg-mobile.jpg');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
-  height: 92.5vh;
-  color: black;
-  text-align: center;
+  transform: scaleX(-1);
+  z-index: -1;
 }
 
-.frontpage-div {
+/* .landing-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(200, 241, 105, 0.18), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(99, 149, 76, 0.22), transparent 35%);
+} */
+
+.landing-hero-content {
+  position: relative;
+  display: grid;
+  gap: 15px;
+  padding: 96px 24px 32px;
+}
+
+.landing-eyebrow,
+.landing-section-kicker,
+.shop-page-kicker {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffd7ae;
+  font-size: 0.6rem;
+}
+
+.landing-hero h1 {
+  max-width: 720px;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 0.95;
+}
+
+.landing-lead {
+  max-width: 560px;
+  color: #d3d7d0;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.landing-actions {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding-top: 10%;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.landing-primary-link,
+.landing-secondary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0.8rem 1.2rem;
+  border-radius: 999px;
+  transition: 0.2s ease;
+}
+
+.landing-primary-link {
+  background: #251d15;
+  color: white;
+  border-radius: 5px;
+  padding: 5px 25px;
+}
+
+.landing-primary-link:hover {
+  background: #120e0a;
+}
+
+.landing-secondary-link {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: white;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+}
+
+.landing-secondary-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.landing-card-grid,
+.landing-steps-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.landing-trust-grid {
+  display: flex;
+  gap: 0;
 } 
 
-.frontpage-div h1 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-} 
+.landing-trust-card {
+  background: none;
+  border: none;
+  border-right: 1px solid white;
+  border-radius: 0;
+}
 
-.frontpage-div p {
-  /* color: #f2f2f2; */
-  color: black;
-} 
+.landing-trust-card:first-child {
+  padding-left: 0;
+}
 
-.frontpage-div p:first-of-type {
-  margin-bottom: 5px;
-} 
+.landing-trust-card:last-child {
+  border-right: none;
+}
+
+.landing-info-card,
+.landing-step-card,
+.landing-cta-panel,
+.not-found-page {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* background: linear-gradient(180deg, rgba(30, 30, 30, 0.88), rgba(19, 19, 19, 0.96)); */
+  border-radius: 20px;
+}
+
+.landing-trust-card,
+.landing-info-card,
+.landing-step-card {
+  padding: 1.1rem;
+}
+
+.landing-section {
+  /* max-width: 1180px; */
+  /* margin: 0 auto; */
+  padding: 0 20px;
+}
+
+.landing-section-alt {
+  padding-top: 0;
+}
+
+.landing-section-heading {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.landing-section-heading h2,
+.landing-cta-panel h2,
+.shop-page-title,
+.not-found-page h1 {
+  font-size: clamp(2rem, 3vw, 2rem);
+  line-height: 1.05;
+}
+
+.landing-info-card h3,
+.landing-step-card h3 {
+  margin-bottom: 0.65rem;
+}
+
+.landing-info-card p,
+.landing-step-card p,
+.landing-cta-panel p,
+.shop-page-description,
+.not-found-page p {
+  color: #b6b6b6;
+  line-height: 1.6;
+}
+
+.landing-step-card span {
+  display: inline-block;
+  margin-bottom: 0.9rem;
+  color: #c8f169;
+  font-weight: 700;
+}
+
+.landing-cta-panel {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.shop-page {
+  margin: 0 auto;
+  padding: 96px 16px 40px;
+}
+
+.profile-content .shop-page {
+  padding-top: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.shop-page-header {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.shop-page-description {
+  max-width: 560px;
+}
+
+.info-page-header {
+  padding: 0px 20px;
+}
+
+.info-page-content {
+  max-width: 980px;
+  padding: 15px 16px 40px;
+  height: 70vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+
+.info-page-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.info-page-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.info-page-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+}
+
+.info-page-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.info-page-header {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 10px 0px;
+}
+
+.info-page-content {
+  display: grid;
+  gap: 1rem;
+}
+
+.info-section {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  /* background: linear-gradient(180deg, rgba(30, 30, 30, 0.88), rgba(19, 19, 19, 0.96)); */
+  border-radius: 0px;
+  padding: 1rem 0;
+}
+
+.info-section h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.55rem;
+}
+
+.info-section p {
+  color: #b6b6b6;
+  line-height: 1.6;
+}
+
+.about-page {
+  height: 100vh;
+  /* padding: 72px 12px 16px; */
+}
+
+.about-layout {
+  min-height: calc(100vh - 88px);
+  display: grid;
+  grid-template-columns: 1fr;
+  position: relative;
+  background-image: url('/golfbane.jpg');
+  background-size: cover;
+  background-position: center;
+  /* border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px; */
+  overflow: hidden;
+}
+
+.about-visual {
+  position: relative;
+  min-height: 42vh;
+}
+
+.about-visual-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.45));
+}
+
+.about-visual-copy {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  z-index: 1;
+}
+
+.about-visual-copy h1 {
+  color: #ffffff;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 0.95;
+}
+
+.about-visual-kicker {
+  color: #ffffff;
+  font-size: clamp(0.8rem, 2vw, 1.1rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.about-panel {
+  position: relative;
+  background: #040404c4;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.about-panel-scroll {
+  height: 50vh;
+  overflow-y: auto;
+  padding: 22px 20px;
+  display: grid;
+  gap: 1.1rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.about-panel-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.about-panel-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+}
+
+.about-section-block {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  padding-bottom: 1rem;
+}
+
+.about-section-block:last-child {
+  border-bottom: none;
+}
+
+.about-section-block h2 {
+  font-size: clamp(1.6rem, 2.5vw, 2.7rem);
+  margin-bottom: 0.45rem;
+  color: #f2f2f2;
+}
+
+.about-section-block h3 {
+  font-size: 1rem;
+  margin-bottom: 0.15rem;
+  color: #ffffff;
+}
+
+.about-section-block p {
+  color: #c6c6c6;
+  line-height: 1.4;
+  margin-bottom: 0.55rem;
+}
+
+.about-reasons {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.not-found-page {
+  max-width: 680px;
+  margin: 120px auto 0;
+  padding: 2rem;
+  display: grid;
+  gap: 1rem;
+  text-align: center;
+}
 
 /* solgt */
 .shop-soldout {
@@ -69,38 +524,597 @@ body {
   font-family: sans-serif;
 }
 
+.profile-layout {
+  display: grid;
+  margin: 110px 25px 0;
+  border: 1px solid #ffffff14;
+  border-radius: 5px;
+}
+
+.profile-sidebar,
+.profile-content {
+  width: 100%;
+}
+
+.profile-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 20px;
+}
+
+.profile-avatar {
+  width: 10%;
+  height: auto;
+  border-radius: 50%;
+}
+
+.profile-name {
+  font-size: 1rem;
+  align-self: center;
+}
+
+.profile-menu-group {
+  margin-top: 1rem;
+}
+
+.profile-logout-group {
+  margin-top: 1rem;
+  /* background-color: #121212ff; */
+  border-radius: 0.3rem;
+}
+
+.profile-action-button.MuiButton-root {
+  width: 100%;
+  color: white;
+  justify-content: flex-start;
+}
+
+.profile-action-button.MuiButton-root:hover {
+  background-color: #120e0a;
+}
+
+.profile-content {
+  color: white;
+}
+
+.profiloplysninger-grid {
+  width: 100%;
+}
+
+.profiloplysninger-image-wrap {
+  width: 100%;
+  max-width: none;
+  align-self: start;
+  justify-self: stretch;
+}
+
+.profiloplysninger-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - 260px);
+  object-fit: contain;
+}
+
+.profiloplysninger-form {
+  width: 100%;
+  min-width: 0;
+  justify-self: stretch;
+}
+
+.SearchBar-form {
+  display: flex;
+  justify-content: flex-start;
+  border: none;
+  margin-bottom: 24px;
+}
+
+.SearchBar-field {
+  width: 100%;
+  max-width: 420px;
+}
+
+.SearchBar-field .MuiOutlinedInput-root {
+  border-radius: 3px;
+}
+
+.SearchBar-field .MuiOutlinedInput-root fieldset {
+  border-bottom: 2px solid #373737;
+}
+
+.SearchBar-field .MuiOutlinedInput-root:hover fieldset {
+  border-bottom: 2px solid #373737;
+}
+
+.SearchBar-field .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-bottom: 2px solid #373737;
+}
+
+.SearchBar-field .MuiOutlinedInput-input,
+.SearchBar-input {
+  color: white;
+}
+
+.SearchBar-input:hover {
+  border: none;
+}
+
+.SearchBar-icon {
+  color: white;
+}
+
+.FavoriterPage-page {
+  max-width: 1420px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.FavoriterPage-title {
+  margin-bottom: 16px;
+  border-bottom: 1px solid white;
+  color: white;
+}
+
+.FavoriterPage-card {
+  position: relative;
+  height: 50vh;
+  background-color: transparent !important;
+  margin-top: 1rem;
+  
+}
+
+.FavoriterPage-cardContent {
+  color: white;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.FavoriterPage-cardHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.FavoriterPage-cardTitle {
+  font-size: 18px;
+}
+
+.FavoriterPage-iconButton.MuiIconButton-root {
+  position: absolute;
+  top: 13rem;
+  right: -6px;
+  color: white;
+}
+
+.FavoriterPage-description {
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.FavoriterPage-price {
+  position: relative;
+  left: 0rem;
+  align-self: flex-end;
+  border-radius: 3rem;
+  font-size: 0.8rem;
+}
+
+.FavoriterPage-linkButton.MuiButton-root {
+  position: absolute;
+  bottom: 1rem;
+  display: flex;
+  justify-self: center;
+  width: 100%;
+  padding: 0.3rem 1rem;
+  border: 1px solid gray;
+  color: white;
+  font-size: 10px;
+}
+
+.FavoriterPage-linkButton.MuiButton-root:hover {
+  border: 1px solid darkgreen;
+  background-color: darkgreen;
+  color: white;
+}
+
 
 @media (min-width: 599px) {
   .header-menu {
-    margin: 20px;
-    bottom: auto;
-    background-color: #00000036;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    width: calc(100% - 40px);
   }
 
-  .frontpage-bg {
-    background-image: url('/golf-bg.jpg');
-    transform: scaleX(-1);
-    height: 100vh;
-  }
+  /* .landing-page {
+    padding: 20px 16px 17px;
+  } */
 
-  .frontpage-div {
+  .landing-section {
     display: flex;
     position: absolute;
-    flex-direction: column;
-    align-items: start;
-    transform: scaleX(-1);
-    height: 100vh;
-    padding: 50px;
-    justify-content: center;
-    right: 0;
-  } 
-
-  .frontpage-div h1 {
-    font-size: 5rem;
-    margin-bottom: 20px;
-  } 
-
-  .frontpage-div p {
-    font-size: 20px;
+    bottom: 0;
+    padding: 0 0 0 25px;
+    gap: 30rem;
+    height: 18vh;
   }
+
+  .landing-info-card {
+    backdrop-filter: blur(12px);
+    border-radius: 0;
+    background: #0000001f;
+  }
+
+  .landing-card-grid .landing-info-card:nth-child(1) {
+    background: #251d1500;
+    backdrop-filter: blur(1px);
+  }
+
+  .landing-card-grid .landing-info-card:nth-child(2) {
+    background: #0000002e;
+    backdrop-filter: blur(3px);
+  }
+
+  .landing-card-grid .landing-info-card:nth-child(3) {
+    background: #0000006b;
+    backdrop-filter: blur(5px);
+  }
+
+  .landing-card-grid {
+    gap: 0;
+  }
+
+  .landing-hero {
+    min-height: 100vh;
+  }
+
+  .landing-hero::before {
+    background-image: linear-gradient(180deg, #000000a1, #ffffff00), url(/golf-bg.jpg);
+  }
+
+  .landing-hero-content {
+    padding: 200px 25px 48px;
+  }
+
+
+  .landing-card-grid,
+  .landing-steps-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .profile-layout {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .profile-sidebar {
+    width: 30%;
+    flex: 0 0 30%;
+  }
+
+  .profile-content {
+    width: 70%;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .profile-box {
+    color: white;
+    border-right: 1px solid #ffffff14;
+    height: 85.5vh;
+    padding: 20px;
+    border-radius: 0rem;
+  }
+
+  .SearchBar-form {
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+  }
+
+  .FavoriterPage-card {
+    height: 45vh;
+  }
+
+  .FavoriterPage-price {
+    left: 0rem;
+  }
+
+  .shop-page {
+    padding: 120px 23px 40px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    /* gap: 2rem; */
+    align-items: start;
+  }
+
+  .profile-content .shop-page {
+    padding-top: 10px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .shop-page-header {
+    display: grid;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .shop-page-layout {
+    display: contents;
+  }
+
+  .shop-page-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    grid-column: 1;
+    grid-row: 2 / 4;
+  }
+
+  .shop-page-products {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 1rem;
+    grid-column: 2;
+    grid-row: 1 / 4;
+    margin-top: 3rem;
+  }
+
+  .shop-page-products::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .shop-page-products::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .shop-page-products::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+
+  .shop-page-products::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+}
+
+@media (min-width: 900px) {
+  .profiloplysninger-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    width: 100%;
+    padding-top: 15px;
+    column-gap: 16px;
+    align-items: start;
+    justify-items: stretch;
+  }
+
+  /* .about-page {
+    padding: 72px 18px 18px;
+  } */
+
+  .about-layout {
+    grid-template-columns: 1fr minmax(420px, 48%);
+    height: 100vh;
+    background-position: 36% center;
+  }
+
+  .about-visual {
+    min-height: auto;
+  }
+
+  .about-visual-copy {
+    left: 20px;
+    bottom: 20px;
+  }
+
+  .about-panel-scroll {
+    height: 100vh;
+    padding: 105px 34px;
+  }
+
+  .info-page-content {
+    padding: 0;
+    max-width: none;
+  }
+}
+
+/* OpretProdukt */
+.opret-form {
+  display: grid;
+  gap: 2rem;
+  padding-top: 15px;
+  padding-right: 15px;
+}
+
+.opret-image-wrap {
+  width: 100%;
+  align-self: center;
+  justify-self: center;
+}
+
+.opret-image {
+  width: 100%;
+  height: 60vh;
+  object-fit: cover;
+  border-radius: 0.3rem;
+  display: block;
+}
+
+.opret-fields {
+  width: 100%;
+  background-color: #121212ff;
+  border-radius: 0.3rem;
+}
+
+.opret-input-field .MuiOutlinedInput-root {
+  color: white;
+}
+
+.opret-input-field .MuiOutlinedInput-root fieldset {
+  border-color: transparent;
+}
+
+.opret-input-field .MuiOutlinedInput-root:hover fieldset {
+  border-color: transparent;
+}
+
+.opret-input-field .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: transparent;
+}
+
+.opret-input-field .MuiInputLabel-root {
+  color: gray;
+}
+
+.opret-input-field .MuiInputLabel-root.Mui-focused {
+  color: gray;
+}
+
+.opret-input-field .MuiSelect-select {
+  color: white;
+}
+
+.opret-select-field .MuiOutlinedInput-root {
+  color: white;
+}
+
+.opret-select-field .MuiOutlinedInput-root fieldset {
+  border-color: transparent;
+}
+
+.opret-select-field .MuiOutlinedInput-root:hover fieldset {
+  border-color: transparent;
+}
+
+.opret-select-field .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: transparent;
+}
+
+.opret-select-field .MuiInputLabel-root {
+  color: gray;
+}
+
+.opret-select-field .MuiInputLabel-root.Mui-focused {
+  color: gray;
+}
+
+.opret-select-field .MuiSelect-select {
+  color: white;
+}
+
+.opret-image-button.MuiButton-root {
+  background-color: transparent;
+  justify-content: flex-start;
+  border: none;
+  color: gray;
+}
+
+.opret-image-button.MuiButton-root:hover {
+  background-color: #0a0a0aff;
+  border: none;
+}
+
+.opret-submit-button.MuiButton-root {
+  background-color: transparent;
+  justify-content: flex-start;
+  color: gray;
+  margin-top: 2rem;
+}
+
+.opret-submit-button.MuiButton-root:hover {
+  background-color: #0a0a0aff;
+}
+
+@media (min-width: 599px) {
+  .opret-form {
+    display: flex;
+  }
+}
+
+/* ProdukterPage */
+.produkter-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+.produkter-error {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 5rem;
+}
+
+.produkter-container {
+  margin: 0 auto;
+  color: white;
+  padding-top: 61px;
+  padding-right: 15px;
+}
+
+.produkter-dialog.MuiDialog-root {
+  background-color: #0000006f;
+}
+
+.produkter-dialog .MuiPaper-root {
+  background-color: #121212ff;
+  color: white;
+}
+
+.produkter-dialog-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.produkter-title {
+  font-size: 1.2rem !important;
+}
+
+.produkter-divider {
+  margin-bottom: 1rem !important;
+  background-color: #ffffff14 !important;
+}
+
+.produkter-card {
+  background-color: transparent !important;
+  height: 100%;
+  width: 100%;
+}
+
+.produkter-card-content {
+  color: white;
+  height: 25vh;
+}
+
+.produkter-card-title {
+  font-size: 18px !important;
+}
+
+.produkter-card-desc {
+  font-size: 12px !important;
+  color: gray !important;
+  margin-bottom: 2rem !important;
+}
+
+.produkter-card-price {
+  font-size: 12px !important;
+  color: gray !important;
+}
+
+.produkter-action-button.MuiButton-root {
+  width: 100%;
+  font-size: 0.7rem;
+  color: white;
+  border: 1px solid gray;
+  padding: 0 1rem;
+  margin-top: 1rem;
+}
+
+.produkter-action-button.MuiButton-root:hover {
+  background-color: black;
+  border: 1px solid darkgreen;
+  color: darkgreen;
 }
