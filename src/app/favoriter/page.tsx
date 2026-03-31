@@ -127,7 +127,13 @@ export default function Favoriter() {
   }
 
   if (loading) return <Typography>Indlæser favoritter...</Typography>
-  if (loginRequired) return <Alert severity="info">Log ind for at se dine favoritter.</Alert>
+  if (loginRequired) {
+    return (
+      <Alert severity="info" className="favoriter-login-alert">
+        Log ind for at se dine favoritter.
+      </Alert>
+    )
+  }
 
   return (
     <Box className="shop-page">

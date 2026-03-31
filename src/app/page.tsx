@@ -41,14 +41,30 @@ export default function Home() {
   return (
     <main className="landing-page">
       <section className="landing-hero">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="landing-hero-video"
+        >
+          <source src="/Golf_Man_Video_3840x2160.mp4" type="video/mp4" />
+        </video>
         <div className="landing-hero-overlay" />
         <div className="landing-hero-content">
           <p className="landing-eyebrow">Brugt golfudstyr, klar til næste runde</p>
           <h1>Second Swing gør det nemt at købe og sælge golfudstyr i Danmark.</h1>
-          <p className="landing-lead">
+          <div className="landing-trust-grid">
+            {trustPoints.map((point) => (
+              <div key={point} className="landing-trust-card">
+                {point}
+              </div>
+            ))}
+          </div>
+          {/* <p className="landing-lead">
             En enkel markedsplads bygget til spillere,
             der vil finde kvalitet, spare penge og få udstyr videre hurtigt.
-          </p>
+          </p> */}
 
           <div className="landing-actions">
             <Link href="/shop" className="landing-primary-link">
@@ -57,14 +73,6 @@ export default function Home() {
             <Link href="/opretProdukt" className="landing-secondary-link">
               Opret annonce
             </Link>
-          </div>
-
-          <div className="landing-trust-grid">
-            {trustPoints.map((point) => (
-              <div key={point} className="landing-trust-card">
-                {point}
-              </div>
-            ))}
           </div>
         </div>
 
@@ -78,6 +86,7 @@ export default function Home() {
             {categories.map((category) => (
               <article key={category.title} className="landing-info-card">
                 <h3>{category.title}</h3>
+                <p className="desktop-only-dots">........................</p>
                 <p>{category.description}</p>
               </article>
             ))}

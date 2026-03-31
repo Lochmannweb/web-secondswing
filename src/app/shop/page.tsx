@@ -92,7 +92,7 @@ export default function ShopPage() {
     setActiveFilter(filter)
   }
 
-  if (loading) return <Alert severity="info">Henter produkter...</Alert>
+  if (loading) return <Alert severity="info" className="shop-loading-alert">Henter produkter...</Alert>
   if (error) return <Alert severity="error">{error}</Alert>
 
   return (

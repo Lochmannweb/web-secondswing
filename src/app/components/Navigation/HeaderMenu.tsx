@@ -3,27 +3,19 @@
 
 import { useNavigationTracking } from '@/app/hooks/useNavigationTracking';
 import { getSupabaseClient } from '@/app/lib/supabaseClient';
-import { Box, Button, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Button, Drawer, IconButton } from '@mui/material'
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import { useEffect, useState } from 'react'
 
 function HeaderMenu() {
     const supabase = getSupabaseClient()
     useNavigationTracking();
-   
 
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [hydrated, setHydrated] = useState(false);
-
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-    
-    // menu state (mobil)
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(e.currentTarget);
-    };
-    const handleClose = () => setAnchorEl(null);
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
 
     // Tracke session
@@ -63,162 +55,74 @@ function HeaderMenu() {
     return (
         <>
         {/* TOP MENU */}
-        <Box className="header-menu" >
-            <Box alignSelf={"center"}>
-                <Button 
-                    component={Link}
-                    href="/" 
-                    className="header-menu-logo"
-                >
-                    <p>Second Swing</p>
-                </Button>
-            </Box>
+        <Box className="header-menu">
+            <Button
+                component={Link}
+                href="/"
+                className="header-menu-logo"
+            >
+                SECONDSWING
+            </Button>
 
-            <Box className="header-menu-container">
-                {!isMobile && (
-                    <>
-                        <Button 
-                            href="/shop" 
-                            component={Link}
-                            className="header-menu-nav-link">
-                            Shop
-                        </Button>
-                        <Button 
-                            href="/about" 
-                            component={Link}
-                            className="header-menu-nav-link">
-                            Om os
-                        </Button>
-                        {isLoggedIn && (
-                            <Button 
-                                href="/favoriter" 
-                                component={Link}
-                                className="header-menu-nav-link">
-                                Favoritter
-                            </Button>
-                        )}
-                    </>
-                )}
-
-                {isLoggedIn ? (
-                        <>
-                            {/* DESKTOP */}
-                            {!isMobile && (
-                                <>
-                                    <Button
-                                        href='/profile?section=createProduct'
-                                        component={Link}
-                                        className="header-menu-sell-button"
-                                    >
-                                        Sælg udstyr
-                                    </Button>
-                                    <Button
-                                        href='/profile'
-                                        component={Link}
-                                        className="header-menu-profile-button"
-                                    >
-                                        Profil
-                                    </Button>
-                                </>
-                            )}
-
-                            {/* MOBIL */}
-                            {isMobile && (
-                                <>
-                                    <Button
-                                        onClick={handleOpen}
-                                        className="header-menu-profile-mobile"
-                                    >
-                                        Profil
-                                    </Button>
-
-                                    <Menu
-                                        anchorEl={anchorEl}
-                                        open={Boolean(anchorEl)}
-                                        onClose={handleClose}
-                                        sx={{ 
-                                            "& .MuiList-root": {
-                                                backgroundColor: "#131313ff",
-                                                color: "gray",
-                                                width: "15vh",
-                                                padding: 0
-                                            }
-                                        }}
-                                    >
-                                        <MenuItem
-                                            component={Link}
-                                            href="/profile"
-                                            onClick={handleClose}
-                                        >
-                                            Profil
-                                        </MenuItem>
-                                        <MenuItem
-                                            component={Link}
-                                            href="/shop"
-                                            onClick={handleClose}
-                                        >
-                                            Shop
-                                        </MenuItem>
-                                        <MenuItem
-                                            component={Link}
-                                            href="/favoriter"
-                                            onClick={handleClose}
-                                        >
-                                            Favoriter
-                                        </MenuItem>
-                                        <MenuItem
-                                            component={Link}
-                                            href="/about"
-                                            onClick={handleClose}
-                                        >
-                                            Om os
-                                        </MenuItem>
-                                        <MenuItem
-                                            component={Link}
-                                            href="/faq"
-                                            onClick={handleClose}
-                                        >
-                                            FAQ
-                                        </MenuItem>
-                                        <MenuItem
-                                            component={Link}
-                                            href="/kontakt"
-                                            onClick={handleClose}
-                                        >
-                                            Kontakt
-                                        </MenuItem>
-                                        <MenuItem
-                                            component={Link}
-                                            href="/saelger"
-                                            onClick={handleClose}
-                                        >
-                                            Saelgerguide
-                                        </MenuItem>
-                                        <MenuItem
-                                            component={Link}
-                                            href="/profile?section=createProduct"
-                                            onClick={handleClose}
-                                        >
-                                            Sælg udstyr
-                                        </MenuItem>
-                                    </Menu>
-                                </>
-                            )}
-                        </>
-                ) : (
-                    <div>
-                        <Button
-                            className="header-menu-login-button"
-                            onClick={handleGoogleLogin}
-                        >
-                            Log ind
-                        </Button>
-                    </div>
-                )}
-            </Box>
+            <IconButton
+                onClick={() => setDrawerOpen(true)}
+                className="header-menu-icon-button"
+            >
+                <MenuIcon />
+            </IconButton>
         </Box>
+
+        {/* SLIDE-OUT DRAWER */}
+        <Drawer
+            anchor="right"
+            open={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+            className="header-drawer"
+            PaperProps={{ className: "header-drawer-paper" }}
+        >
+            <Box className="header-drawer-inner">
+                <Box className="header-drawer-top">
+                    <IconButton
+                        onClick={() => setDrawerOpen(false)}
+                        className="header-drawer-close"
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </Box>
+
+                <nav className="header-drawer-nav">
+                    <Link href="/shop" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                        SHOP
+                    </Link>
+                    <Link href="/about" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                        OM OS
+                    </Link>
+                    <Link href="/favoriter" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                        FAVORITTER
+                    </Link>
+                    {isLoggedIn ? (
+                        <>
+                            <Link href="/profile?section=createProduct" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                                SÆLG UDSTYR
+                            </Link>
+                            <Link href="/profile" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                                PROFIL
+                            </Link>
+                        </>
+                    ) : (
+                        <button
+                            className="header-drawer-link header-drawer-login"
+                            onClick={() => { setDrawerOpen(false); handleGoogleLogin(); }}
+                        >
+                            LOG IND
+                        </button>
+                    )}
+                </nav>
+            </Box>
+        </Drawer>
         </>
     )
 }
 
 export default HeaderMenu
+
