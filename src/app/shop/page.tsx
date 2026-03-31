@@ -115,7 +115,7 @@ export default function ShopPage() {
         </Box>
         <Box className="shop-page-products">
           {filteredProducts.length === 0 ? (
-            <Alert severity="info">Ingen produkter matcher din søgning endnu.</Alert>
+            <Alert severity="info">Du skal være logget ind for at kunne se produkter</Alert>
           ) : (
             <AllProducts products={filteredProducts} />
           )}

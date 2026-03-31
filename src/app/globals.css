@@ -378,6 +378,41 @@ hr {
   color: white !important;
 }
 
+.opret-login-gate {
+  max-width: 640px;
+  margin: 110px auto 0;
+  padding: 0 16px;
+  display: grid;
+  gap: 16px;
+}
+
+.opret-login-alert.MuiAlert-root {
+  background-color: black !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  font-size: 12px;
+  align-items: end;
+}
+
+.opret-login-alert .MuiAlert-icon,
+.opret-login-alert .MuiAlert-message {
+  color: white !important;
+}
+
+.opret-login-button.MuiButton-root {
+  justify-self: start;
+  background: #16110c;
+  color: white;
+  border-radius: 5px;
+  padding: 10px 18px;
+  width: 100%;
+}
+
+.opret-login-button.MuiButton-root:hover {
+  background: #120e0a;
+}
+
 @media screen and (max-width: 598px) {
   .landing-section-heading {
     display: grid;

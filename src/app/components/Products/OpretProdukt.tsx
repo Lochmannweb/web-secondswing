@@ -3,7 +3,7 @@
 import { createProduct } from "@/app/lib/crud"
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import type React from "react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { 
   Box, 
   TextField, 
@@ -35,9 +35,31 @@ export default function CreateProduct() {
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [authChecked, setAuthChecked] = useState(false)
+  const [needsLogin, setNeedsLogin] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
   
   const supabase = getSupabaseClient();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setNeedsLogin(!user)
+      setAuthChecked(true)
+    }
+
+    checkUser()
+  }, [supabase])
+
+  async function signInWithGoogle() {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.href,
+        queryParams: { prompt: "select_account" },
+      },
+    })
+  }
 
 
 
@@ -129,6 +151,27 @@ export default function CreateProduct() {
   }
 
 
+
+  if (!authChecked) {
+    return null
+  }
+
+  if (needsLogin) {
+    return (
+      <Box className="opret-login-gate">
+        <Alert severity="info" className="opret-login-alert">
+          Du skal logge ind for at oprette en annonce.
+        </Alert>
+        <Button
+          variant="contained"
+          onClick={signInWithGoogle}
+          className="opret-login-button"
+        >
+          Log ind med Google
+        </Button>
+      </Box>
+    )
+  }
 
   return (
     <Box 
