@@ -3,28 +3,19 @@
 
 import { useNavigationTracking } from '@/app/hooks/useNavigationTracking';
 import { getSupabaseClient } from '@/app/lib/supabaseClient';
-import { Box, Button, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Button, Drawer, IconButton } from '@mui/material'
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import { useEffect, useState } from 'react'
-import { div } from 'three/tsl';
 
 function HeaderMenu() {
     const supabase = getSupabaseClient()
     useNavigationTracking();
-   
 
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [hydrated, setHydrated] = useState(false);
-
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-    
-    // menu state (mobil)
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(e.currentTarget);
-    };
-    const handleClose = () => setAnchorEl(null);
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
 
     // Tracke session
@@ -64,175 +55,74 @@ function HeaderMenu() {
     return (
         <>
         {/* TOP MENU */}
-        <Box className="header-menu" >
-            <Box alignSelf={"center"}>
-                <Button 
-                    component={Link}
-                    href="/" 
-                    sx={{ 
-                        color: "white", 
-                        padding: 0,
-                        fontSize: { xs: "10px", sm: "0.7rem" }, 
-                        textTransform: "uppercase",
-                        "&:hover": { 
-                            backgroundColor: "transparent", 
-                        } 
-                    }}
-                >
-                    <p>Second Swing</p>
-                </Button>
-            </Box>
+        <Box className="header-menu">
+            <Button
+                component={Link}
+                href="/"
+                className="header-menu-logo"
+            >
+                SECONDSWING
+            </Button>
 
-            <Box sx={{ display: "flex" }}>
-                {!isMobile && isLoggedIn && (
-                    <>
-                        <Button 
-                            href="/shop" 
-                            startIcon={
-                                <img src="/ikoner/home.png" alt="home" width={20} height={20} />
-                            }
-                            component={Link}
-                            sx={{ 
-                                color: "white", 
-                                padding: 0,
-                                fontSize: { xs: "0.5rem", sm: "0.7rem" },
-                                "&:hover": { 
-                                    backgroundColor: "transparent", 
-                                } 
-                            }}>
-                        </Button>
-                        <Button 
-                            href="/favoriter" 
-                            startIcon={
-                                <img src="/ikoner/fav.png" alt="fav" width={20} height={20} />
-                            }
-                            component={Link}
-                            sx={{ 
-                                color: "white", 
-                                padding: 0,
-                                fontSize: { xs: "0.5rem", sm: "0.7rem" },
-                                "&:hover": { 
-                                    backgroundColor: "transparent", 
-                                } 
-                            }}>
-                        </Button>
-                    </>
-                )}
-
-                {isLoggedIn ? (
-                        <>
-                            {/* DESKTOP */}
-                            {!isMobile && (
-                                <Button
-                                    href='/profile'
-                                    startIcon={
-                                        <img src="/ikoner/profile.png" alt="profile" width={20} height={20} />
-                                    }
-                                    component={Link}
-                                    sx={{ 
-                                        color: "white", 
-                                        padding: 0,
-                                        fontSize: { xs: "0.5rem", sm: "0.7rem" },
-                                        "&:hover": { 
-                                            backgroundColor: "transparent", 
-                                        }
-                                    }}
-                                >
-                                </Button>
-                            )}
-
-                            {/* MOBIL */}
-                            {isMobile && (
-                                <>
-                                    <Button
-                                        onClick={handleOpen}
-                                        sx={{
-                                            color: "white",
-                                            fontSize: { xs: "0.5rem", sm: "1rem" },
-                                        }}
-                                    >
-                                        Profil
-                                    </Button>
-
-                                    <Menu
-                                        anchorEl={anchorEl}
-                                        open={Boolean(anchorEl)}
-                                        onClose={handleClose}
-                                        sx={{ 
-                                            "& .MuiList-root": {
-                                                backgroundColor: "#131313ff",
-                                                color: "gray",
-                                                width: "15vh",
-                                                padding: 0
-                                            }
-                                        }}
-                                    >
-                                        <MenuItem
-                                            component={Link}
-                                            href="/profile"
-                                            onClick={handleClose}
-                                        >
-                                            Profil
-                                        </MenuItem>
-                                        <MenuItem
-                                            component={Link}
-                                            href="/shop"
-                                            onClick={handleClose}
-                                        >
-                                            Shop
-                                        </MenuItem>
-                                        <MenuItem
-                                            component={Link}
-                                            href="/favoriter"
-                                            onClick={handleClose}
-                                        >
-                                            Favoriter
-                                        </MenuItem>
-                                        <MenuItem
-                                            component={Link}
-                                            href="/about"
-                                            onClick={handleClose}
-                                        >
-                                            Om us
-                                        </MenuItem>
-                                    </Menu>
-                                </>
-                            )}
-                        </>
-                ) : (
-                    <div>
-                        <Button
-                            startIcon={
-                                <img src="/ikoner/profile.png" alt="login" width={20} height={20} />
-                            }
-                            sx={{ color: "white", fontSize: { xs: "10px", sm: "0.7rem" }, }}
-                            onClick={handleGoogleLogin}
-                        >
-                        </Button>
-                    </div>
-                    // <div>
-                    //     <Button
-                    //         startIcon={
-                    //             <img src="/ikoner/profile.png" alt="login" width={10} height={10} />
-                    //         }
-                    //         sx={{ color: "white", fontSize: { xs: "10px", sm: "0.7rem" }, }}
-                    //         onClick={handleGoogleLogin}
-                    //     >
-                    //         Login
-                    //     </Button>
-                    //     |
-                    //     <Button
-                    //         sx={{ color: "white", fontSize: { xs: "10px", sm: "0.7rem" }, }}
-                    //         onClick={handleGoogleLogin}
-                    //     >
-                    //         Signup
-                    //     </Button>
-                    // </div>
-                )}
-            </Box>
+            <IconButton
+                onClick={() => setDrawerOpen(true)}
+                className="header-menu-icon-button"
+            >
+                <MenuIcon />
+            </IconButton>
         </Box>
+
+        {/* SLIDE-OUT DRAWER */}
+        <Drawer
+            anchor="right"
+            open={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+            className="header-drawer"
+            PaperProps={{ className: "header-drawer-paper" }}
+        >
+            <Box className="header-drawer-inner">
+                <Box className="header-drawer-top">
+                    <IconButton
+                        onClick={() => setDrawerOpen(false)}
+                        className="header-drawer-close"
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </Box>
+
+                <nav className="header-drawer-nav">
+                    <Link href="/shop" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                        SHOP
+                    </Link>
+                    <Link href="/about" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                        OM OS
+                    </Link>
+                    <Link href="/favoriter" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                        FAVORITTER
+                    </Link>
+                    {isLoggedIn ? (
+                        <>
+                            <Link href="/profile?section=createProduct" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                                SÆLG UDSTYR
+                            </Link>
+                            <Link href="/profile" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                                PROFIL
+                            </Link>
+                        </>
+                    ) : (
+                        <button
+                            className="header-drawer-link header-drawer-login"
+                            onClick={() => { setDrawerOpen(false); handleGoogleLogin(); }}
+                        >
+                            LOG IND
+                        </button>
+                    )}
+                </nav>
+            </Box>
+        </Drawer>
         </>
     )
 }
 
 export default HeaderMenu
+

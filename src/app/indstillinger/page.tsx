@@ -6,13 +6,11 @@ import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { useRouter } from 'next/navigation'
 
 export default function Indstillinger() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const router = useRouter()
   const supabase = getSupabaseClient()
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
-    setIsLoggedIn(false)
     router.push('/') // redirect til homepage
   }
 
@@ -24,7 +22,7 @@ export default function Indstillinger() {
 
         <Box display={"grid"} width={"100%"}>
           <Button
-            href='/indstillinger/profileoplysninger'
+            href='/indstillinger/profiloplysninger'
             sx={{
               backgroundColor: "transparent",
               color: "white",
@@ -67,6 +65,21 @@ export default function Indstillinger() {
           >
             Sikkerhed
             </Button>
+
+          <Button
+            href='/indstillinger/privatliv'
+            sx={{
+              backgroundColor: "transparent",
+              color: "white",
+              cursor: "pointer",
+              display: "flow",
+              "&:hover": {
+                backgroundColor: "#00ff001c",
+              }
+            }}
+          >
+            Privatliv
+          </Button>
 
 
           <Button

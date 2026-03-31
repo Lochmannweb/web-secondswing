@@ -2,14 +2,15 @@
 
 import { getSupabaseClient } from '@/app/lib/supabaseClient'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Box, Button, Divider } from '@mui/material'
 import Image from 'next/image'
 import Profiloplysninger from '../indstillinger/profiloplysninger/page'
 import OpretProdukt from '../components/Products/OpretProdukt'
 import ProdukterPage from '../produkter/page'
-import Kontoindstillinger from '../indstillinger/kontoindstillinger/page'
 import Favoriter from '../favoriter/page'
+import PrivatlivPage from '../indstillinger/privatliv/page'
+import FaqPage from '../faq/page'
 
 
 type UserProfile = {
@@ -22,14 +23,24 @@ type UserProfile = {
 
 export default function ProfilePage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [needsLogin, setNeedsLogin] = useState(false)
   const supabase = getSupabaseClient()  
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  const [activeSection, setActiveSection] = useState<string>("profil")
+  const [activeSection, setActiveSection] = useState<string>("fav")
   const isMobile = typeof window !== "undefined" && window.innerWidth < 599
+
+  useEffect(() => {
+    const section = searchParams.get("section")
+    const allowedSections = ["editProfile", "createProduct", "myProducts", "fav", "privacy", "faq"]
+
+    if (section && allowedSections.includes(section)) {
+      setActiveSection(section)
+    }
+  }, [searchParams])
 
 
   // funktion der skifter mellem indhold eller links
@@ -126,45 +137,26 @@ export default function ProfilePage() {
 
   return (
     <>
-      <Box 
-        sx={{ 
-          display: { xs: "grid", sm: "flex" }, 
-          justifyContent: { sm: "center" }, 
-          gap: { sm: "1rem" },
-          height: { sm: "100vh" }, 
-          pt: { xs: "5rem" } }} 
-          p={2}
-        >
-        <Box alignSelf={{ sm: "center" }} width={{ sm: "20%" }}>
+      <Box className="profile-layout">
+        <Box className="profile-sidebar">
           {profile ? (
-            <Box
-              sx={{
-                color: "white",
-              }}
-            >
-              <Box sx={{ display: "flex", gap: "1rem", mb: 2 }}>
+            <Box className={"profile-box"} >
+              <Box className="profile-container">
                 <Image 
                   src={upgradeGoogleAvatar(profile.avatar_url || "/placeholderprofile.jpg")}
                   alt="Profilbillede"
                   width={800}
                   height={100}
-                  style={{ width: "15%", height: "auto", borderRadius: "50%" }}
+                  className="profile-avatar"
                   priority
                   />
-                <h2 style={{ fontSize: "1rem", alignSelf: "center" }}>{profile.display_name ?? 'Ikke udfyldt'}</h2>
+                <h2 className="profile-name">{profile.display_name ?? 'Ikke udfyldt'}</h2>
               </Box>
               <Divider color="gray"/>
 
-              <Box sx={{ marginTop: "1rem", backgroundColor: "#121212ff", borderRadius: "0.3rem"}}>
+              <Box className="profile-menu-group">
                 <Button 
-                  sx={{
-                    width: "100%", 
-                    color: "white", 
-                    justifyContent: "normal", 
-                    "&:hover": { 
-                      backgroundColor: "#0b0b0bc3" 
-                    } 
-                  }} 
+                  className="profile-action-button"
                   onClick={() => handleNavigation("editProfile", "/indstillinger/profiloplysninger")}
                   >
                     Rediger Profil
@@ -172,46 +164,39 @@ export default function ProfilePage() {
 
 
                 <Button 
-                  sx={{
-                    width: "100%", 
-                    color: "white", 
-                    justifyContent: "normal", 
-                    "&:hover": { 
-                      backgroundColor: "#0b0b0bc3"
-                      } 
-                    }} 
+                  className="profile-action-button"
                     onClick={() => handleNavigation("createProduct", "/opretProdukt")}
                     >
-                      Opret produkt
+                      Sælg udstyr
                 </Button>
 
 
                 <Button 
-                  sx={{
-                    width: "100%", 
-                    color: "white", 
-                    justifyContent: "normal", 
-                    "&:hover": { 
-                      backgroundColor: "#0b0b0bc3"
-                      } 
-                    }} 
+                  className="profile-action-button"
                     onClick={() => handleNavigation("myProducts", "/produkter")}
                     >
-                      Mine Produkter
+                      Alle Produkter
                 </Button>
 
                 <Button 
-                  sx={{
-                    width: "100%", 
-                    color: "white", 
-                    justifyContent: "normal", 
-                    "&:hover": { 
-                      backgroundColor: "#0b0b0bc3"
-                      } 
-                    }} 
+                  className="profile-action-button"
                     onClick={() => handleNavigation("fav", "/favoriter")}
                     >
-                      Mine Favoriter
+                      Favoriter
+                </Button>
+
+                <Button
+                  className="profile-action-button"
+                  onClick={() => handleNavigation("privacy", "/indstillinger/privatliv")}
+                >
+                  Privatliv og cookies
+                </Button>
+
+                <Button
+                  className="profile-action-button"
+                  onClick={() => handleNavigation("faq", "/faq")}
+                >
+                  FAQ
                 </Button>
 
                 {/* <Button 
@@ -229,16 +214,9 @@ export default function ProfilePage() {
                 </Button> */}
               </Box>
 
-              <Box sx={{ marginTop: "1rem", backgroundColor: "#121212ff", borderRadius: "0.3rem"}}>
+              <Box className="profile-logout-group">
                 <Button 
-                  sx={{
-                    width: "100%", 
-                    color: "white", 
-                    justifyContent: "normal", 
-                    "&:hover": { 
-                      backgroundColor: "#0b0b0bc3"
-                      } 
-                    }} 
+                  className="profile-action-button"
                     onClick={handleLogout}
                     >
                       Log ud
@@ -250,16 +228,19 @@ export default function ProfilePage() {
           )}
         </Box>
 
-        {/* vi indhold udfra den setting der bliver valgt */}
-        <Box width={"50%"} color={"white"} alignSelf={{ sm: "center" }}>
+      <Box className="profile-content">
+        <Box>
             {/* {activeSection === "profil" && <p>Vælg noget fra menuen.</p>} */}
             {activeSection === "editProfile" && <Profiloplysninger />}
             {activeSection === "createProduct" && <OpretProdukt />}
             {activeSection === "myProducts" && <ProdukterPage />}
             {activeSection === "fav" && <Favoriter />}
+            {activeSection === "privacy" && <PrivatlivPage />}
+            {activeSection === "faq" && <FaqPage />}
             {/* {activeSection === "Kontooplysninger" && <Kontoindstillinger />} */}
             {/* {activeSection === "sikkerhed" && <Sikkerhed />} */}
         </Box>
+      </Box>
       </Box>
     </>
   )

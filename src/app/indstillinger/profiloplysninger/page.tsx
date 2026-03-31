@@ -7,9 +7,12 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 
 export default function Profiloplysninger() {
-  const [displayName, setDisplayName] = useState<string>("")
-  
-
+  const [displayName, setDisplayName] = useState("")
+  const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
+  const [location, setLocation] = useState("")
+  const [bio, setBio] = useState("")
+  const [originalEmail, setOriginalEmail] = useState("")
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string>("/placeholderprofile.jpg")
   const [loading, setLoading] = useState(false)
@@ -34,6 +37,12 @@ export default function Profiloplysninger() {
     const fetchProfile = async () => {
       const { data: { user }, error: userError } = await supabase.auth.getUser()
       if (userError || !user) return
+
+      setEmail(user.email ?? "")
+      setOriginalEmail(user.email ?? "")
+      setPhone((user.user_metadata?.phone as string) ?? "")
+      setLocation((user.user_metadata?.location as string) ?? "")
+      setBio((user.user_metadata?.bio as string) ?? "")
 
       const { data, error } = await supabase
         .from("profiles")
@@ -100,17 +109,37 @@ export default function Profiloplysninger() {
       const { error: updateError } = await supabase
         .from("profiles")
         .update({
-          id: user.id,
           avatar_url: newAvatarUrl,
-          display_name: displayName,
+          display_name: displayName.trim(),
           updated_at: new Date(),
         })
         .eq("id", user.id);
 
       if (updateError) throw new Error(updateError.message);
 
+      const authUpdates: {
+        email?: string
+        data?: Record<string, string>
+      } = {}
+
+      if (email.trim() && email.trim() !== originalEmail) {
+        authUpdates.email = email.trim()
+      }
+
+      authUpdates.data = {
+        ...user.user_metadata,
+        phone: phone.trim(),
+        location: location.trim(),
+        bio: bio.trim(),
+        display_name: displayName.trim(),
+      }
+
+      const { error: authUpdateError } = await supabase.auth.updateUser(authUpdates)
+      if (authUpdateError) throw new Error(authUpdateError.message)
+
       setImagePreview(newAvatarUrl);
       setImageFile(null);
+      setOriginalEmail(email.trim())
 
       setMessage({ type: "success", text: "Profil opdateret!" });
       router.refresh()
@@ -129,25 +158,30 @@ export default function Profiloplysninger() {
   }
 
   return (
-    <Box p={2} display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} gap={2} height={{ sm: "80vh" }}>
-      <Box alignSelf={{sm: "center"}}>
+    <Box
+      className="profiloplysninger-grid"
+      display="grid"
+      gap={2}
+      gridTemplateColumns={{ xs: "1fr", md: "minmax(0, 1fr) minmax(0, 1fr)" }}
+      alignItems="start"
+    >
+      <Box className="profiloplysninger-image-wrap">
         <Image
             src={upgradeGoogleAvatar(imagePreview)}
             alt="Profil preview"
-            width={800}
-            height={100}
+            width={500}
+            height={500}
+            className="profiloplysninger-image"
             style={{ 
                 width: "100%",
-                height: "50vh",
-                objectFit: "cover",
-                marginTop: "4rem",
+                height: "auto",
                 borderRadius: "0.3rem",
             }}
             priority
         />
       </Box>
 
-      <Box sx={{ backgroundColor: "#121212ff", borderRadius: "0.3rem"}} alignSelf={{ sm: "center" }} >
+      <Box className="profiloplysninger-form" sx={{ borderRadius: "0.3rem" }}>
         <Button 
             variant="outlined" 
             component="label"
@@ -169,14 +203,54 @@ export default function Profiloplysninger() {
           onChange={(e) => setDisplayName(e.target.value)}
           fullWidth
           sx={inputStyle}
-          placeholder="Navn: "
+          label="Navn"
+          margin="dense"
+        />
+
+        <TextField
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          fullWidth
+          sx={inputStyle}
+          label="Email"
+          type="email"
+          margin="dense"
+        />
+
+        <TextField
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          fullWidth
+          sx={inputStyle}
+          label="Telefon"
+          margin="dense"
+        />
+
+        <TextField
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          fullWidth
+          sx={inputStyle}
+          label="Lokation"
+          margin="dense"
+        />
+
+        <TextField
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+          fullWidth
+          sx={inputStyle}
+          label="Om mig"
+          margin="dense"
+          multiline
+          minRows={3}
         />
 
         <Button
             variant="contained"
             fullWidth
             onClick={handleSubmit}
-            // disabled={loading || !imageFile}
+            disabled={loading}
             sx={{
               backgroundColor: "transparent",
               justifyContent: "left",

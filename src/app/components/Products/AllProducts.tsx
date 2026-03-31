@@ -44,7 +44,11 @@ export default function AllProducts({ products }: AllProductsProps) {
 useEffect(() => {
   const fetchFavorites = async () => {
     const { data: userData } = await supabase.auth.getUser()
-    if (!userData.user) return
+    if (!userData.user) {
+      setUserId(null)
+      setFavorites([])
+      return
+    }
     setUserId(userData.user.id)
 
     const { data: favData, error } = await supabase
@@ -89,12 +93,8 @@ const toggleFavorite = async (productId: string) => {
 
 
 
-  // if (!products || products.length === 0) {
-  //   return <Alert severity="info">Der er ingen produkter tilgængelige i øjeblikket.</Alert>
-  // }
-
-  if (!userId) {
-    return <Alert severity="info">Du skal være logget ind for at kunne se produkter</Alert>
+  if (!products || products.length === 0) {
+    return <Alert severity="info">Ingen produkter matcher din søgning endnu.</Alert>
   }
 
 
@@ -104,7 +104,7 @@ const toggleFavorite = async (productId: string) => {
     <Grid container spacing={2}>
       {products.map((product) => (
         <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id}>
-          <Card sx={{ height: "60vh", backgroundColor: "transparent" }}>
+          <Card sx={{ height: "100%", backgroundColor: "transparent", display: "flex", flexDirection: "column" }}>
             {product.image_url && (
               <Box>
                 {product.sold && (
@@ -120,26 +120,29 @@ const toggleFavorite = async (productId: string) => {
                   {product.title}
                 </Typography>
                 {product.description && (
-                  <Typography variant="body2">
+                  <Typography variant="body2" sx={{ color: "#b6b6b6", minHeight: "3rem" }}>
                     {product.description}
                   </Typography>
                 )}
-                <IconButton
-                  onClick={() => toggleFavorite(product.id)}
-                  sx={{ 
-                    color: favorites.includes(product.id) ? 'white' : 'white', 
-                    left: { xs: "10rem", sm: "14rem" }, 
-                    position: "relative",  
-                    top: "-3rem", 
-                  }}
-                    >
-                  {favorites.includes(product.id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                </IconButton>
+                {userId && (
+                  <IconButton
+                    onClick={() => toggleFavorite(product.id)}
+                    sx={{ 
+                      color: 'white', 
+                      left: { xs: "10rem", sm: "14rem" }, 
+                      position: "relative",  
+                      top: "-3rem", 
+                    }}
+                  >
+                    {favorites.includes(product.id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                  </IconButton>
+                )}
                 {product.price && (
                   <Typography
                     sx={{
                       color: "white",
-                      paddingTop: "1rem",
+                      paddingTop: userId ? "1rem" : "0.5rem",
+                      fontWeight: 600,
                     }}
                   >
                     {product.price.toFixed(2)} DKK
@@ -158,11 +161,11 @@ const toggleFavorite = async (productId: string) => {
                     display: "flex",
                     justifySelf: "center",
                     padding: "0.3rem 1rem",
-                    // background:"#e2ffd7",
+                    marginTop: "auto",
                     "&:hover": { backgroundColor: "#60954d", color: "white" },
                   }}
                 >
-                  See More
+                  Se produkt
             </Button>
           </Card>
         </Grid>

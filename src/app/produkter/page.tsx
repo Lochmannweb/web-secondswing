@@ -100,7 +100,7 @@ export default function ProdukterPage() {
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+      <Box className="produkter-loading">
         <CircularProgress />
       </Box>
     )
@@ -108,25 +108,18 @@ export default function ProdukterPage() {
 
   if (error) {
     return (
-      <Box sx={{ maxWidth: 800, mx: "auto", pt: "5rem" }}>
+      <Box className="produkter-error">
         <Alert severity="error">{error}</Alert>
       </Box>
     )
   }
 
   return (
-    <Box  sx={{ maxWidth: 1200, mx: "auto", p: 2, pt: "6rem", color: "white" }}>
+    <Box className="produkter-container">
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        sx={{
-          backgroundColor: "#0000006f",
-          
-          "& .MuiPaper-root": {
-            backgroundColor: "#121212ff",
-            color: "white",
-          }
-        }}
+        className="produkter-dialog"
       >
         <DialogTitle color={"gray"}>Bekræft</DialogTitle>
         <DialogContent
@@ -135,7 +128,7 @@ export default function ProdukterPage() {
             Er du sikker på, at du vil slette produktet?
           </Typography>
         </DialogContent>
-        <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
+        <DialogActions className="produkter-dialog-actions">
           <Button 
             fullWidth
             onClick={() => setOpenDialog(false)}
@@ -153,8 +146,10 @@ export default function ProdukterPage() {
         </DialogActions>
       </Dialog>
 
-      <Typography sx={{ fontSize: "1.2rem" }}>Mine produkter</Typography>
-      <Divider sx={{ mb: "3rem", backgroundColor: "white" }} />
+      <Typography variant="overline" className="shop-page-kicker">
+        Alle Produkter
+      </Typography>
+      <Divider className="produkter-divider" />
       {products.length === 0 ? (
         <Alert severity="info">Du har ikke oprettet nogen produkter endnu.</Alert>
       ) : (
@@ -162,39 +157,27 @@ export default function ProdukterPage() {
           <Grid container spacing={2}>
             {products.map((product) => (
               <Grid key={product.id} size={{ xs: 6, sm: 6, md: 3 }}>
-                <Card sx={{ backgroundColor: "transparent", height: "100%", width: "100%" }}>
+                <Card className="produkter-card">
                   {product.image_url && (
                     <Box>
                       {product.sold && (
-                      <Box position={"fixed"} p={2} sx={{ backgroundColor: "#000000c9", color: "white" }} width={"auto"}>
-                          <Typography textTransform={"uppercase"} alignSelf={"center"} justifySelf={"center"}>Solgt</Typography>
+                      <Box className="shop-soldout">
+                          <p>Solgt</p>
                       </Box>
                       )}
                       <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
                     </Box>
                   )}
 
-                  <CardContent sx={{ color: "white", height: "25vh" }}>
-                    <Typography sx={{ fontSize: "18px" }} component="h2">{product.title}</Typography>
-                    <Typography variant="body2" sx={{ mb: 2, fontSize: "12px", color: "gray" }}>{product.description}</Typography>
-                    <Typography sx={{ fontSize: "12px", color: "gray" }}>{product.price} DKK</Typography>
+                  <CardContent className="produkter-card-content">
+                    <Typography className="produkter-card-title" component="h2">{product.title}</Typography>
+                    <Typography variant="body2" className="produkter-card-desc">{product.description}</Typography>
+                    <Typography className="produkter-card-price">{product.price} DKK</Typography>
 
                     <Button 
                       component={Link}
                       href={`/edit/${product.id}`}
-                      sx={{ 
-                        width: "100%",
-                        fontSize: "0.7rem",
-                        color: "white",
-                        border: "1px solid gray",
-                        padding: "0 1rem",
-                        marginTop: "1rem",
-                        "&:hover": {
-                          backgroundColor: "black",
-                          border: "1px solid darkGreen",
-                          color: "darkGreen"
-                        }
-                      }}>
+                      className="produkter-action-button">
                       Rediger
                     </Button>
 
@@ -203,19 +186,7 @@ export default function ProdukterPage() {
                         setSelectedProductId(product.id);
                         setOpenDialog(true);
                       }}
-                      sx={{ 
-                        width: "100%",
-                        fontSize: "0.7rem",
-                        color: "white",
-                        border: "1px solid gray",
-                        padding: "0 1rem",
-                        marginTop: "1rem",
-                        "&:hover": {
-                          backgroundColor: "black",
-                          border: "1px solid darkGreen",
-                          color: "darkGreen"
-                        }
-                      }}>
+                      className="produkter-action-button">
                       Slet
                     </Button>
                   </CardContent>

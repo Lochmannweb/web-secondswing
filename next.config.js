@@ -13,6 +13,9 @@ const { withSentryConfig } = require('@sentry/nextjs');
 // remotePatterns definerer præcist, hvilke protokoller, hosts og stier der må hentes billeder fra.
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  turbopack: {
+    root: __dirname,
+  },
   images: {
     remotePatterns: [
       {
