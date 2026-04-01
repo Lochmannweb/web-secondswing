@@ -24,7 +24,7 @@ export default function PrivatlivPage() {
         <FaqPage />
       </Box>
       <Box className="privatliv-scroll-block privatliv-logout-wrap">
-        <Button className="profile-action-button" onClick={handleLogout}>
+        <Button id="logout-button" className="profile-action-button" onClick={handleLogout}>
           Log ud
         </Button>
       </Box>
