@@ -3,7 +3,7 @@
 import { getSupabaseClient } from '@/app/lib/supabaseClient'
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Box, Button, Divider } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import Image from 'next/image'
 import Profiloplysninger from '../indstillinger/profiloplysninger/page'
 import OpretProdukt from '../components/Products/OpretProdukt'
@@ -11,6 +11,7 @@ import ProdukterPage from '../produkter/page'
 import Favoriter from '../favoriter/page'
 import PrivatlivPage from '../indstillinger/privatliv/page'
 import FaqPage from '../faq/page'
+import '../profile.css'
 import '../profil.css'
 
 
@@ -32,6 +33,13 @@ export default function ProfilePage() {
 
   const [activeSection, setActiveSection] = useState<string>("fav")
   const isMobile = typeof window !== "undefined" && window.innerWidth < 599
+  const menuItems = [
+    { key: 'editProfile', label: 'Rediger profil', link: '/indstillinger/profiloplysninger' },
+    { key: 'createProduct', label: 'Salg nyt udstyr', link: '/opretProdukt' },
+    { key: 'myProducts', label: 'Alle produkter', link: '/produkter' },
+    { key: 'fav', label: 'Favoriter', link: '/favoriter' },
+    { key: 'privacy', label: 'Indstillinger', link: '/indstillinger/privatliv' },
+  ] as const
 
   useEffect(() => {
     const section = searchParams.get("section")
@@ -113,12 +121,12 @@ export default function ProfilePage() {
     // ⬇️ Viser login-popup i stedet for redirect
   if (needsLogin) {
     return (
-      <Box p={3}>
-        <h2>Du skal logge ind for at se profilen</h2>
+      <Box className="profile-login-gate">
+        <h2 className="profile-login-title">Du skal logge ind for at se profilen</h2>
         <Button 
           variant="contained"
           onClick={signInWithGoogle}
-          sx={{ mt: 2 }}
+          className="profile-login-button"
         >
           Log ind med Google
         </Button>
@@ -142,45 +150,23 @@ export default function ProfilePage() {
                   className="profile-avatar"
                   priority
                   />
-                <h2 className="profile-name">{profile.display_name ?? 'Ikke udfyldt'}</h2>
+                <Box className="profile-identity-copy">
+                  <p className="profile-kicker">Profil</p>
+                  <h2 className="profile-name">{profile.display_name ?? 'Ikke udfyldt'}</h2>
+                  <p className="profile-email">{profile.email}</p>
+                </Box>
               </Box>
 
               <Box className="profile-menu-group">
-                <Button 
-                  className="profile-action-button"
-                  onClick={() => handleNavigation("editProfile", "/indstillinger/profiloplysninger")}
+                {menuItems.map((item) => (
+                  <Button
+                    key={item.key}
+                    className={`profile-action-button${activeSection === item.key ? ' is-active' : ''}`}
+                    onClick={() => handleNavigation(item.key, item.link)}
                   >
-                    Rediger Profil
-                </Button>
-
-
-                <Button 
-                  className="profile-action-button"
-                    onClick={() => handleNavigation("createProduct", "/opretProdukt")}
-                    >
-                      Sælg udstyr
-                </Button>
-
-
-                <Button 
-                  className="profile-action-button"
-                    onClick={() => handleNavigation("myProducts", "/produkter")}
-                    >
-                      Alle Produkter
-                </Button>
-
-                <Button 
-                  className="profile-action-button"
-                    onClick={() => handleNavigation("fav", "/favoriter")}
-                    >
-                      Favoriter
-                </Button>
-                <Button
-                  className="profile-action-button"
-                  onClick={() => handleNavigation("privacy", "/indstillinger/privatliv")}
-                >
-                  Indstillinger
-                </Button>
+                    {item.label}
+                  </Button>
+                ))}
 
                 {/* 
 
@@ -221,7 +207,7 @@ export default function ProfilePage() {
         </Box>
 
       <Box className="profile-content">
-        <Box>
+        <Box className="profile-content-shell">
             {/* {activeSection === "profil" && <p>Vælg noget fra menuen.</p>} */}
             {activeSection === "editProfile" && <Profiloplysninger />}
             {activeSection === "createProduct" && <OpretProdukt />}
