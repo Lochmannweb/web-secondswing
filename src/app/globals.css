@@ -16,69 +16,6 @@ a {
   text-decoration: none;
 }
 
-hr {
-  border: 0;
-  height: 1px;
-  background-color: #ffffff14;
-}
-
-
-.header-menu {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  z-index: 100;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 16px 20px;
-}
-
-.header-menu-logo.MuiButton-root {
-  color: white;
-  padding: 0;
-}
-
-.header-menu-logo.MuiButton-root:hover {
-  background-color: transparent;
-}
-
-.header-menu-icon-button.MuiIconButton-root {
-  color: white;
-  padding: 4px;
-}
-
-/* DRAWER */
-.header-drawer-paper.MuiPaper-root {
-  background-color: #000000cf;
-  width: 280px;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.header-drawer-inner {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 16px 20px 32px;
-}
-
-.header-drawer-top {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 32px;
-}
-
-.header-drawer-close.MuiIconButton-root {
-  color: white;
-}
-
-.header-drawer-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
 .header-drawer-link {
   display: block;
   color: #ffffff;
@@ -367,6 +304,20 @@ hr {
   background: #120e0a;
 }
 
+.header-menu {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    z-index: 110;
+}
+.header-menu a {
+    color: white !important;
+}
+.header-menu .MuiSvgIcon-root {
+    fill: white;
+}
+
 @media screen and (max-width: 598px) {
   .landing-section-heading {
     display: grid;
@@ -386,10 +337,8 @@ hr {
   .header-menu-logo.MuiButton-root {
     font-size: 0.75rem;
     letter-spacing: 0.13em;
-  }
-
-  .header-menu-icon-button.MuiIconButton-root {
-    padding: 2px;
+    padding: 0;
+    color: white;
   }
 
   .header-drawer-paper.MuiPaper-root {
@@ -408,14 +357,6 @@ hr {
     z-index: 100;
   }
 
-  .header-drawer-top {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 32px;
-    padding-bottom: 0;
-    border-bottom: none;
-  }
-
   .header-drawer-close.MuiIconButton-root {
     color: white;
     padding: 4px;
@@ -423,6 +364,7 @@ hr {
 
   .header-drawer-nav {
     gap: 0;
+    padding: 0 20px;
   }
 
   /* Mobile backdrop for drawer */
@@ -678,6 +620,10 @@ hr {
     width: 35%;
   }
 
+  .header-menu {
+    padding: 20px;
+  }
+
   .landing-section {
     display: flex;
     justify-content: space-between;
@@ -749,6 +695,10 @@ hr {
   .info-section p {
     font-size: smaller;
   }
+
+  .MuiPaper-root {
+    background-color: #0000009c !important;
+  }
 }
 
 @media (min-width: 900px) {
@@ -770,6 +720,12 @@ hr {
   #logout-button, .privatliv-logout-wrap {
     padding-left: 5px;
   }
+
+  .header-drawer-top {
+    width: 40vh;
+  }
+
+
 }
 
 /* ProdukterPage */
@@ -794,6 +750,26 @@ hr {
 .produkter-dialog.MuiDialog-root {
   background-color: #0000006f;
 }
+
+.MuiPaper-root {
+  background-color: #0d0d0d ;
+  color: white !important;
+}
+.header-drawer-nav {
+  padding: 20px;
+}
+
+.MuiButtonBase-root {
+  color: gray !important;
+}
+
+  .header-drawer-top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 32px;
+    padding: 10px;
+    border-bottom: none;
+  }
 
 .produkter-dialog .MuiPaper-root {
   background-color: #121212ff;
@@ -840,17 +816,3 @@ hr {
   color: gray !important;
 }
 
-.produkter-action-button.MuiButton-root {
-  width: 100%;
-  font-size: 0.7rem;
-  color: white;
-  border: 1px solid gray;
-  padding: 0 1rem;
-  margin-top: 1rem;
-}
-
-.produkter-action-button.MuiButton-root:hover {
-  background-color: black;
-  border: 1px solid darkgreen;
-  color: darkgreen;
-}
