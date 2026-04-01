@@ -7,16 +7,16 @@ import FilterButtons from "@/app/components/Shop/FilterButtons"
 import { 
   Typography, 
   Card, 
-  CardContent, 
   CardMedia, 
   Grid, 
   IconButton,
   Alert,
   Box,
-  Button,
 } from "@mui/material"
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import Link from "next/link"
+import "../shop/shop.css"
+import "./favorit.css"
 
 interface Product {
   id: string
@@ -126,7 +126,7 @@ export default function Favoriter() {
     setActiveFilter(filter)
   }
 
-  if (loading) return <Typography>Indlæser favoritter...</Typography>
+  if (loading) return <Alert severity="info" className="shop-loading-alert">Indlaeser favoritter...</Alert>
   if (loginRequired) {
     return (
       <Alert severity="info" className="favoriter-login-alert">
@@ -136,7 +136,7 @@ export default function Favoriter() {
   }
 
   return (
-    <Box className="shop-page">
+    <Box className="shop-page favoriter-page">
       <Box className="shop-page-header">
         <Typography variant="overline" className="shop-page-kicker">
           Favoritter
@@ -161,50 +161,48 @@ export default function Favoriter() {
               Ingen favoritter matcher din sogning endnu.
             </Alert>
           ) : (
-            <Grid container spacing={2}>
+            <Grid container spacing={2} className="shop-product-grid">
               {filteredProducts.map((product) => (
-                <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id}>
-                  <Card className="FavoriterPage-card">
-                    {product.image_url && (
-                      <Box>
-                        {product.sold && (
-                          <Box className="shop-soldout">
-                            <p>Solgt</p>
-                          </Box>
-                        )}
-                        <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
-                      </Box>
-                    )}
-                    <CardContent className="FavoriterPage-cardContent">
-                      <Box className="FavoriterPage-cardHeader">
-                        <Typography className="FavoriterPage-cardTitle" component="h2">
-                          {product.title}
-                        </Typography>
-                      </Box>
+                <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id} className="shop-product-grid-item">
+                  <Card className="shop-product-card">
+                    <Box className="shop-product-media-wrap">
+                      {product.sold && (
+                        <Box className="shop-soldout">
+                          <p>Solgt</p>
+                        </Box>
+                      )}
                       <IconButton
-                        onClick={() => removeFavorite(product.id)}
-                        className="FavoriterPage-iconButton"
+                        onClick={(event) => {
+                          event.preventDefault()
+                          event.stopPropagation()
+                          removeFavorite(product.id)
+                        }}
+                        className="shop-favorite-button favorit-remove-button"
                       >
                         <FavoriteIcon />
                       </IconButton>
-                      {product.description && (
-                        <Typography variant="body2" className="FavoriterPage-description">
-                          {product.description}
-                        </Typography>
-                      )}
-                      {product.price && (
-                        <Typography className="FavoriterPage-price">
-                          {product.price.toFixed(2)} DKK
-                        </Typography>
-                      )}
-                    </CardContent>
-                    <Button
-                      component={Link}
-                      href={`/products/${product.id}`}
-                      className="FavoriterPage-linkButton"
-                    >
-                      Se produkt
-                    </Button>
+
+                      <Link href={`/products/${product.id}`} className="shop-product-hitarea" aria-label={`Ga til ${product.title}`}>
+                        {product.image_url && (
+                          <CardMedia component="img" image={product.image_url} alt={product.title} className="shop-product-image" />
+                        )}
+                        <Box className="shop-product-overlay">
+                          <Typography component="h2" className="shop-product-title">
+                            {product.title}
+                          </Typography>
+                          {product.description && (
+                            <Typography variant="body2" className="shop-product-description">
+                              {product.description}
+                            </Typography>
+                          )}
+                          {product.price && (
+                            <Typography className="shop-product-price">
+                              {product.price.toFixed(2)} DKK
+                            </Typography>
+                          )}
+                        </Box>
+                      </Link>
+                    </Box>
                   </Card>
                 </Grid>
               ))}
