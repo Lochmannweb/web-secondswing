@@ -10,13 +10,7 @@ interface FilterButtonsProps {
 
 export default function FilterButtons({ activeFilter, onFilterChange }: FilterButtonsProps) {
   return (
-    <Stack 
-      direction="row" 
-      spacing={2} 
-      justifyContent="start" 
-      sx={{ mb: 3 }}
-      >
-
+    <Stack direction="row" spacing={1} >
       <Button 
         sx={getButtonStyles(activeFilter, "all")} 
         onClick={() => onFilterChange("all")}
@@ -36,7 +30,7 @@ export default function FilterButtons({ activeFilter, onFilterChange }: FilterBu
         onClick={() => onFilterChange("male")}
         >
           Male
-        </Button>
+      </Button>
     </Stack>
   )
 }

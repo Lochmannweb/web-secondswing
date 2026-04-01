@@ -11,6 +11,7 @@ import ProdukterPage from '../produkter/page'
 import Favoriter from '../favoriter/page'
 import PrivatlivPage from '../indstillinger/privatliv/page'
 import FaqPage from '../faq/page'
+import '../profil.css'
 
 
 type UserProfile = {
@@ -28,7 +29,6 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [needsLogin, setNeedsLogin] = useState(false)
   const supabase = getSupabaseClient()  
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const [activeSection, setActiveSection] = useState<string>("fav")
   const isMobile = typeof window !== "undefined" && window.innerWidth < 599
@@ -125,14 +125,6 @@ export default function ProfilePage() {
       </Box>
     )
   }
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    setIsLoggedIn(false)
-    router.push('/') // redirect til homepage
-  }
-
-
   if (loading) return <p>Loading...</p>
 
   return (
@@ -184,20 +176,21 @@ export default function ProfilePage() {
                     >
                       Favoriter
                 </Button>
-
                 <Button
                   className="profile-action-button"
                   onClick={() => handleNavigation("privacy", "/indstillinger/privatliv")}
                 >
-                  Privatliv og cookies
+                  Indstillinger
                 </Button>
+
+                {/* 
 
                 <Button
                   className="profile-action-button"
                   onClick={() => handleNavigation("faq", "/faq")}
                 >
                   FAQ
-                </Button>
+                </Button> */}
 
                 {/* <Button 
                   sx={{
@@ -214,14 +207,14 @@ export default function ProfilePage() {
                 </Button> */}
               </Box>
 
-              <Box className="profile-logout-group">
+              {/* <Box className="profile-logout-group">
                 <Button 
                   className="profile-action-button"
                     onClick={handleLogout}
                     >
                       Log ud
                 </Button>
-              </Box>
+              </Box> */}
             </Box>
           ) : (
             <p>Ingen profil fundet</p>
