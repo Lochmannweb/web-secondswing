@@ -1,9 +1,9 @@
 "use client"
 
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
-import { updateProduct } from "@/app/lib/crud"
+import { deleteProduct, updateProduct } from "@/app/lib/crud"
 import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import {
   Box,
@@ -15,14 +15,17 @@ import {
   InputLabel,
   FormControl,
   OutlinedInput,
+  IconButton,
 } from "@mui/material"
-import { updateProfile } from "@/app/actions"
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore"
+import NavigateNextIcon from "@mui/icons-material/NavigateNext"
+import "./editProdukt.css"
 
 type FormState = {
   title: string
   description: string
-  price: string 
-  gender: "female" | "male" 
+  price: string
+  gender: "female" | "male"
   color: string
   size: string
   stand: string
@@ -30,6 +33,7 @@ type FormState = {
 }
 
 export default function EditProductPage() {
+  const router = useRouter()
   const params = useParams()
   const productId = params.id as string | undefined
   const supabase = getSupabaseClient()
@@ -45,28 +49,25 @@ export default function EditProductPage() {
     image_url: null,
   })
 
-  const [imageFile, setImageFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [selectedImagePreviews, setSelectedImagePreviews] = useState<string[]>([])
+  const [productImages, setProductImages] = useState<string[]>([])
+  const [activePreviewIndex, setActivePreviewIndex] = useState(0)
   const [loading, setLoading] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
-
-  //  Shared mui props
-  const inputStyle = {
-    "& .MuiOutlinedInput-root": {
-      color: "white",
-      "& fieldset": { borderColor: "none" },
-      "&:hover fieldset": { borderColor: "none" },
-      "&.Mui-focused fieldset": { borderColor: "none" },
-    },
-    "& .MuiInputLabel-root": { color: "gray" },
-    "& .MuiInputLabel-root.Mui-focused": { color: "gray" },
-  }
 
   const updateField = (key: keyof FormState, value: string) => {
     setForm(prev => ({ ...prev, [key]: value }))
   }
+
+  useEffect(() => {
+    return () => {
+      selectedImagePreviews.forEach((url) => URL.revokeObjectURL(url))
+    }
+  }, [selectedImagePreviews])
 
   // fetch product + auth & ownership check
   useEffect(() => {
@@ -124,7 +125,27 @@ export default function EditProductPage() {
           image_url: product.image_url ?? null,
         })
 
-        setImagePreview(product.image_url ?? null)
+        const initialImages = product.image_url ? [product.image_url] : []
+
+        const { data: extraImages, error: extraImagesError } = await supabase
+          .from("product_images")
+          .select("image_url, position")
+          .eq("product_id", productId)
+          .order("position", { ascending: true })
+
+        if (extraImagesError && extraImagesError.code !== "42P01") {
+          throw new Error(extraImagesError.message)
+        }
+
+        const mergedImages = !extraImagesError && extraImages
+          ? [
+              ...initialImages,
+              ...extraImages.map((item) => item.image_url).filter(Boolean),
+            ]
+          : initialImages
+
+        setProductImages(Array.from(new Set(mergedImages)))
+        setActivePreviewIndex(0)
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Fejl ved hentning"
         setMessage({ type: "error", text: msg })
@@ -138,19 +159,39 @@ export default function EditProductPage() {
   }, [productId])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setImageFile(file)
-    setImagePreview(URL.createObjectURL(file))
+    const files = Array.from(e.target.files ?? [])
+    if (files.length === 0) return
+
+    selectedImagePreviews.forEach((url) => URL.revokeObjectURL(url))
+
+    setImageFiles(files)
+    setSelectedImagePreviews(files.map((file) => URL.createObjectURL(file)))
+    setActivePreviewIndex(0)
+    e.target.value = ""
   }
 
-  const uploadImage = async (file: File): Promise<string> => {
-    const ext = file.name.split(".").pop()
-    const path = `${productId ?? "tmp"}-${Date.now()}.${ext}`
-    const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: true })
-    if (error) throw new Error(error.message)
-    const { data } = supabase.storage.from("avatars").getPublicUrl(path)
+  const uploadImage = async (file: File, userId: string, index: number): Promise<string> => {
+    const fileExt = (file.name.split(".").pop() || "jpg").toLowerCase()
+    const uniqueId = typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+    const filePath = `${userId}/${productId ?? "tmp"}-${Date.now()}-${index}-${uniqueId}.${fileExt}`
+
+    const { error } = await supabase.storage.from("avatars").upload(filePath, file)
+    if (error) throw new Error(`Kunne ikke uploade billede: ${error.message}`)
+
+    const { data } = supabase.storage.from("avatars").getPublicUrl(filePath)
     return data.publicUrl
+  }
+
+  const goToPreviousPreview = () => {
+    const displayImages = selectedImagePreviews.length > 0 ? selectedImagePreviews : productImages
+    setActivePreviewIndex((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1))
+  }
+
+  const goToNextPreview = () => {
+    const displayImages = selectedImagePreviews.length > 0 ? selectedImagePreviews : productImages
+    setActivePreviewIndex((prev) => (prev === displayImages.length - 1 ? 0 : prev + 1))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -165,10 +206,22 @@ export default function EditProductPage() {
     setMessage(null)
 
     try {
-      // upload image first if changed
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser()
+
+      if (userError || !user) {
+        throw new Error("Du skal være logget ind for at redigere produkter.")
+      }
+
+      // upload images if changed
       let imageUrl = form.image_url ?? null
-      if (imageFile) {
-        imageUrl = await uploadImage(imageFile)
+      let uploadedUrls: string[] = []
+
+      if (imageFiles.length > 0) {
+        uploadedUrls = await Promise.all(imageFiles.map((file, index) => uploadImage(file, user.id, index)))
+        imageUrl = uploadedUrls[0] ?? null
       }
 
       // prepare updates (convert price)
@@ -186,6 +239,44 @@ export default function EditProductPage() {
       // call shared CRUD update (throws on error)
       await updateProduct(productId, updates)
 
+      if (uploadedUrls.length > 0) {
+        const { error: deleteImagesError } = await supabase
+          .from("product_images")
+          .delete()
+          .eq("product_id", productId)
+
+        if (deleteImagesError && deleteImagesError.code !== "42P01") {
+          throw new Error(deleteImagesError.message)
+        }
+
+        const extraImages = uploadedUrls.slice(1).map((url, index) => ({
+          product_id: Number(productId),
+          image_url: url,
+          position: index + 1,
+        }))
+
+        if (extraImages.length > 0) {
+          const { error: imagesError } = await supabase
+            .from("product_images")
+            .insert(extraImages)
+
+          if (imagesError?.code === "42P01") {
+            throw new Error("Produkt blev opdateret, men tabellen product_images mangler i databasen.")
+          }
+
+          if (imagesError) {
+            throw new Error(`Produkt opdateret, men ekstra billeder kunne ikke gemmes: ${imagesError.message}`)
+          }
+        }
+
+        setForm((prev) => ({ ...prev, image_url: uploadedUrls[0] ?? null }))
+        setProductImages(uploadedUrls)
+        selectedImagePreviews.forEach((url) => URL.revokeObjectURL(url))
+        setSelectedImagePreviews([])
+        setImageFiles([])
+        setActivePreviewIndex(0)
+      }
+
       setMessage({ type: "success", text: "Produkt opdateret!" })
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Ukendt fejl ved opdatering"
@@ -195,10 +286,40 @@ export default function EditProductPage() {
     }
   }
 
+  const handleDelete = async () => {
+    if (!productId) return
+    if (!isOwner) {
+      setMessage({ type: "error", text: "Du har ikke tilladelse til at slette dette produkt." })
+      return
+    }
+
+    setLoading(true)
+    setMessage(null)
+
+    try {
+      const { error: extraImagesDeleteError } = await supabase
+        .from("product_images")
+        .delete()
+        .eq("product_id", productId)
+
+      if (extraImagesDeleteError && extraImagesDeleteError.code !== "42P01") {
+        throw new Error(extraImagesDeleteError.message)
+      }
+
+      await deleteProduct(productId)
+      router.push("/profile")
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Kunne ikke slette produktet"
+      setMessage({ type: "error", text: msg })
+      setShowDeleteConfirm(false)
+      setLoading(false)
+    }
+  }
+
   // UI: block if auth not checked or not owner
   if (!authChecked) {
     return (
-      <Box p={"2rem"} position={"absolute"} top={"5rem"} justifySelf={"center"}>
+      <Box className="edit-status-box">
         <p>Henter...</p>
       </Box>
     )
@@ -206,35 +327,78 @@ export default function EditProductPage() {
 
   if (!isOwner) {
     return (
-      <Box p={"2rem"} position={"absolute"} top={"5rem"} justifySelf={"center"}>
+      <Box className="edit-status-box">
         {message ? <Alert severity={message.type}>{message.text}</Alert> : <Alert severity="error">Ingen adgang</Alert>}
       </Box>
     )
   }
+
+  const displayImages = selectedImagePreviews.length > 0
+    ? selectedImagePreviews
+    : productImages.length > 0
+      ? productImages
+      : ["/darkimgplaceholder.jpg"]
  
   return (
-    <Box component="form" action={updateProfile}  onSubmit={handleSubmit} position={"absolute"} p={2} top={{ xs: "8rem", sm: "6rem" }} display={{ sm: "flex" }} justifyContent={{ sm: "center" }} gap={{ sm: "2rem" }} height={{ sm: "80vh" }}>
-
-      <Box justifySelf={"center"} alignSelf={"center"}>
-          <Box mb={2}>
-            <Image 
-              src={imagePreview || "/placeholderprofile.jpg"} 
-              alt="preview"
-              width={420} 
-              height={100} 
-              style={{ width: "100%", height: "70vh", objectFit: "cover", borderRadius: "0.5rem" }} 
-            />
+    <Box component="form" onSubmit={handleSubmit} className="edit-form">
+      <Box className="edit-image-wrap">
+        <Box className="edit-image-stage">
+          <Box
+            className="edit-image-track"
+            sx={{ transform: `translateX(-${activePreviewIndex * 100}%)` }}
+          >
+            {displayImages.map((imageSrc, index) => (
+              <Box key={`${imageSrc}-${index}`} className="edit-image-slide">
+                <Image
+                  src={imageSrc}
+                  alt={`Produkt preview ${index + 1}`}
+                  fill
+                  className="edit-image"
+                />
+              </Box>
+            ))}
           </Box>
+
+          {displayImages.length > 1 && (
+            <>
+              <IconButton
+                onClick={goToPreviousPreview}
+                className="edit-image-nav edit-image-nav-prev"
+                aria-label="Forrige billede"
+              >
+                <NavigateBeforeIcon />
+              </IconButton>
+              <IconButton
+                onClick={goToNextPreview}
+                className="edit-image-nav edit-image-nav-next"
+                aria-label="Næste billede"
+              >
+                <NavigateNextIcon />
+              </IconButton>
+            </>
+          )}
+        </Box>
+
+        {displayImages.length > 1 && (
+          <Box className="edit-image-dots">
+            {displayImages.map((_, index) => (
+              <span
+                key={`edit-preview-dot-${index}`}
+                className={`edit-image-dot${index === activePreviewIndex ? " active" : ""}`}
+              />
+            ))}
+          </Box>
+        )}
       </Box>
 
-      <Box sx={{ marginTop: "1rem", backgroundColor: "#121212ff", borderRadius: "0.3rem", width: { sm:"30%" }}}>
+      <Box className="edit-fields">
       <TextField
         label="Titel"
         value={form.title}
         onChange={(e) => updateField("title", e.target.value)}
         required
         fullWidth
-        sx={inputStyle}
+        className="edit-input-field"
       />
 
       <TextField
@@ -244,19 +408,22 @@ export default function EditProductPage() {
         fullWidth
         multiline
         rows={4}
-        sx={inputStyle}
+        className="edit-input-field"
       />
 
       <FormControl 
         fullWidth 
         required 
-        sx={inputStyle}
+        className="edit-select-field"
       >
-        <InputLabel>Farve</InputLabel>
+        <InputLabel id="edit-color-label">Farve</InputLabel>
         <Select
+          labelId="edit-color-label"
+          id="edit-color"
+          label="Farve"
           value={form.color}
           onChange={(e) => updateField("color", e.target.value as "Hvid" | "Sort" | "Grå")}
-          input={ <OutlinedInput label="Farve" /> }
+          input={<OutlinedInput label="Farve" />}
         >
           <MenuItem value="Hvid">Hvid</MenuItem>
           <MenuItem value="Sort">Sort</MenuItem>
@@ -267,16 +434,17 @@ export default function EditProductPage() {
       <FormControl 
         fullWidth 
         required 
-        sx={inputStyle}
+        className="edit-select-field"
       >
-        <InputLabel>Størrelse</InputLabel>
+        <InputLabel id="edit-size-label">Størrelse</InputLabel>
       
         <Select
+          labelId="edit-size-label"
+          id="edit-size"
           label="Størrelse"
           value={form.size}
           onChange={(e) => updateField("size", e.target.value as "XS" | "S" | "M" | "L" | "XL")}
-          input={ <OutlinedInput label="Størrelse" /> }
-          sx={{ color: "white" }}
+          input={<OutlinedInput label="Størrelse" />}
         >
           <MenuItem value="XS">XS</MenuItem>
           <MenuItem value="S">S</MenuItem>
@@ -289,44 +457,37 @@ export default function EditProductPage() {
       <FormControl 
         fullWidth 
         required 
-        sx={inputStyle}
+        className="edit-select-field"
       >
-        <InputLabel>Køn</InputLabel>
+        <InputLabel id="edit-gender-label">Køn</InputLabel>
       
         <Select
+          labelId="edit-gender-label"
+          id="edit-gender"
+          label="Køn"
           value={form.gender}
           onChange={(e) => updateField("gender", e.target.value as "female" | "male")}
-          input={ <OutlinedInput label="Gender" /> }
-          sx={{ color: "white" }}
+          input={<OutlinedInput label="Køn" />}
         >
           <MenuItem value="female">Female</MenuItem>
           <MenuItem value="male">Male</MenuItem>
         </Select>
       </FormControl>
 
-      <FormControl fullWidth sx={inputStyle}>
-        <InputLabel>Køn</InputLabel>
-        <Select value={form.gender} onChange={(e) => updateField("gender", e.target.value as FormState["gender"])}>
-          <MenuItem value="female">Female</MenuItem>
-          <MenuItem value="male">Male</MenuItem>
-          <MenuItem value="unisex">Unisex</MenuItem>
-        </Select>
-      </FormControl>
-
-
       <FormControl 
         fullWidth 
         required 
-        sx={inputStyle}
+        className="edit-select-field"
       >
-        <InputLabel>Tilstand</InputLabel>
+        <InputLabel id="edit-stand-label">Tilstand</InputLabel>
       
         <Select
+          labelId="edit-stand-label"
+          id="edit-stand"
           label="Tilstand"
           value={form.stand}
           onChange={(e) => updateField("stand", e.target.value as "Nyt" | "Brugt" | "Brugspor")}
-          input={ <OutlinedInput label="Tilstand" /> }
-          sx={{ color: "white" }}
+          input={<OutlinedInput label="Tilstand" />}
         >
           <MenuItem value="Nyt">Nyt</MenuItem>
           <MenuItem value="Brugt">Brugt</MenuItem>
@@ -340,25 +501,20 @@ export default function EditProductPage() {
         value={form.price}
         onChange={(e) => updateField("price", e.target.value)}
         fullWidth
-        sx={inputStyle}
+        className="edit-input-field"
       />
 
       <Button 
         variant="outlined" 
         component="label" 
         fullWidth 
-        sx={{
-          justifyContent: "left",
-          color: "gray",
-          border: "none",
-          "&:hover": { 
-            backgroundColor: "#0b0b0bc3" 
-          } 
-        }}>
-          Skift billede
+        className="edit-image-button"
+      >
+          Skift billeder
         <input 
           type="file" 
-          hidden accept="image/*" 
+          hidden accept="image/*"
+          multiple
           onChange={handleImageChange} 
         />
       </Button>
@@ -367,21 +523,49 @@ export default function EditProductPage() {
         type="submit" 
         fullWidth 
         disabled={loading}
-        sx={{
-          justifyContent: "left",
-          color: "gray",
-          border: "none",
-          mt: "2rem",
-          "&:hover": { 
-            backgroundColor: "#0b0b0bc3" 
-          } 
-        }}
-        >
+        className="edit-submit-button"
+      >
         {loading ? "Opdaterer…" : "Gem ændringer"}
       </Button>
 
+      {!showDeleteConfirm ? (
+        <Button
+          type="button"
+          fullWidth
+          disabled={loading}
+          className="edit-delete-button"
+          onClick={() => setShowDeleteConfirm(true)}
+        >
+          Slet produkt
+        </Button>
+      ) : (
+        <Box className="edit-delete-confirm-wrap">
+          <p className="edit-delete-confirm-text">Er du sikker på, at du vil slette produktet?</p>
+          <Box className="edit-delete-confirm-actions">
+            <Button
+              type="button"
+              fullWidth
+              disabled={loading}
+              className="edit-cancel-button"
+              onClick={() => setShowDeleteConfirm(false)}
+            >
+              Annuller
+            </Button>
+            <Button
+              type="button"
+              fullWidth
+              disabled={loading}
+              className="edit-confirm-delete-button"
+              onClick={handleDelete}
+            >
+              Bekræft sletning
+            </Button>
+          </Box>
+        </Box>
+      )}
+
       {message && (
-        <Alert severity={message.type} sx={{ mt:2 }}>
+        <Alert severity={message.type} className="edit-alert">
           {message.text}
         </Alert>
       )}
