@@ -9,6 +9,7 @@
   height: 100%;
   overflow: hidden;
   position: relative;
+  touch-action: pan-y;
 }
 
 .product-image-track {
@@ -28,6 +29,7 @@
 }
 
 .product-image-nav.MuiButton-root {
+  display: none;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -51,6 +53,12 @@
   right: 0.75rem;
 }
 
+@media (min-width: 600px) {
+  .product-image-nav.MuiButton-root {
+    display: flex;
+  }
+}
+
 .product-image-swipe-hint {
   position: absolute;
   bottom: 1.1rem;
@@ -67,14 +75,10 @@
   z-index: 2;
 }
 
-.product-image-dots {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 0.35rem;
+.product-top-dots {
   display: flex;
   gap: 0.35rem;
-  z-index: 2;
+  margin-bottom: 0.25rem;
 }
 
 .product-image-dot {
