@@ -4,6 +4,7 @@ import { createProduct } from "@/app/lib/crud"
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import type React from "react"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { 
   Box, 
   TextField, 
@@ -13,12 +14,16 @@ import {
   Select, 
   InputLabel, 
   FormControl, 
-  OutlinedInput 
+  OutlinedInput,
+  IconButton
 } from "@mui/material"
 import Image from "next/image"
-import { updateProfile } from "@/app/actions"
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore"
+import NavigateNextIcon from "@mui/icons-material/NavigateNext"
+import "./opretProdukt.css"
 
 export default function CreateProduct() {
+  const router = useRouter()
   const [ form, setForm ] = useState({
     title: "",
     description: "",
@@ -32,8 +37,9 @@ export default function CreateProduct() {
 
 
   // State Management
-  const [imageFile, setImageFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const [activePreviewIndex, setActivePreviewIndex] = useState(0)
   const [loading, setLoading] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
   const [needsLogin, setNeedsLogin] = useState(false)
@@ -50,6 +56,22 @@ export default function CreateProduct() {
 
     checkUser()
   }, [supabase])
+
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach((url) => URL.revokeObjectURL(url))
+    }
+  }, [imagePreviews])
+
+  useEffect(() => {
+    if (message?.type !== "success") return
+
+    const timeoutId = window.setTimeout(() => {
+      router.push("/produkter")
+    }, 2500)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [message, router])
 
   async function signInWithGoogle() {
     await supabase.auth.signInWithOAuth({
@@ -68,15 +90,18 @@ export default function CreateProduct() {
   
 
   // uploade image
-  const uploadImage = async (file: File): Promise<string> => {
-    const fileExt = file.name.split(".").pop()
-    const fileName = `${Date.now()}.${fileExt}`
+  const uploadImage = async (file: File, userId: string, index: number): Promise<string> => {
+    const fileExt = (file.name.split(".").pop() || "jpg").toLowerCase()
+    const uniqueId = typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+    const filePath = `${userId}/${Date.now()}-${index}-${uniqueId}.${fileExt}`
 
-    const { error } = await supabase.storage.from("avatars").upload(fileName, file)
-    if (error) throw new Error(`Kunne ikke uploade billede.`)
+    const { error } = await supabase.storage.from("avatars").upload(filePath, file)
+    if (error) throw new Error(`Kunne ikke uploade billede: ${error.message}`)
 
     const {data: { publicUrl }, 
-      } = supabase.storage.from("avatars").getPublicUrl(fileName)
+      } = supabase.storage.from("avatars").getPublicUrl(filePath)
     
       if (!publicUrl) throw new Error("Kunne ikke generere offentlig URL.")
     
@@ -90,11 +115,25 @@ export default function CreateProduct() {
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    
-    setImageFile(file)
-    setImagePreview(URL.createObjectURL(file))
+    const files = Array.from(e.target.files ?? [])
+    if (files.length === 0) return
+
+    imagePreviews.forEach((url) => URL.revokeObjectURL(url))
+
+    setImageFiles(files)
+    setImagePreviews(files.map((file) => URL.createObjectURL(file)))
+    setActivePreviewIndex(0)
+
+    // Allow selecting same files again later
+    e.target.value = ""
+  }
+
+  const goToPreviousPreview = () => {
+    setActivePreviewIndex((prev) => (prev === 0 ? imagePreviews.length - 1 : prev - 1))
+  }
+
+  const goToNextPreview = () => {
+    setActivePreviewIndex((prev) => (prev === imagePreviews.length - 1 ? 0 : prev + 1))
   }
 
 
@@ -112,19 +151,43 @@ export default function CreateProduct() {
       const { data: { user }, error: userError } = await supabase.auth.getUser() // Grundstruktur af error handling i frontend
       if (userError || !user) throw new Error("Du skal være logget ind først")
 
-      // Upload image
-      let imageUrl = null
-      if (imageFile) imageUrl = await uploadImage(imageFile);
+      // Upload all selected images
+      const uploadedUrls = imageFiles.length > 0
+        ? await Promise.all(imageFiles.map((file, index) => uploadImage(file, user.id, index)))
+        : []
+      const primaryImageUrl = uploadedUrls[0] ?? null
 
 
 
       // CRUD - Create product 
-      await createProduct({
+      const createdProduct = await createProduct({
         user_id: user.id,
         ...form,
         price: Number(form.price),
-        image_url: imageUrl
+        image_url: primaryImageUrl
       });
+
+      // Save extra images to separate table if available.
+      if (uploadedUrls.length > 1 && createdProduct?.id) {
+        const extraImages = uploadedUrls.slice(1).map((url, index) => ({
+          product_id: createdProduct.id,
+          image_url: url,
+          position: index + 1,
+        }))
+
+        const { error: imagesError } = await supabase
+          .from("product_images")
+          .insert(extraImages)
+
+        if (imagesError?.code === "42P01") {
+          throw new Error("Produkt blev gemt, men tabellen product_images mangler i databasen.")
+        }
+
+        if (imagesError) {
+          throw new Error(`Produkt gemt, men ekstra billeder kunne ikke gemmes: ${imagesError.message}`)
+        }
+      }
+
       setMessage({ type: "success", text: "Produkt blev oprettet!" }) // viser error besked på skærmen, en del af error handling via frontend
 
 
@@ -139,7 +202,10 @@ export default function CreateProduct() {
         size: "Størrelse",
         stand: "Tilstand",
       })
-      setImageFile(null)
+      imagePreviews.forEach((url) => URL.revokeObjectURL(url))
+      setImageFiles([])
+      setImagePreviews([])
+      setActivePreviewIndex(0)
 
 
     } catch (error) {
@@ -176,18 +242,57 @@ export default function CreateProduct() {
   return (
     <Box 
       component="form" 
-      action={updateProfile}
       onSubmit={handleSubmit}
       className="opret-form"
       >
       <Box className="opret-image-wrap">
-          <Image
-            src={imagePreview || "/placeholderprofile.jpg"}
-            alt="Valgt billede"
-            width={800}
-            height={100}
-            className="opret-image"
-          />
+          <Box className="opret-image-stage">
+            <Box
+              className="opret-image-track"
+              sx={{ transform: `translateX(-${activePreviewIndex * 100}%)` }}
+            >
+              {(imagePreviews.length > 0 ? imagePreviews : ["/darkimgplaceholder.jpg"]).map((imageSrc, index) => (
+                <Box key={`${imageSrc}-${index}`} className="opret-image-slide">
+                  <Image
+                    src={imageSrc}
+                    alt={`Valgt billede ${index + 1}`}
+                    fill
+                    className="opret-image"
+                  />
+                </Box>
+              ))}
+            </Box>
+
+            {imagePreviews.length > 1 && (
+              <>
+                <IconButton
+                  onClick={goToPreviousPreview}
+                  className="opret-image-nav opret-image-nav-prev"
+                  aria-label="Forrige billede"
+                >
+                  <NavigateBeforeIcon />
+                </IconButton>
+                <IconButton
+                  onClick={goToNextPreview}
+                  className="opret-image-nav opret-image-nav-next"
+                  aria-label="Næste billede"
+                >
+                  <NavigateNextIcon />
+                </IconButton>
+              </>
+            )}
+          </Box>
+
+          {imagePreviews.length > 1 && (
+            <Box className="opret-image-dots">
+              {imagePreviews.map((_, index) => (
+                <span
+                  key={`preview-dot-${index}`}
+                  className={`opret-image-dot${index === activePreviewIndex ? " active" : ""}`}
+                />
+              ))}
+            </Box>
+          )}
       </Box>
 
       <Box className="opret-fields">
@@ -216,11 +321,14 @@ export default function CreateProduct() {
             required 
             className="opret-select-field"
           >
-            <InputLabel>Farve</InputLabel>
+            <InputLabel id="color-label">Farve</InputLabel>
             <Select
+              labelId="color-label"
+              id="color"
+              label="Farve"
               value={form.color}
               onChange={(e) => updateField("color", e.target.value as "Hvid" | "Sort" | "Grå")}
-              input={ <OutlinedInput label="Farve" /> }
+              input={<OutlinedInput label="Farve" />}
             >
               <MenuItem value="Hvid">Hvid</MenuItem>
               <MenuItem value="Sort">Sort</MenuItem>
@@ -233,13 +341,15 @@ export default function CreateProduct() {
             required 
             className="opret-select-field"
           >
-            <InputLabel>Størrelse</InputLabel>
+            <InputLabel id="size-label">Størrelse</InputLabel>
           
             <Select
+              labelId="size-label"
+              id="size"
               label="Størrelse"
               value={form.size}
               onChange={(e) => updateField("size", e.target.value as "XS" | "S" | "M" | "L" | "XL")}
-              input={ <OutlinedInput label="Størrelse" /> }
+              input={<OutlinedInput label="Størrelse" />}
             >
               <MenuItem value="XS">XS</MenuItem>
               <MenuItem value="S">S</MenuItem>
@@ -254,12 +364,15 @@ export default function CreateProduct() {
             required 
             className="opret-select-field"
           >
-            <InputLabel>Køn</InputLabel>
+            <InputLabel id="gender-label">Køn</InputLabel>
           
             <Select
+              labelId="gender-label"
+              id="gender"
+              label="Køn"
               value={form.gender}
               onChange={(e) => updateField("gender", e.target.value as "female" | "male")}
-              input={ <OutlinedInput label="Gender" /> }
+              input={<OutlinedInput label="Køn" />}
             >
               <MenuItem value="female">Female</MenuItem>
               <MenuItem value="male">Male</MenuItem>
@@ -271,13 +384,15 @@ export default function CreateProduct() {
             required 
             className="opret-select-field"
           >
-            <InputLabel>Tilstand</InputLabel>
+            <InputLabel id="stand-label">Tilstand</InputLabel>
           
             <Select
+              labelId="stand-label"
+              id="stand"
               label="Tilstand"
               value={form.stand}
               onChange={(e) => updateField("stand", e.target.value as "Nyt" | "Brugt" | "Brugspor")}
-              input={ <OutlinedInput label="Tilstand" /> }
+              input={<OutlinedInput label="Tilstand" />}
             >
               <MenuItem value="Nyt">Nyt</MenuItem>
               <MenuItem value="Brugt">Brugt</MenuItem>
@@ -308,6 +423,7 @@ export default function CreateProduct() {
               type="file" 
               hidden 
               accept="image/*" 
+              multiple
               onChange={handleImageChange} 
             />
           </Button>
@@ -318,7 +434,7 @@ export default function CreateProduct() {
             size="large" 
             fullWidth
             className="opret-submit-button"
-            disabled={!form.title || !form.description || !form.color || !form.size || !form.gender || !form.stand || !form.price || !imageFile}
+            disabled={!form.title || !form.description || !form.color || !form.size || !form.gender || !form.stand || !form.price || imageFiles.length === 0}
           >
             {loading ? "Opretter..." : "Opret Produkt"}
           </Button>
