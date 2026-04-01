@@ -6,6 +6,7 @@ import SearchBar from "@/app/components/Shop/SearchBar"
 import AllProducts from "@/app/components/Products/AllProducts"
 import { Alert, Box, Typography } from "@mui/material"
 import FilterButtons from "@/app/components/Shop/FilterButtons"
+import "./shop.css"
 
 interface Product {
   id: string

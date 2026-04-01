@@ -5,10 +5,8 @@ import Link from "next/link"
 import { 
   Typography, 
   Card, 
-  CardContent, 
   CardMedia, 
   Grid, 
-  Button,
   Alert, 
   IconButton,
   Box
@@ -101,72 +99,50 @@ const toggleFavorite = async (productId: string) => {
 
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} className="shop-product-grid">
       {products.map((product) => (
-        <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id}>
-          <Card sx={{ height: "100%", backgroundColor: "transparent", display: "flex", flexDirection: "column" }}>
-            {product.image_url && (
-              <Box>
-                {product.sold && (
-                <Box className="shop-soldout">
-                    <p>Solgt</p>
-                </Box>
-                )}
-                <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
+        <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id} className="shop-product-grid-item">
+          <Card className="shop-product-card">
+            <Box className="shop-product-media-wrap">
+              {product.sold && (
+              <Box className="shop-soldout">
+                  <p>Solgt</p>
               </Box>
-            )}
-            <CardContent sx={{ color: "white" }}>
-                <Typography sx={{ fontSize: "15px" }} component="h2">
-                  {product.title}
-                </Typography>
-                {product.description && (
-                  <Typography variant="body2" sx={{ color: "#b6b6b6", minHeight: "3rem" }}>
-                    {product.description}
-                  </Typography>
-                )}
-                {userId && (
-                  <IconButton
-                    onClick={() => toggleFavorite(product.id)}
-                    sx={{ 
-                      color: 'white', 
-                      left: { xs: "10rem", sm: "14rem" }, 
-                      position: "relative",  
-                      top: "-3rem", 
-                    }}
-                  >
-                    {favorites.includes(product.id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                  </IconButton>
-                )}
-                {product.price && (
-                  <Typography
-                    sx={{
-                      color: "white",
-                      paddingTop: userId ? "1rem" : "0.5rem",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {product.price.toFixed(2)} DKK
-                  </Typography>
-                )}
-            </CardContent>
-            <Button
-                  component={Link}
-                  href={`/products/${product.id}`}
-                  sx={{
-                    fontSize: "10px",
-                    border: "1px solid grey",
-                    borderRadius: "0.5rem",
-                    width: "100%",
-                    color: "white",
-                    display: "flex",
-                    justifySelf: "center",
-                    padding: "0.3rem 1rem",
-                    marginTop: "auto",
-                    "&:hover": { backgroundColor: "#60954d", color: "white" },
+              )}
+              {userId && (
+                <IconButton
+                  onClick={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    toggleFavorite(product.id)
                   }}
+                  className="shop-favorite-button"
                 >
-                  Se produkt
-            </Button>
+                  {favorites.includes(product.id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                </IconButton>
+              )}
+              <Link href={`/products/${product.id}`} className="shop-product-hitarea" aria-label={`Gå til ${product.title}`}>
+                {product.image_url && (
+                  <CardMedia component="img" image={product.image_url} alt={product.title} className="shop-product-image" />
+                )}
+
+                <Box className="shop-product-overlay">
+                  <Typography component="h2" className="shop-product-title">
+                    {product.title}
+                  </Typography>
+                  {product.description && (
+                    <Typography variant="body2" className="shop-product-description">
+                      {product.description}
+                    </Typography>
+                  )}
+                  {product.price && (
+                    <Typography className="shop-product-price">
+                      {product.price.toFixed(2)} DKK
+                    </Typography>
+                  )}
+                </Box>
+              </Link>
+            </Box>
           </Card>
         </Grid>
       ))}
