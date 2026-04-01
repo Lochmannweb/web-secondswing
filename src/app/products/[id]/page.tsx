@@ -33,11 +33,14 @@ export default function ProductPage() {
   const [viewerId, setViewerId] = useState<string | null>(null)
   const [isFavorite, setIsFavorite] = useState(false)
   const [slideX, setSlideX] = useState(0)
+  const [productImages, setProductImages] = useState<string[]>([])
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
 
   const sliderRef = useRef<HTMLDivElement | null>(null)
   const maxSlideRef = useRef(0)
   const dragStartRef = useRef(0)
   const didDragRef = useRef(false)
+  const imageTouchStartXRef = useRef<number | null>(null)
 
   useEffect(() => {
     if (!produktId) {
@@ -60,6 +63,25 @@ export default function ProductPage() {
 
         if (error) throw new Error(error.message)
         setProduct(data)
+
+        const initialImages = data.image_url ? [data.image_url] : []
+        setProductImages(initialImages)
+
+        const { data: extraImages, error: extraImagesError } = await supabase
+          .from("product_images")
+          .select("image_url, position")
+          .eq("product_id", produktId)
+          .order("position", { ascending: true })
+
+        if (!extraImagesError && extraImages) {
+          const mergedImages = [
+            ...initialImages,
+            ...extraImages.map((item) => item.image_url).filter(Boolean),
+          ]
+
+          // Remove duplicates while preserving order
+          setProductImages(Array.from(new Set(mergedImages)))
+        }
 
         if (currentUserId) {
           const { data: favoriteData } = await supabase
@@ -194,6 +216,37 @@ export default function ProductPage() {
     toggleFavorite()
   }
 
+  const goToPreviousImage = () => {
+    setActiveImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1))
+  }
+
+  const goToNextImage = () => {
+    setActiveImageIndex((prev) => (prev === productImages.length - 1 ? 0 : prev + 1))
+  }
+
+  const onImageTouchStart = (event: PointerEvent<HTMLDivElement>) => {
+    imageTouchStartXRef.current = event.clientX
+  }
+
+  const onImageTouchEnd = (event: PointerEvent<HTMLDivElement>) => {
+    if (imageTouchStartXRef.current === null || productImages.length < 2) {
+      return
+    }
+
+    const deltaX = event.clientX - imageTouchStartXRef.current
+    imageTouchStartXRef.current = null
+
+    if (Math.abs(deltaX) < 40) {
+      return
+    }
+
+    if (deltaX < 0) {
+      goToNextImage()
+    } else {
+      goToPreviousImage()
+    }
+  }
+
   const isOwner = product ? viewerId === product.user_id : false
   const slideProgress = maxSlideRef.current > 0 ? slideX / maxSlideRef.current : 0
   const sliderStyle = {
@@ -211,14 +264,52 @@ export default function ProductPage() {
   return (
     <Box className="product-page">
       <Box className="product-image-wrapper">
-          {product.image_url && (
-            <Image
-              src={product.image_url}
-              alt={product.title}
-              fill
-              className="product-image"
-            />
-          )}
+        {productImages.length > 0 && (
+          <Box
+            className="product-image-slider"
+            onPointerDown={onImageTouchStart}
+            onPointerUp={onImageTouchEnd}
+            onPointerCancel={() => {
+              imageTouchStartXRef.current = null
+            }}
+          >
+            <Box
+              className="product-image-track"
+              sx={{ transform: `translateX(-${activeImageIndex * 100}%)` }}
+            >
+              {productImages.map((imageUrl, index) => (
+                <Box key={`${imageUrl}-${index}`} className="product-image-slide">
+                  <Image
+                    src={imageUrl}
+                    alt={`${product.title} ${index + 1}`}
+                    fill
+                    className="product-image"
+                  />
+                </Box>
+              ))}
+            </Box>
+
+            {productImages.length > 1 && (
+              <>
+                <Button onClick={goToPreviousImage} className="product-image-nav prev">
+                  ←
+                </Button>
+                <Button onClick={goToNextImage} className="product-image-nav next">
+                  →
+                </Button>
+                <p className="product-image-swipe-hint">Slide mod hojre for flere billeder</p>
+                <Box className="product-image-dots">
+                  {productImages.map((_, index) => (
+                    <span
+                      key={`product-image-dot-${index}`}
+                      className={`product-image-dot${index === activeImageIndex ? " active" : ""}`}
+                    />
+                  ))}
+                </Box>
+              </>
+            )}
+          </Box>
+        )}
       </Box>
 
       <Box className="product-details">
