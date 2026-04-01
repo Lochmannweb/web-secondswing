@@ -1,0 +1,224 @@
+.profile-layout {
+  display: grid;
+  gap: 12px;
+  margin-top: 72px;
+  padding: 0 12px 12px;
+  min-height: calc(100vh - 72px);
+}
+
+.profile-sidebar {
+  width: 100%;
+}
+
+.profile-box {
+  color: #fff;
+  /* border: 1px solid rgba(255, 255, 255, 0.09); */
+  border-radius: 10px;
+  /* background:
+    radial-gradient(140% 120% at 0% 0%, rgba(255, 215, 174, 0.14), transparent 50%),
+    linear-gradient(180deg, rgba(19, 19, 19, 0.96), rgba(9, 9, 9, 0.98)); */
+  overflow: hidden;
+}
+
+.profile-container {
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  align-items: center;
+  gap: 12px;
+  /* border-bottom: 1px solid rgba(255, 255, 255, 0.08); */
+}
+
+.profile-avatar {
+  width: 76px;
+  height: 76px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.profile-identity-copy {
+  min-width: 0;
+}
+
+.profile-kicker {
+  color: #ffd7ae;
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #fff;
+}
+
+.profile-email {
+  margin-top: 4px;
+  font-size: 0.72rem;
+  color: #a4a4a4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.profile-menu-group {
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.profile-action-button.MuiButton-root {
+  width: 100%;
+  justify-content: flex-start;
+  color: #cecece;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 7px;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 9px 10px;
+  line-height: 1.25;
+  background: rgba(255, 255, 255, 0.02);
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.profile-action-button.MuiButton-root:hover {
+  border-color: rgba(255, 215, 174, 0.45);
+  background: rgba(255, 215, 174, 0.08);
+  color: #fff;
+}
+
+.profile-action-button.MuiButton-root.is-active {
+  border-color: rgba(255, 215, 174, 0.55);
+  /* background: rgba(255, 215, 174, 0.15); */
+  color: #fff;
+}
+
+.profile-content {
+  display: none;
+  min-width: 0;
+}
+
+.profile-content-shell {
+  /* border: 1px solid rgba(255, 255, 255, 0.09); */
+  border-radius: 10px;
+  /* background: linear-gradient(180deg, rgba(16, 16, 16, 0.92), rgba(7, 7, 7, 0.96)); */
+  min-height: calc(100vh - 172px);
+  padding: 10px;
+}
+
+.profile-login-gate {
+  max-width: 460px;
+  margin: 110px auto 0;
+  padding: 20px;
+  display: grid;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  /* background: linear-gradient(180deg, rgba(19, 19, 19, 0.95), rgba(8, 8, 8, 0.97)); */
+}
+
+.profile-login-title {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #fff;
+}
+
+.profile-login-button.MuiButton-root {
+  width: fit-content;
+  background: #251d15;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 0.66rem;
+  letter-spacing: 0.09em;
+}
+
+.profile-login-button.MuiButton-root:hover {
+  background: #120e0a;
+}
+
+@media (min-width: 599px) {
+  .profile-layout {
+    grid-template-columns: minmax(280px, 29%) minmax(0, 1fr);
+    gap: 12px;
+    margin-top: 76px;
+    padding: 0 10px 10px;
+    min-height: calc(100vh - 76px);
+  }
+
+  .profile-sidebar {
+    position: sticky;
+    top: 76px;
+    align-self: start;
+  }
+
+  .profile-box {
+    min-height: calc(100vh - 86px);
+  }
+
+  .profile-container {
+    grid-template-columns: 88px 1fr;
+    padding: 16px;
+  }
+
+  .profile-avatar {
+    width: 88px;
+    height: 88px;
+  }
+
+  .profile-name {
+    font-size: 1.1rem;
+  }
+
+  .profile-action-button.MuiButton-root {
+    font-size: 0.65rem;
+    padding: 10px 11px;
+  }
+
+  .profile-content {
+    display: flex;
+  }
+
+  .profile-content-shell {
+    min-height: calc(100vh - 86px);
+    max-height: calc(100vh - 86px);
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    
+  }
+
+  .profile-content-shell::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .profile-content-shell::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .profile-layout {
+    grid-template-columns: minmax(320px, 27%) minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .profile-container {
+    grid-template-columns: 94px 1fr;
+  }
+
+  .profile-avatar {
+    width: 94px;
+    height: 94px;
+  }
+
+  .profile-name {
+    font-size: 1.2rem;
+  }
+}
