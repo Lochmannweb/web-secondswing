@@ -134,7 +134,7 @@
 .shop-page-products {
   /* border: 1px solid var(--shop-line); */
   border-radius: 8px;
-  padding: 10px;
+  padding: 0px;
   /* background: linear-gradient(180deg, rgba(20, 20, 20, 0.92), rgba(10, 10, 10, 0.94)); */
 }
 

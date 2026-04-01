@@ -1,0 +1,25 @@
+.favoriter-page .shop-page-kicker {
+  color: #ffb8c4;
+}
+
+.favoriter-login-alert.MuiAlert-root {
+  background-color: #070707 !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  margin: 92px 16px 0;
+}
+
+.favoriter-login-alert .MuiAlert-icon,
+.favoriter-login-alert .MuiAlert-message {
+  color: #fff !important;
+}
+
+.favorit-remove-button.MuiIconButton-root {
+  color: #ff7893;
+}
+
+.favorit-remove-button.MuiIconButton-root:hover {
+  color: #ff95ab;
+  background: rgba(255, 120, 147, 0.2);
+}
