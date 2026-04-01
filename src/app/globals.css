@@ -157,8 +157,7 @@ hr {
 }
 
 .landing-eyebrow,
-.landing-section-kicker,
-.shop-page-kicker {
+.landing-section-kicker {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #ffd7ae;
@@ -309,7 +308,6 @@ hr {
 
 .landing-section-heading h2,
 .landing-cta-panel h2,
-.shop-page-title,
 .not-found-page h1 {
   font-size: clamp(1rem, 1.2vw, 1.5rem);
   line-height: 1.05;
@@ -325,7 +323,6 @@ hr {
 .landing-info-card p,
 .landing-step-card p,
 .landing-cta-panel p,
-.shop-page-description,
 .not-found-page p {
   color: #b6b6b6;
   line-height: 1.6;
@@ -333,36 +330,6 @@ hr {
 
 .desktop-only-dots {
   display: none;
-}
-
-.shop-page-products .MuiAlert-root {
-  background-color: black !important;
-  font-size: 12px;
-  align-items: center;
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
-}
-
-.shop-page-products .MuiAlert-icon {
-  color: rgba(255, 255, 255, 0.6) !important;
-}
-
-.shop-page-products .MuiAlert-message {
-  color: white !important;
-}
-
-.shop-loading-alert.MuiAlert-root {
-  background-color: black !important;
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
-  margin: 96px 16px 0;
-}
-
-.shop-loading-alert .MuiAlert-icon,
-.shop-loading-alert .MuiAlert-message {
-  color: white !important;
 }
 
 .opret-login-gate {
@@ -527,31 +494,6 @@ hr {
   display: grid;
   gap: 1rem;
 }
-
-.shop-page {
-  margin: 0 auto;
-  padding: 80px 20px 40px;
-}
-.shop-page-header {
-  display: grid;
-  margin-bottom: 1.5rem;
-}
-.shop-page-header span {
-  font-size: 10px;
-}
-.shop-page-header p {
-  font-size: 0.8rem;
-  color: #797979;
-}
-.shop-page-header h3 {
-  font-size: 25px;
-}
-
-.shop-page-description {
-  max-width: 560px;
-}
-
-
 
 .privatliv-scroll-page {
   height: calc(100vh - 110px);
@@ -727,74 +669,6 @@ hr {
   text-align: center;
 }
 
-/* solgt */
-.shop-soldout {
-  position: absolute; 
-  padding: 8px 25px; 
-  margin: 5px;
-  border-radius: 2px;
-  background-color: #0000004d; 
-  color: white; 
-  width: auto;
-}
-.shop-soldout p {
-  font-size: 10px;
-  text-transform: uppercase; 
-  font-family: sans-serif;
-}
-
-.SearchBar-form {
-  display: flex;
-  justify-content: flex-start;
-  border: none;
-  margin-bottom: 24px;
-}
-.SearchBar-form .MuiInputBase-root {
-  border-bottom: none;
-  border-radius: 0;
-}
-.SearchBar-form input,
-.SearchBar-form .MuiIconButton-root {
-  font-size: 12px;
-  fill: gray;
-  padding: 10px 0;
-}
-.SearchBar-form .MuiSvgIcon-root {
-  font-size: 12px;
-  fill: gray;
-}
-
-.SearchBar-field {
-  width: 100%;
-  max-width: 420px;
-}
-
-.SearchBar-field .MuiOutlinedInput-root fieldset {
-  border-bottom: 1px solid #222222;
-}
-
-.SearchBar-field .MuiOutlinedInput-root:hover fieldset {
-  border-bottom: 1px solid #373737;
-}
-
-.SearchBar-field .MuiOutlinedInput-root.Mui-focused fieldset {
-  border-bottom: 1px solid #373737;
-}
-
-.SearchBar-field .MuiOutlinedInput-input,
-.SearchBar-input {
-  color: white;
-}
-
-.SearchBar-input:hover {
-  border: none;
-}
-
-.SearchBar-icon {
-  color: white;
-}
-
-
 @media (min-width: 599px) {
   /* .landing-page {
     padding: 20px 16px 17px;
@@ -867,65 +741,6 @@ hr {
 
   .landing-steps-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .SearchBar-form {
-    margin-top: 0rem;
-    margin-bottom: 0rem;
-  }
-
-  .shop-page {
-    padding: 120px 25px 40px;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    align-items: start;
-    gap: 0 2rem;
-  }
-
-  .shop-page-header {
-    display: grid;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .shop-page-layout {
-    display: contents;
-  }
-
-  .shop-page-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    grid-column: 1;
-    grid-row: 2 / 4;
-    margin-top: -8rem;
-  }
-
-  .shop-page-products {
-    max-height: 70vh;
-    overflow-y: auto;
-    padding-right: 1rem;
-    grid-column: 2;
-    grid-row: 1 / 4;
-    margin-top: 3rem;
-  }
-  .shop-page-products::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .shop-page-products::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .shop-page-products::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-  }
-
-  .shop-page-products::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.4);
   }
 
   .info-section summary h2 {
