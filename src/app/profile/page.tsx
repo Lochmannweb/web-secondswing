@@ -144,7 +144,6 @@ export default function ProfilePage() {
                   />
                 <h2 className="profile-name">{profile.display_name ?? 'Ikke udfyldt'}</h2>
               </Box>
-              <Divider color="gray"/>
 
               <Box className="profile-menu-group">
                 <Button 

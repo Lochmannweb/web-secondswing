@@ -18,14 +18,14 @@
 
 .profile-menu-group {
   margin: 0 20px;
-  display: flex;
-  flex-direction: row;
-  max-width: 100%;
+  display: grid;
+  /* flex-direction: row; */
+  /* max-width: 100%; */
   overflow-x: auto;
   gap: 0.5rem;
   /* padding-bottom: 1rem; */
-  scrollbar-width: thin;
-  scrollbar-color: #ffffff00 transparent;
+  /* scrollbar-width: thin; */
+  /* scrollbar-color: #ffffff00 transparent; */
 }
 
 .profile-menu-group::-webkit-scrollbar {
@@ -52,25 +52,30 @@
 
 .profile-action-button.MuiButton-root {
   width: 100%;
-  min-width: fit-content;
-  padding: 5px 15px;
+  padding: 0;
   color: #bdbdbd;
-  justify-content: center;
-  border: 1px solid #373737;
+  justify-content: start;
   font-size: x-small;
-  line-height: 1;
+  line-height: 2;
   white-space: nowrap;
 }
 
 .profile-action-button.MuiButton-root:hover {
-  background-color: #120e0a;
+  /* background-color: #120e0a; */
 }
 
 .profile-content {
     margin: 10px;
+    display: none;
 }
 
 @media (min-width: 599px) {
+    #logout-button,
+    .privatliv-logout-wrap {
+        padding-left: 0;
+        margin: 0;
+    }
+
   .profile-layout {
     display: grid;
     grid-template-columns: minmax(280px, 30%) minmax(0, 1fr);
@@ -83,8 +88,9 @@
   }
 
   .profile-content {
+    display: flex;
     border-top: none;
-    border-left: 1px solid #ffffff14;
+    /* border-left: 1px solid #ffffff14; */
   }
 
   .profile-box {
@@ -121,10 +127,11 @@
         color: #bdbdbd;
         justify-content: start;
         font-size: x-small;
-        line-height: 2;
+        line-height: 1;
         white-space: nowrap;
         border: none;
         max-width: 62%;
+        padding: 5px 15px;
     }
 }
 
