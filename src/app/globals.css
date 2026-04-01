@@ -352,19 +352,6 @@ hr {
   color: white !important;
 }
 
-.favoriter-login-alert.MuiAlert-root {
-  background-color: black !important;
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
-  margin: 80px 16px 0;
-}
-
-.favoriter-login-alert .MuiAlert-icon,
-.favoriter-login-alert .MuiAlert-message {
-  color: white !important;
-}
-
 .shop-loading-alert.MuiAlert-root {
   background-color: black !important;
   color: white !important;
@@ -550,7 +537,7 @@ hr {
   margin-bottom: 1.5rem;
 }
 .shop-page-header span {
-  font-size: 8px;
+  font-size: 10px;
 }
 .shop-page-header p {
   font-size: 0.8rem;
@@ -558,33 +545,74 @@ hr {
 }
 .shop-page-header h3 {
   font-size: 25px;
-  font-size: 25px;
-  font-family: system-ui;
 }
-
-.profile-content .shop-page {
-  padding-top: 0;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-
 
 .shop-page-description {
   max-width: 560px;
 }
 
+.info-page {
+  margin: 20px 10px;
+}
+
+.privatliv-scroll-page {
+  height: calc(100vh - 110px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  padding-right: 0.5rem;
+  mask-image: linear-gradient(to bottom, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
+}
+
+.privatliv-scroll-page::-webkit-scrollbar {
+  width: 8px;
+}
+
+.privatliv-scroll-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.privatliv-scroll-page::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+}
+
+.privatliv-scroll-page::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.privatliv-scroll-block {
+  scroll-snap-align: start;
+}
+
+.privatliv-logout-wrap {
+  padding: 0.75rem 0 1.4rem;
+}
+
+@media (max-width: 899px) {
+  .privatliv-scroll-page {
+    height: auto;
+    overflow: visible;
+    scroll-snap-type: none;
+    mask-image: none;
+    -webkit-mask-image: none;
+    padding-right: 0;
+  }
+}
+
 .info-page-header {
   padding: 0px 20px;
+  /* font-size: small; */
 }
 
 .info-page-content {
-  max-width: 980px;
-  padding: 15px 16px 40px;
-  height: 70vh;
+  /* max-width: 980px; */
+  /* padding: 15px 16px 40px; */
+  /* height: 70vh; */
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0) transparent;
 }
 
 
@@ -608,8 +636,8 @@ hr {
 .info-page-header {
   display: grid;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  padding: 10px 0px;
+  /* margin-bottom: 1.5rem; */
+  padding: 0px;
 }
 
 .info-page-content {
@@ -618,11 +646,66 @@ hr {
 }
 
 .info-section {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  /* background: linear-gradient(180deg, rgba(30, 30, 30, 0.88), rgba(19, 19, 19, 0.96)); */
-  border-radius: 0px;
-  padding: 1rem 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  transition: none;
 }
+
+.info-section[open] {
+  border: none;
+  background: transparent;
+}
+
+.info-section summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 0.8rem 0;
+  user-select: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.info-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.info-section summary::after {
+  content: "\25B6";
+  color: #d8d8d8;
+  font-size: 0.68rem;
+  line-height: 1;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease, color 0.2s ease;
+  margin-left: 0.8rem;
+}
+
+.info-section[open] summary::after {
+  transform: rotate(90deg);
+  color: #ffd7ae;
+}
+
+.info-section summary:focus-visible {
+  outline: 1px solid rgba(255, 215, 174, 0.6);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.info-section summary h2 {
+  margin: 0;
+  font-size: medium;
+  font-weight: 100;
+  text-transform: uppercase;
+}
+
+.info-section p {
+  margin: 0.8rem 0 1rem;
+  padding-left: 0;
+}
+
 
 .info-section h2 {
   font-size: 1.1rem;
@@ -630,8 +713,7 @@ hr {
 }
 
 .info-section p {
-  color: #b6b6b6;
-  line-height: 1.6;
+  color: #d8d7d7;
 }
 
 .about-page {
@@ -765,88 +847,6 @@ hr {
   font-family: sans-serif;
 }
 
-
-@media screen and (max-width: 599px) {
-  .profile-sidebar {
-    border: 1px solid #1b150f;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-  }
-}
-
-
-.profile-sidebar,
-.profile-content {
-  width: 100%;
-}
-
-.profile-container {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 20px;
-}
-
-.profile-avatar {
-  width: 10%;
-  height: auto;
-  border-radius: 50%;
-}
-
-.profile-name {
-  font-size: 1rem;
-  align-self: center;
-}
-
-.profile-menu-group {
-  margin-top: 1rem;
-}
-
-.profile-logout-group {
-  margin-top: 1rem;
-  /* background-color: #121212ff; */
-  border-radius: 0.3rem;
-}
-
-.profile-action-button.MuiButton-root {
-  width: 100%;
-  color: white;
-  justify-content: flex-start;
-}
-
-.profile-action-button.MuiButton-root:hover {
-  background-color: #120e0a;
-}
-
-.profile-content {
-  color: white;
-}
-
-.profiloplysninger-grid {
-  width: 100%;
-}
-
-.profiloplysninger-image-wrap {
-  width: 100%;
-  max-width: none;
-  align-self: start;
-  justify-self: stretch;
-}
-
-.profiloplysninger-image {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: calc(100vh - 260px);
-  object-fit: contain;
-}
-
-.profiloplysninger-form {
-  width: 100%;
-  min-width: 0;
-  justify-self: stretch;
-}
-
 .SearchBar-form {
   display: flex;
   justify-content: flex-start;
@@ -895,79 +895,6 @@ hr {
 }
 
 .SearchBar-icon {
-  color: white;
-}
-
-.FavoriterPage-page {
-  max-width: 1420px;
-  margin: 0 auto;
-  padding: 16px;
-}
-
-.FavoriterPage-title {
-  margin-bottom: 16px;
-  border-bottom: 1px solid white;
-  color: white;
-}
-
-.FavoriterPage-card {
-  position: relative;
-  height: 50vh;
-  background-color: transparent !important;
-  margin-top: 1rem;
-  
-}
-
-.FavoriterPage-cardContent {
-  color: white;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
-.FavoriterPage-cardHeader {
-  display: flex;
-  justify-content: space-between;
-}
-
-.FavoriterPage-cardTitle {
-  font-size: 18px;
-}
-
-.FavoriterPage-iconButton.MuiIconButton-root {
-  position: absolute;
-  top: 13rem;
-  right: -6px;
-  color: white;
-}
-
-.FavoriterPage-description {
-  margin-bottom: 16px;
-  font-size: 13px;
-}
-
-.FavoriterPage-price {
-  position: relative;
-  left: 0rem;
-  align-self: flex-end;
-  border-radius: 3rem;
-  font-size: 0.8rem;
-}
-
-.FavoriterPage-linkButton.MuiButton-root {
-  position: absolute;
-  bottom: 1rem;
-  display: flex;
-  justify-self: center;
-  width: 100%;
-  padding: 0.3rem 1rem;
-  border: 1px solid gray;
-  color: white;
-  font-size: 10px;
-}
-
-.FavoriterPage-linkButton.MuiButton-root:hover {
-  border: 1px solid darkgreen;
-  background-color: darkgreen;
   color: white;
 }
 
@@ -1046,48 +973,9 @@ hr {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .profile-layout {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 1rem;
-    margin: 110px 20px 0;
-    border-radius: 5px;
-    border: 1px solid #ffffff14;
-    position: absolute;
-    bottom: 1rem;
-  }
-
-  .profile-sidebar {
-    width: 30%;
-    flex: 0 0 30%;
-  }
-
-  .profile-content {
-    width: 70%;
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  .profile-box {
-    color: white;
-    border-right: 1px solid #ffffff14;
-    height: 85.5vh;
-    padding: 20px;
-    border-radius: 0rem;
-  }
-
   .SearchBar-form {
     margin-top: 0rem;
     margin-bottom: 0rem;
-  }
-
-  .FavoriterPage-card {
-    height: 45vh;
-  }
-
-  .FavoriterPage-price {
-    left: 0rem;
   }
 
   .shop-page {
@@ -1095,12 +983,7 @@ hr {
     display: grid;
     grid-template-columns: 1fr 2fr;
     align-items: start;
-  }
-
-  .profile-content .shop-page {
-    padding-top: 10px;
-    padding-left: 0;
-    padding-right: 0;
+    gap: 0 2rem;
   }
 
   .shop-page-header {
@@ -1121,6 +1004,7 @@ hr {
     gap: 1.5rem;
     grid-column: 1;
     grid-row: 2 / 4;
+    margin-top: -8rem;
   }
 
   .shop-page-products {
@@ -1150,15 +1034,6 @@ hr {
 }
 
 @media (min-width: 900px) {
-  .profiloplysninger-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    width: 100%;
-    padding-top: 15px;
-    column-gap: 16px;
-    align-items: start;
-    justify-items: stretch;
-  }
-
   /* .about-page {
     padding: 72px 18px 18px;
   } */
@@ -1185,7 +1060,11 @@ hr {
 
   .info-page-content {
     padding: 0;
-    max-width: none;
+    max-width: 62%;
+  }
+
+  .info-page {
+    margin: 20;
   }
 }
 
