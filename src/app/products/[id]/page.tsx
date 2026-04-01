@@ -6,7 +6,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite"
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
 import Image from "next/image"
 import { useParams } from "next/navigation"
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react"
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type TouchEvent } from "react"
 import "./productEdit.css"
 
 interface Product {
@@ -40,7 +40,8 @@ export default function ProductPage() {
   const maxSlideRef = useRef(0)
   const dragStartRef = useRef(0)
   const didDragRef = useRef(false)
-  const imageTouchStartXRef = useRef<number | null>(null)
+  const imageSwipeStartXRef = useRef<number | null>(null)
+  const imagePointerIdRef = useRef<number | null>(null)
 
   useEffect(() => {
     if (!produktId) {
@@ -216,35 +217,78 @@ export default function ProductPage() {
     toggleFavorite()
   }
 
-  const goToPreviousImage = () => {
-    setActiveImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1))
-  }
-
-  const goToNextImage = () => {
-    setActiveImageIndex((prev) => (prev === productImages.length - 1 ? 0 : prev + 1))
-  }
-
-  const onImageTouchStart = (event: PointerEvent<HTMLDivElement>) => {
-    imageTouchStartXRef.current = event.clientX
-  }
-
-  const onImageTouchEnd = (event: PointerEvent<HTMLDivElement>) => {
-    if (imageTouchStartXRef.current === null || productImages.length < 2) {
+  const handleImageSwipe = (startX: number, endX: number) => {
+    if (productImages.length < 2) {
       return
     }
 
-    const deltaX = event.clientX - imageTouchStartXRef.current
-    imageTouchStartXRef.current = null
-
-    if (Math.abs(deltaX) < 40) {
+    const deltaX = endX - startX
+    if (Math.abs(deltaX) < 45) {
       return
     }
 
     if (deltaX < 0) {
-      goToNextImage()
+      setActiveImageIndex((prev) => (prev === productImages.length - 1 ? 0 : prev + 1))
     } else {
-      goToPreviousImage()
+      setActiveImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1))
     }
+  }
+
+  const onImagePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (productImages.length < 2 || event.pointerType !== "mouse") {
+      return
+    }
+
+    // Don't capture pointer when clicking navigation buttons
+    if ((event.target as HTMLElement).closest("button")) {
+      return
+    }
+
+    imageSwipeStartXRef.current = event.clientX
+    imagePointerIdRef.current = event.pointerId
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const onImagePointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    if (imageSwipeStartXRef.current === null || imagePointerIdRef.current !== event.pointerId) {
+      return
+    }
+
+    handleImageSwipe(imageSwipeStartXRef.current, event.clientX)
+    imageSwipeStartXRef.current = null
+    imagePointerIdRef.current = null
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+  }
+
+  const onImageTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    if (productImages.length < 2) {
+      return
+    }
+
+    imageSwipeStartXRef.current = event.touches[0]?.clientX ?? null
+  }
+
+  const onImageTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+    if (imageSwipeStartXRef.current === null || productImages.length < 2) {
+      return
+    }
+
+    const endX = event.changedTouches[0]?.clientX
+    if (typeof endX !== "number") {
+      imageSwipeStartXRef.current = null
+      return
+    }
+
+    handleImageSwipe(imageSwipeStartXRef.current, endX)
+    imageSwipeStartXRef.current = null
+  }
+
+  const resetImageSwipe = () => {
+    imageSwipeStartXRef.current = null
+    imagePointerIdRef.current = null
   }
 
   const isOwner = product ? viewerId === product.user_id : false
@@ -267,11 +311,12 @@ export default function ProductPage() {
         {productImages.length > 0 && (
           <Box
             className="product-image-slider"
-            onPointerDown={onImageTouchStart}
-            onPointerUp={onImageTouchEnd}
-            onPointerCancel={() => {
-              imageTouchStartXRef.current = null
-            }}
+            onPointerDown={onImagePointerDown}
+            onPointerUp={onImagePointerUp}
+            onPointerCancel={resetImageSwipe}
+            onTouchStart={onImageTouchStart}
+            onTouchEnd={onImageTouchEnd}
+            onTouchCancel={resetImageSwipe}
           >
             <Box
               className="product-image-track"
@@ -291,21 +336,19 @@ export default function ProductPage() {
 
             {productImages.length > 1 && (
               <>
-                <Button onClick={goToPreviousImage} className="product-image-nav prev">
+                <Button
+                  className="product-image-nav prev"
+                  onClick={() => setActiveImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1))}
+                >
                   ←
                 </Button>
-                <Button onClick={goToNextImage} className="product-image-nav next">
+                <Button
+                  className="product-image-nav next"
+                  onClick={() => setActiveImageIndex((prev) => (prev === productImages.length - 1 ? 0 : prev + 1))}
+                >
                   →
                 </Button>
-                <p className="product-image-swipe-hint">Slide mod hojre for flere billeder</p>
-                <Box className="product-image-dots">
-                  {productImages.map((_, index) => (
-                    <span
-                      key={`product-image-dot-${index}`}
-                      className={`product-image-dot${index === activeImageIndex ? " active" : ""}`}
-                    />
-                  ))}
-                </Box>
+                {/* <p className="product-image-swipe-hint">Slide mod hojre for flere billeder</p> */}
               </>
             )}
           </Box>
@@ -313,6 +356,17 @@ export default function ProductPage() {
       </Box>
 
       <Box className="product-details">
+        {productImages.length > 1 && (
+          <Box className="product-top-dots">
+            {productImages.map((_, index) => (
+              <span
+                key={`product-image-dot-${index}`}
+                className={`product-image-dot${index === activeImageIndex ? " active" : ""}`}
+              />
+            ))}
+          </Box>
+        )}
+
         <Box className="product-card">
           <Box className="product-card-content-top">
             <Box>
