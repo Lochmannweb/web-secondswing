@@ -1,0 +1,341 @@
+.edit-form {
+  display: grid;
+  gap: 2rem;
+}
+
+.edit-image-wrap {
+  width: 100%;
+  align-self: center;
+  justify-self: center;
+}
+
+.edit-image-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.3rem;
+  min-height: 60vh;
+}
+
+.edit-image-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.28s ease;
+}
+
+.edit-image-slide {
+  min-width: 100%;
+  position: relative;
+  min-height: 60vh;
+}
+
+.edit-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.edit-image-nav.MuiIconButton-root {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  z-index: 2;
+}
+
+.edit-image-nav.MuiIconButton-root:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.edit-image-nav-prev.MuiIconButton-root {
+  left: 10px;
+}
+
+.edit-image-nav-next.MuiIconButton-root {
+  right: 10px;
+}
+
+.edit-image-dots {
+  margin-top: 0.65rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.edit-image-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.edit-image-dot.active {
+  background: #ffffff;
+}
+
+.edit-fields {
+  width: 100%;
+  padding: 0 20px 40px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 0.3rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.35rem;
+}
+
+.edit-input-field,
+.edit-select-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.edit-input-field .MuiOutlinedInput-root {
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.edit-input-field .MuiOutlinedInput-root fieldset {
+  border-color: rgba(255, 255, 255, 0.15);
+  border-radius: 0.4rem;
+}
+
+.edit-input-field .MuiOutlinedInput-root:hover fieldset {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.edit-input-field .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: rgba(96, 149, 77, 0.8);
+  background: rgba(96, 149, 77, 0.08);
+}
+
+.edit-input-field .MuiInputLabel-root {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+.edit-input-field .MuiInputLabel-root.Mui-focused {
+  color: rgba(96, 149, 77, 0.95);
+}
+
+.edit-select-field .MuiOutlinedInput-root {
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.edit-select-field .MuiOutlinedInput-root fieldset {
+  border-color: rgba(255, 255, 255, 0.15);
+  border-radius: 0.4rem;
+}
+
+.edit-select-field .MuiOutlinedInput-root:hover fieldset {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.edit-select-field .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: rgba(96, 149, 77, 0.8);
+  background: rgba(96, 149, 77, 0.08);
+}
+
+.edit-select-field .MuiInputLabel-root {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+.edit-select-field .MuiInputLabel-root.Mui-focused {
+  color: rgba(96, 149, 77, 0.95);
+}
+
+.edit-select-field .MuiSelect-select {
+  color: white;
+}
+
+.edit-image-button.MuiButton-root {
+  grid-column: 1 / -1;
+  margin-top: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: rgba(255, 255, 255, 0.86);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  padding: 10px 16px;
+  border-radius: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.edit-image-button.MuiButton-root:hover {
+  background: rgba(96, 149, 77, 0.2);
+  border-color: rgba(96, 149, 77, 0.5) !important;
+}
+
+.edit-submit-button.MuiButton-root {
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+  background: linear-gradient(135deg, rgba(96, 149, 77, 0.35), rgba(96, 149, 77, 0.15));
+  border: 1px solid rgba(96, 149, 77, 0.6) !important;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 0.4rem;
+  transition: all 0.25s ease;
+}
+
+.edit-submit-button.MuiButton-root:hover {
+  background: linear-gradient(135deg, rgba(96, 149, 77, 0.5), rgba(96, 149, 77, 0.28));
+  border-color: rgba(96, 149, 77, 0.8) !important;
+  box-shadow: 0 8px 32px rgba(96, 149, 77, 0.12);
+}
+
+.edit-submit-button.MuiButton-root:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.edit-delete-button.MuiButton-root {
+  grid-column: 1 / -1;
+  margin-top: 0.25rem;
+  border: 1px solid rgba(255, 95, 122, 0.6) !important;
+  color: #ff7f93;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  padding: 11px 16px;
+  border-radius: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.edit-delete-button.MuiButton-root:hover {
+  background: rgba(255, 95, 122, 0.14);
+  border-color: rgba(255, 95, 122, 0.85) !important;
+}
+
+.edit-delete-button.MuiButton-root:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.edit-delete-confirm-wrap {
+  grid-column: 1 / -1;
+  margin-top: 0.25rem;
+  border: 1px solid rgba(255, 95, 122, 0.3);
+  border-radius: 0.4rem;
+  padding: 0.8rem;
+  background: rgba(255, 95, 122, 0.08);
+}
+
+.edit-delete-confirm-text {
+  margin: 0 0 0.65rem;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.8rem;
+}
+
+.edit-delete-confirm-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.edit-cancel-button.MuiButton-root {
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.edit-cancel-button.MuiButton-root:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.edit-confirm-delete-button.MuiButton-root {
+  border: 1px solid rgba(255, 95, 122, 0.75) !important;
+  color: #ff8ca0;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.edit-confirm-delete-button.MuiButton-root:hover {
+  background: rgba(255, 95, 122, 0.16);
+}
+
+.edit-alert {
+  grid-column: 1 / -1;
+}
+
+.edit-status-box {
+  padding: 2rem;
+  position: absolute;
+  top: 5rem;
+  justify-self: center;
+}
+
+@media (min-width: 599px) {
+  .edit-form {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    max-height: 100vh;
+  }
+
+  .edit-image-wrap,
+  .edit-fields {
+    flex: 1 1 0;
+    min-height: 100vh;
+  }
+
+  .edit-image-stage {
+    height: 100%;
+    min-height: 100vh;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  }
+
+  .edit-image-slide {
+    height: 100%;
+    min-height: 100vh;
+  }
+
+  .edit-fields {
+    padding: 5.5rem 2.5rem 3.5rem;
+    background: linear-gradient(
+      160deg,
+      rgba(14, 14, 14, 0.88) 0%,
+      rgba(10, 10, 10, 0.72) 62%,
+      rgba(96, 149, 77, 0.12) 100%
+    );
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.32);
+  }
+
+  .edit-image-button.MuiButton-root,
+  .edit-submit-button.MuiButton-root,
+  .edit-delete-button.MuiButton-root,
+  .edit-delete-confirm-wrap {
+    grid-column: 1 / -1;
+  }
+
+    .edit-image-dots {
+        display: none;
+    }
+}
+
+@media (min-width: 1024px) {
+  .edit-fields {
+    padding: 50px 20px;
+  }
+
+  .edit-submit-button.MuiButton-root {
+    min-height: 44px;
+  }
+}

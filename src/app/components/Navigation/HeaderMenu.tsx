@@ -102,7 +102,7 @@ function HeaderMenu() {
                     </Link>
                     {isLoggedIn ? (
                         <>
-                            <Link href="/profile?section=createProduct" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                            <Link href="/opretProdukt" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
                                 SÆLG UDSTYR
                             </Link>
                             <Link href="/profile" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
