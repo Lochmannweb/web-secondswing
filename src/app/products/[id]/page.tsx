@@ -417,7 +417,7 @@ export default function ProductPage() {
 
               {!product.sold && (
                 <p className="product-slide-hint" aria-hidden>
-                  Klar til næste runde <span>»»</span>
+                  Klar til et Second Swing! <span>»»</span>
                 </p>
               )}
 
