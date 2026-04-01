@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { aboutData } from "@/./app/Content/about"
+import "./about.css"
 
 export default function Home() {
   return (

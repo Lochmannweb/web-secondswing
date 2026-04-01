@@ -1,0 +1,266 @@
+/* ══════════════════════════════════════════════════
+   about.css  —  About page styling
+   Mobile-first, desktop breakpoint at 900px
+══════════════════════════════════════════════════ */
+
+/* ── Page shell ─────────────────────────────────── */
+.about-page {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Layout grid ────────────────────────────────── */
+.about-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 50vh 50vh;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #090404;
+}
+
+/* ── Visual — hero image side ───────────────────── */
+.about-visual {
+  position: relative;
+  overflow: hidden;
+  background-image: url('/golfbane.jpg');
+  background-size: cover;
+  background-position: center 38%;
+}
+
+.about-visual-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(9, 4, 4, 0.18) 0%,
+    rgba(9, 4, 4, 0.08) 45%,
+    rgba(9, 4, 4, 0.82) 100%
+  );
+}
+
+.about-visual-copy {
+  position: absolute;
+  left: 24px;
+  bottom: 28px;
+  z-index: 1;
+}
+
+.about-visual-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffd7ae;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 215, 174, 0.4);
+  border-radius: 999px;
+}
+
+.about-visual-copy h1 {
+  color: #ffffff;
+  font-size: clamp(2.2rem, 9vw, 4rem);
+  font-weight: 700;
+  line-height: 0.9;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+/* ── Content panel ──────────────────────────────── */
+.about-panel {
+  overflow: hidden;
+  background: #0a0a0a;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.about-panel-scroll {
+  height: 100%;
+  overflow-y: auto;
+  padding: 24px 22px 32px;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.about-panel-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+
+.about-panel-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+}
+
+/* ── Section blocks ─────────────────────────────── */
+.about-section-block {
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.about-section-block:first-child {
+  padding-top: 0;
+}
+
+.about-section-block:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.about-section-block h2 {
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ffd7ae;
+  margin-bottom: 10px;
+}
+
+.about-section-block p {
+  font-size: 0.8rem;
+  color: #aaa;
+  line-height: 1.65;
+  margin-bottom: 7px;
+}
+
+.about-section-block p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Why Choose Us — reason cards ───────────────── */
+.about-reasons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.about-reasons h2 {
+  grid-column: 1 / -1;
+  margin-bottom: 4px !important;
+}
+
+.about-reasons > div {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 10px;
+  padding: 13px 11px;
+  transition: border-color 0.2s;
+}
+
+.about-reasons > div:hover {
+  border-color: rgba(255, 215, 174, 0.28);
+}
+
+.about-section-block h3 {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #e8e8e8;
+  margin-bottom: 4px;
+  line-height: 1.35;
+}
+
+.about-reasons p {
+  font-size: 0.72rem !important;
+  color: #888 !important;
+  line-height: 1.5 !important;
+  margin-bottom: 0 !important;
+}
+
+/* ══════════════════════════════════════════════════
+   DESKTOP  ≥ 900px
+══════════════════════════════════════════════════ */
+@media (min-width: 900px) {
+  .about-page {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .about-layout {
+    grid-template-columns: 1fr minmax(440px, 44%);
+    grid-template-rows: 1fr;
+    height: 100vh;
+  }
+
+  /* visual stays fixed — image fills left column */
+  .about-visual {
+    background-position: 42% center;
+  }
+
+  .about-visual-overlay {
+    background: linear-gradient(
+      105deg,
+      rgba(9, 4, 4, 0.12) 0%,
+      rgba(9, 4, 4, 0.04) 50%,
+      rgba(9, 4, 4, 0.72) 100%
+    );
+  }
+
+  .about-visual-copy {
+    left: 44px;
+    bottom: 52px;
+  }
+
+  .about-visual-copy h1 {
+    font-size: clamp(3rem, 5vw, 5.5rem);
+    letter-spacing: -0.035em;
+  }
+
+  .about-visual-kicker {
+    font-size: 0.65rem;
+    margin-bottom: 12px;
+  }
+
+  /* right panel */
+  .about-panel {
+    border-top: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.07);
+    background: linear-gradient(180deg, #0e0e0e 0%, #090404 100%);
+  }
+
+  .about-panel-scroll {
+    height: 100vh;
+    padding: 50px 48px 64px;
+  }
+
+  .about-section-block {
+    padding: 26px 0;
+  }
+
+  .about-section-block:first-child {
+    padding-top: 0;
+  }
+
+  .about-section-block h2 {
+    font-size: 0.63rem;
+    letter-spacing: 0.22em;
+    margin-bottom: 14px;
+  }
+
+  .about-section-block p {
+    font-size: 0.88rem;
+    line-height: 1.72;
+    margin-bottom: 9px;
+  }
+
+  .about-reasons {
+    gap: 12px;
+  }
+
+  .about-reasons > div {
+    padding: 18px 16px;
+    border-radius: 12px;
+  }
+
+  .about-section-block h3 {
+    font-size: 0.78rem;
+    margin-bottom: 6px;
+  }
+
+  .about-reasons p {
+    font-size: 0.78rem !important;
+    line-height: 1.6 !important;
+  }
+}
