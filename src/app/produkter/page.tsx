@@ -5,6 +5,7 @@ import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress,
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { deleteProduct } from "../lib/crud"
+import "../components/Products/allProducts.css"
 
 
 interface Product {
@@ -21,8 +22,6 @@ export default function ProdukterPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [user, setUser] = useState<any>(null)
   const supabase = getSupabaseClient()
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -45,8 +44,6 @@ export default function ProdukterPage() {
           setError("Du skal være logget ind for at se dine produkter")
           return
         }
-
-        setUser(user)
 
         const { data: userProducts, error: productsError } = await supabase 
           .from("products")
@@ -87,10 +84,6 @@ export default function ProdukterPage() {
     } catch (error) {
       alert("Kunne ikke slette produktet");
     }
-
-      // Fjern produktet fra browser uden reload
-      setProducts((prev) => prev.filter((p) => p.id !== selectedProductId));
-      setOpenDialog(false);
   }
 
 
@@ -115,7 +108,7 @@ export default function ProdukterPage() {
   }
 
   return (
-    <Box className="produkter-container">
+    <Box className="produkter-page">
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
@@ -146,56 +139,85 @@ export default function ProdukterPage() {
         </DialogActions>
       </Dialog>
 
-      <Typography variant="overline" className="shop-page-kicker">
-        Alle Produkter
-      </Typography>
-      <Divider className="produkter-divider" />
-      {products.length === 0 ? (
-        <Alert severity="info">Du har ikke oprettet nogen produkter endnu.</Alert>
-      ) : (
-        <>
-          <Grid container spacing={2}>
-            {products.map((product) => (
-              <Grid key={product.id} size={{ xs: 6, sm: 6, md: 3 }}>
-                <Card className="produkter-card">
-                  {product.image_url && (
-                    <Box>
+      <Box className="produkter-page-header">
+        <Typography variant="overline" className="produkter-page-kicker">
+          Alle produkter
+        </Typography>
+        <Typography variant="h3" className="produkter-page-title">
+          Dine opslag samlet i samme overblik.
+        </Typography>
+        <Typography className="produkter-page-description">
+          Rediger eller slet dine produkter fra et enkelt sted, med samme layout som shoppen.
+        </Typography>
+      </Box>
+
+      <Box className="produkter-page-layout">
+        <Box className="produkter-page-sidebar">
+          <Box className="produkter-side-card">
+            <Typography variant="overline" className="produkter-side-label">
+              Status
+            </Typography>
+            <Typography className="produkter-side-value">
+              {products.length} aktive produkter
+            </Typography>
+            <Divider className="produkter-divider" />
+            <Typography className="produkter-side-text">
+              Klik på Rediger for at opdatere et opslag eller Slet for at fjerne det helt.
+            </Typography>
+          </Box>
+        </Box>
+
+        <Box className="produkter-page-products">
+          {products.length === 0 ? (
+            <Alert severity="info">Du har ikke oprettet nogen produkter endnu.</Alert>
+          ) : (
+            <Grid container spacing={2} className="produkter-grid">
+              {products.map((product) => (
+                <Grid key={product.id} size={{ xs: 6, sm: 6, md: 3 }} className="produkter-grid-item">
+                  <Card className="produkter-card">
+                    <Box className="produkter-card-media-wrap">
                       {product.sold && (
-                      <Box className="shop-soldout">
+                        <Box className="shop-soldout">
                           <p>Solgt</p>
-                      </Box>
+                        </Box>
                       )}
-                      <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
+                      {product.image_url && (
+                        <CardMedia component="img" image={product.image_url} alt={product.title} className="produkter-card-image" />
+                      )}
+                      <Box className="produkter-card-overlay">
+                        <Typography className="produkter-card-title" component="h2">{product.title}</Typography>
+                        {product.description && (
+                          <Typography variant="body2" className="produkter-card-desc">{product.description}</Typography>
+                        )}
+                        {product.price !== null && (
+                          <Typography className="produkter-card-price">{product.price.toFixed(2)} DKK</Typography>
+                        )}
+                        <Box className="produkter-actions">
+                          <Button 
+                            component={Link}
+                            href={`/edit/${product.id}`}
+                            className="produkter-action-button">
+                            Rediger
+                          </Button>
+
+                          <Button 
+                            onClick={() => {
+                              setSelectedProductId(product.id);
+                              setOpenDialog(true);
+                            }}
+                            className="produkter-action-button delete">
+                            Slet
+                          </Button>
+                        </Box>
+                      </Box>
                     </Box>
-                  )}
-
-                  <CardContent className="produkter-card-content">
-                    <Typography className="produkter-card-title" component="h2">{product.title}</Typography>
-                    <Typography variant="body2" className="produkter-card-desc">{product.description}</Typography>
-                    <Typography className="produkter-card-price">{product.price} DKK</Typography>
-
-                    <Button 
-                      component={Link}
-                      href={`/edit/${product.id}`}
-                      className="produkter-action-button">
-                      Rediger
-                    </Button>
-
-                    <Button 
-                      onClick={() => {
-                        setSelectedProductId(product.id);
-                        setOpenDialog(true);
-                      }}
-                      className="produkter-action-button">
-                      Slet
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </>
-      )}
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          )}
+        </Box>
+      </Box>
     </Box>
   )
 }
