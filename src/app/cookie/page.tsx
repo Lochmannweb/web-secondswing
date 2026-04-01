@@ -12,7 +12,7 @@ export default function CookiePage() {
       </Box>
 
       <Box className="info-page-content">
-        <details className="info-section" open>
+        <details className="info-section">
           <summary>
             <h2>Hvad er cookies?</h2>
           </summary>

@@ -39,8 +39,8 @@ export default function FaqPage() {
       </Box>
 
       <Box className="info-page-content">
-        {faqItems.map((item, index) => (
-          <details key={item.question} className="info-section" open={index === 0}>
+        {faqItems.map((item) => (
+          <details key={item.question} className="info-section">
             <summary>
               <h2>{item.question}</h2>
             </summary>

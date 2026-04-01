@@ -1,0 +1,115 @@
+.cookie-privatliv-page {
+  padding: 78px 12px 18px;
+  display: grid;
+  gap: 12px;
+  height: auto;
+  overflow: visible;
+  scroll-snap-type: none;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+.cookie-privatliv-block {
+  /* border: 1px solid rgba(255, 255, 255, 0.08); */
+  /* border-radius: 10px; */
+  /* background: linear-gradient(180deg, rgba(16, 16, 16, 0.92), rgba(8, 8, 8, 0.96)); */
+  padding: 12px;
+}
+
+.cookie-privatliv-page .info-page {
+  padding: 0;
+}
+
+.cookie-privatliv-page .info-page-header {
+  padding: 0;
+  margin-bottom: 6px;
+}
+
+.cookie-privatliv-page .shop-page-kicker {
+  color: #ffd7ae;
+  letter-spacing: 0.18em;
+  font-size: 0.58rem;
+}
+
+.cookie-privatliv-page .info-page-content {
+  gap: 0;
+  overflow: visible;
+}
+
+.cookie-privatliv-page .info-section {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0;
+}
+
+.cookie-privatliv-page .info-section:last-child {
+  border-bottom: none;
+}
+
+.cookie-privatliv-page .info-section summary {
+  padding: 0.72rem 0;
+  border-bottom: none;
+}
+
+.cookie-privatliv-page .info-section summary h2 {
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cookie-privatliv-page .info-section p {
+  margin: 0 0 0.85rem;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: #c9c9c9;
+}
+
+.cookie-privatliv-logout-wrap {
+  /* border: 1px solid rgba(255, 255, 255, 0.08); */
+  border-radius: 10px;
+  /* background: rgba(10, 10, 10, 0.92); */
+  padding: 10px 12px;
+}
+
+.cookie-privatliv-logout-wrap #logout-button.profile-action-button.MuiButton-root {
+  width: 100%;
+  justify-content: center;
+  /* border: 1px solid rgba(255, 255, 255, 0.3); */
+  /* border-radius: 8px; */
+  color: #f0f0f0;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 9px 12px;
+  background: transparent;
+}
+
+.cookie-privatliv-logout-wrap #logout-button.profile-action-button.MuiButton-root:hover {
+  /* border-color: rgba(255, 215, 174, 0.55); */
+  /* background: rgba(255, 215, 174, 0.1); */
+  color: #fff;
+}
+
+@media (min-width: 900px) {
+  .cookie-privatliv-page {
+    padding: 0;
+    height: 100%;
+    overflow-y: auto;
+    scroll-snap-type: y proximity;
+    mask-image: linear-gradient(to bottom, transparent 0, black 18px, black calc(100% - 18px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 18px, black calc(100% - 18px), transparent 100%);
+    gap: 10px;
+  }
+
+  .cookie-privatliv-block {
+    padding: 14px;
+    border-radius: 8px;
+  }
+
+  .cookie-privatliv-page .info-section summary h2 {
+    font-size: 0.78rem;
+  }
+
+  .cookie-privatliv-page .info-section p {
+    font-size: 0.8rem;
+  }
+}
