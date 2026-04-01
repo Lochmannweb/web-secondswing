@@ -1,10 +1,13 @@
 "use client"
 
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
-import { Box, Button, Typography } from "@mui/material"
+import { Box, Button, IconButton } from "@mui/material"
+import FavoriteIcon from "@mui/icons-material/Favorite"
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
 import Image from "next/image"
 import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react"
+import "./productEdit.css"
 
 interface Product {
   id: string
@@ -29,6 +32,12 @@ export default function ProductPage() {
   const [error, setError] = useState<string | null>(null)
   const [viewerId, setViewerId] = useState<string | null>(null)
   const [isFavorite, setIsFavorite] = useState(false)
+  const [slideX, setSlideX] = useState(0)
+
+  const sliderRef = useRef<HTMLDivElement | null>(null)
+  const maxSlideRef = useRef(0)
+  const dragStartRef = useRef(0)
+  const didDragRef = useRef(false)
 
   useEffect(() => {
     if (!produktId) {
@@ -144,7 +153,52 @@ export default function ProductPage() {
     setIsFavorite(true)
   }
 
+  const onHeartPointerDown = (event: PointerEvent<HTMLButtonElement>) => {
+    if (!sliderRef.current || product?.sold) {
+      return
+    }
+
+    const heartSize = 44
+    maxSlideRef.current = Math.max(sliderRef.current.clientWidth - heartSize - 16, 0)
+    dragStartRef.current = event.clientX - slideX
+    didDragRef.current = false
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const onHeartPointerMove = (event: PointerEvent<HTMLButtonElement>) => {
+    if (!event.currentTarget.hasPointerCapture(event.pointerId) || product?.sold) {
+      return
+    }
+
+    const nextX = Math.min(Math.max(event.clientX - dragStartRef.current, 0), maxSlideRef.current)
+    if (Math.abs(nextX - slideX) > 4) {
+      didDragRef.current = true
+    }
+    setSlideX(nextX)
+  }
+
+  const onHeartPointerUp = (event: PointerEvent<HTMLButtonElement>) => {
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+
+    // Slide is visual only for now and always resets on release.
+    setSlideX(0)
+  }
+
+  const onFavoriteClick = () => {
+    if (didDragRef.current) {
+      didDragRef.current = false
+      return
+    }
+    toggleFavorite()
+  }
+
   const isOwner = product ? viewerId === product.user_id : false
+  const slideProgress = maxSlideRef.current > 0 ? slideX / maxSlideRef.current : 0
+  const sliderStyle = {
+    "--slide-progress": slideProgress,
+  } as CSSProperties
 
 
   if (loading) return <p style={{ padding: 20 }}>Henter produkt...</p>
@@ -155,123 +209,84 @@ export default function ProductPage() {
 
 
   return (
-    <Box display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} gap={{ sm: "2rem" }} pt={{ xs: "8rem" }} p={2} height={{ sm: "90vh" }} mb={{ xs: "2rem" }}>
-      <Box alignSelf={{ sm: "center" }} mb={{ xs: "1rem" }} sx={{ position: "relative" }}>  
+    <Box className="product-page">
+      <Box className="product-image-wrapper">
           {product.image_url && (
             <Image
-              src={product.image_url} 
+              src={product.image_url}
               alt={product.title}
-              width={500}
-              height={100}
-              style={{
-                width: "100%",
-                height: "auto",
-                borderRadius: "0.3rem",
-              }}        
+              fill
+              className="product-image"
             />
-          )}
-
-          {product.sold && (
-      <Box className="shop-soldout">
-        <p>Solgt</p>
-          </Box>
           )}
       </Box>
 
-      <Box alignSelf={{ sm: "center" }} width={{ sm: "50vh" }}>
-        <Box
-          sx={{
-            color: "white",
-            backgroundColor: "#1a1a1aff",
-            padding: "1rem",
-            borderRadius: "0.3rem",
-            mb: 2,
-            width: { sm: "100%" }
-          }}
-        >
-          <h1 style={{ fontSize: "1rem" }}>{product.title}</h1>
-          <p style={{ color: "gray" }}>{product.color} - {product.stand}{product.size ? ` - ${product.size}` : ""}</p>
-          <p style={{ color: "gray", marginTop: "1rem" }}>{product.price?.toFixed(2)} Kr.</p>
+      <Box className="product-details">
+        <Box className="product-card">
+          <Box className="product-card-content-top">
+            <Box>
+              <h1 className="product-title">{product.title}</h1>
+              <p className="product-card-description">{product.description}</p>
+            </Box>
+            <Box>
+              <p className="product-price">{product.price?.toFixed(2)} Kr.</p>
+            </Box>
+          </Box>
+          <Box className="product-card-kategori">
+            <p className="product-meta">{product.color}</p>
+            <p className="product-meta">{product.stand}</p>
+            {product.size && (
+              <>
+                <p className="product-meta">{product.size}</p>
+              </>
+            )}
+          </Box>
         </Box>
 
-        <Box
-          sx={{
-            color: "gray",
-            backgroundColor: "#1a1a1aff",
-            padding: "1rem",
-            borderRadius: "0.3rem",
-            width: { sm: "100%" },
-            display: "grid",
-            mb: 2,
-            gap: "2rem",
-          }}
-        >
-          <p>Beskrivelse</p>
-          <p>{product.description}</p>
-        </Box>
+        <Box className="product-cta-wrap">
+          {isOwner ? (
+            <Button
+              onClick={toggleSoldStatus}
+              className="product-action-button"
+            >
+              {product.sold ? "Markér som ledig igen" : "Markér som solgt"}
+            </Button>
+          ) : viewerId ? (
+            <Box
+              ref={sliderRef}
+              className={`product-purchase-slider${product.sold ? " sold" : ""}${slideX > 0 ? " slide-active" : ""}`}
+              style={sliderStyle}
+            >
+              <IconButton
+                onClick={onFavoriteClick}
+                onPointerDown={onHeartPointerDown}
+                onPointerMove={onHeartPointerMove}
+                onPointerUp={onHeartPointerUp}
+                onPointerCancel={onHeartPointerUp}
+                className={`product-favorite-button${isFavorite ? " active" : ""}`}
+                aria-label={isFavorite ? "Fjern fra favoritter" : "Gem som favorit"}
+                sx={{ transform: `translateX(${slideX}px)` }}
+              >
+                {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+              </IconButton>
 
-        <Box
-          sx={{
-            color: "gray",
-            backgroundColor: "#1a1a1aff",
-            padding: "1rem",
-            borderRadius: "0.3rem",
-            width: { sm: "100%" },
-            display: "grid",
-            gap: "0.5rem"
-          }}
-        >
-          <p style={{ color: "white" }}>Handel direkte mellem brugere</p>
-          <p>Second Swing håndterer ikke betaling endnu. Brug siden til at opdage produkter og gem favoritter.</p>
-        </Box>
+              {!product.sold && (
+                <p className="product-slide-hint" aria-hidden>
+                  Klar til næste runde <span>»»</span>
+                </p>
+              )}
 
-        {isOwner ? (
-          <Button
-            onClick={toggleSoldStatus}
-            sx={{
-              width: "100%",
-              backgroundColor: "transparent",
-              border: "1px solid grey",
-              color: "white",
-              top: "1rem",
-              position: "relative",
-              "&:hover": { backgroundColor: "darkGreen", color: "white", border: "1px solid darkGreen" },
-            }}
-          >
-            {product.sold ? "Markér som ledig igen" : "Markér som solgt"}
-          </Button>
-        ) : viewerId ? (
-          <Button
-            onClick={toggleFavorite}
-            disabled={Boolean(product.sold)}
-            sx={{
-              width: "100%",
-              backgroundColor: "transparent",
-              border: "1px solid grey",
-              color: "white",
-              top: "1rem",
-              position: "relative",
-              "&:hover": { backgroundColor: product.sold ? "transparent" : "darkGreen", color: "white", border: product.sold ? "1px solid gray" : "1px solid darkGreen" },
-            }}
-          >
-            {product.sold ? "Solgt" : isFavorite ? "Fjern fra favoritter" : "Gem som favorit"}
-          </Button>
-        ) : (
-          <Button
-            onClick={handleGoogleLogin}
-            sx={{
-              width: "100%",
-              backgroundColor: "transparent",
-              border: "1px solid grey",
-              color: "white",
-              top: "1rem",
-              position: "relative",
-              "&:hover": { backgroundColor: "darkGreen", color: "white", border: "1px solid darkGreen" },
-            }}
-          >
-            Log ind for at gemme favorit
-          </Button>
-        )}
+              <p className="product-purchase-label">{product.sold ? "Solgt" : "Køb"}</p>
+            </Box>
+          ) : (
+            <Button
+              onClick={handleGoogleLogin}
+              className="product-action-button"
+            >
+              Log ind for at gemme favorit
+            </Button>
+          )}
+        </Box>
       </Box>
     </Box>
   )
