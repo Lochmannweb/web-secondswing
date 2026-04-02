@@ -2,8 +2,16 @@
 
 import React, { useEffect, useState } from "react"
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
+import {
+  CLOTHING_SIZE_OPTIONS,
+  COLOR_OPTIONS,
+  SHOE_SIZE_OPTIONS,
+  STAND_OPTIONS,
+} from "@/app/lib/productForm"
+import type { ProductCategory } from "@/app/lib/productForm"
 import SearchBar from "@/app/components/Shop/SearchBar"
 import FilterButtons from "@/app/components/Shop/FilterButtons"
+import type { Filter } from "@/app/utils/filterStyles"
 import { 
   Typography, 
   Card, 
@@ -12,8 +20,12 @@ import {
   IconButton,
   Alert,
   Box,
+  Button,
+  Chip,
+  Drawer,
 } from "@mui/material"
 import FavoriteIcon from '@mui/icons-material/Favorite'
+import TuneIcon from "@mui/icons-material/Tune"
 import Link from "next/link"
 import { getProductListMeta } from "@/app/lib/productDisplay"
 import "../shop/shop.css"
@@ -27,7 +39,7 @@ interface Product {
   image_url: string | null
   created_at: string
   gender: "male" | "female" | "unisex" | null
-  category?: string | null
+  category?: ProductCategory | null
   color?: string | null
   size?: string | null
   stand?: string | null
@@ -40,14 +52,28 @@ interface Product {
   sold: boolean | null;
 }
 
+const normalizeFacetValue = (value: string | null | undefined) => {
+  if (!value) {
+    return null
+  }
+
+  const trimmed = value.trim()
+  return trimmed.length > 0 ? trimmed : null
+}
+
 export default function Favoriter() {
   const [products, setProducts] = useState<Product[]>([])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [userId, setUserId] = useState<string | null>(null)
   const [loginRequired, setLoginRequired] = useState(false)
-  const [activeFilter, setActiveFilter] = useState<"all" | "male" | "female">("all")
+  const [activeFilter, setActiveFilter] = useState<Filter>("all")
   const [searchQuery, setSearchQuery] = useState("")
+  const [activeColors, setActiveColors] = useState<string[]>([])
+  const [activeSizes, setActiveSizes] = useState<string[]>([])
+  const [activeStands, setActiveStands] = useState<string[]>([])
+  const [activeGenders, setActiveGenders] = useState<string[]>([])
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false)
 
   const supabase = getSupabaseClient()
 
@@ -100,7 +126,7 @@ export default function Favoriter() {
     let results = [...products]
 
     if (activeFilter !== "all") {
-      results = results.filter((product) => product.gender === activeFilter)
+      results = results.filter((product) => (product.category ?? "other") === activeFilter)
     }
 
     if (searchQuery) {
@@ -108,8 +134,44 @@ export default function Favoriter() {
       results = results.filter((product) => product.title.toLowerCase().includes(normalizedQuery))
     }
 
+    if (activeColors.length > 0) {
+      results = results.filter((product) => {
+        const color = normalizeFacetValue(product.color)
+        return color ? activeColors.includes(color) : false
+      })
+    }
+
+    if (activeSizes.length > 0) {
+      results = results.filter((product) => {
+        const size = normalizeFacetValue(product.size)
+        return size ? activeSizes.includes(size) : false
+      })
+    }
+
+    if (activeStands.length > 0) {
+      results = results.filter((product) => {
+        const stand = normalizeFacetValue(product.stand)
+        return stand ? activeStands.includes(stand) : false
+      })
+    }
+
+    if (activeGenders.length > 0) {
+      results = results.filter((product) => {
+        const gender = normalizeFacetValue(product.gender)
+        return gender ? activeGenders.includes(gender) : false
+      })
+    }
+
     setFilteredProducts(results)
-  }, [products, activeFilter, searchQuery])
+  }, [
+    products,
+    activeFilter,
+    searchQuery,
+    activeColors,
+    activeSizes,
+    activeStands,
+    activeGenders,
+  ])
 
   const removeFavorite = async (productId: string) => {
     if (!userId) return
@@ -133,8 +195,46 @@ export default function Favoriter() {
     setSearchQuery(query)
   }
 
-  const handleFilter = (filter: "all" | "male" | "female") => {
+  const handleFilter = (filter: Filter) => {
     setActiveFilter(filter)
+  }
+
+  const toggleFacet = (currentState: string[], value: string, setter: (value: string[]) => void) => {
+    if (currentState.includes(value)) {
+      setter(currentState.filter((item) => item !== value))
+      return
+    }
+
+    setter([...currentState, value])
+  }
+
+  const colorOptions = Array.from(new Set([
+    ...COLOR_OPTIONS.map((option) => option.value),
+    ...products.map((product) => normalizeFacetValue(product.color)).filter(Boolean) as string[],
+  ])).sort()
+
+  const sizeOptions = Array.from(new Set([
+    ...CLOTHING_SIZE_OPTIONS.map((option) => option.value),
+    ...SHOE_SIZE_OPTIONS.map((option) => option.value),
+    ...products.map((product) => normalizeFacetValue(product.size)).filter(Boolean) as string[],
+  ])).sort()
+
+  const standOptions = Array.from(new Set([
+    ...STAND_OPTIONS.map((option) => option.value),
+    ...products.map((product) => normalizeFacetValue(product.stand)).filter(Boolean) as string[],
+  ])).sort()
+
+  const genderOptions = [
+    { value: "female", label: "Kvinde" },
+    { value: "male", label: "Mand" },
+    { value: "unisex", label: "Unisex" },
+  ]
+
+  const clearAdvancedFilters = () => {
+    setActiveColors([])
+    setActiveSizes([])
+    setActiveStands([])
+    setActiveGenders([])
   }
 
   if (loading) return <Alert severity="info" className="shop-loading-alert">Indlaeser favoritter...</Alert>
@@ -162,8 +262,76 @@ export default function Favoriter() {
 
       <Box className="shop-page-layout">
         <Box className="shop-page-sidebar">
-          <SearchBar onSearch={handleSearch} />
-          <FilterButtons activeFilter={activeFilter} onFilterChange={handleFilter} />
+          <Box className="shop-mobile-search-row">
+            <Box className="shop-mobile-search-grow">
+              <SearchBar onSearch={handleSearch} />
+            </Box>
+            <Button
+              className="shop-mobile-filter-trigger"
+              onClick={() => setIsFilterDrawerOpen(true)}
+              endIcon={<TuneIcon />}
+            >
+              Filtrer
+            </Button>
+          </Box>
+
+          <Box className="shop-category-filter-inline">
+            <FilterButtons activeFilter={activeFilter} onFilterChange={handleFilter} />
+          </Box>
+
+          <Box className="shop-advanced-filter-wrap">
+            <Typography className="shop-advanced-filter-title">Kon</Typography>
+            <Box className="shop-filter-chip-grid">
+              {genderOptions.map((gender) => (
+                <Chip
+                  key={`favorit-gender-${gender.value}`}
+                  label={gender.label}
+                  clickable
+                  onClick={() => toggleFacet(activeGenders, gender.value, setActiveGenders)}
+                  className={`shop-filter-chip${activeGenders.includes(gender.value) ? " is-active" : ""}`}
+                />
+              ))}
+            </Box>
+
+            <Typography className="shop-advanced-filter-title">Farve</Typography>
+            <Box className="shop-filter-chip-grid">
+              {colorOptions.map((color) => (
+                <Chip
+                  key={`favorit-color-${color}`}
+                  label={color}
+                  clickable
+                  onClick={() => toggleFacet(activeColors, color, setActiveColors)}
+                  className={`shop-filter-chip${activeColors.includes(color) ? " is-active" : ""}`}
+                />
+              ))}
+            </Box>
+
+            <Typography className="shop-advanced-filter-title">Storrelse</Typography>
+            <Box className="shop-filter-chip-grid">
+              {sizeOptions.map((size) => (
+                <Chip
+                  key={`favorit-size-${size}`}
+                  label={size}
+                  clickable
+                  onClick={() => toggleFacet(activeSizes, size, setActiveSizes)}
+                  className={`shop-filter-chip${activeSizes.includes(size) ? " is-active" : ""}`}
+                />
+              ))}
+            </Box>
+
+            <Typography className="shop-advanced-filter-title">Tilstand</Typography>
+            <Box className="shop-filter-chip-grid">
+              {standOptions.map((stand) => (
+                <Chip
+                  key={`favorit-stand-${stand}`}
+                  label={stand}
+                  clickable
+                  onClick={() => toggleFacet(activeStands, stand, setActiveStands)}
+                  className={`shop-filter-chip${activeStands.includes(stand) ? " is-active" : ""}`}
+                />
+              ))}
+            </Box>
+          </Box>
         </Box>
 
         <Box className="shop-page-products">
@@ -230,6 +398,83 @@ export default function Favoriter() {
           )}
         </Box>
       </Box>
+
+      <Drawer
+        anchor="right"
+        open={isFilterDrawerOpen}
+        onClose={() => setIsFilterDrawerOpen(false)}
+        className="shop-filter-drawer"
+        PaperProps={{ className: "shop-filter-drawer-paper" }}
+      >
+        <Box className="shop-filter-drawer-inner">
+          <Box className="shop-filter-drawer-top">
+            <Typography variant="overline" className="shop-filter-drawer-kicker">Filtrer</Typography>
+            <Button onClick={() => setIsFilterDrawerOpen(false)} className="shop-filter-drawer-close">Luk</Button>
+          </Box>
+
+          <Typography className="shop-advanced-filter-title">Kategori</Typography>
+          <FilterButtons activeFilter={activeFilter} onFilterChange={handleFilter} />
+
+          <Typography className="shop-advanced-filter-title">Kon</Typography>
+          <Box className="shop-filter-chip-grid">
+            {genderOptions.map((gender) => (
+              <Chip
+                key={`drawer-favorit-gender-${gender.value}`}
+                label={gender.label}
+                clickable
+                onClick={() => toggleFacet(activeGenders, gender.value, setActiveGenders)}
+                className={`shop-filter-chip${activeGenders.includes(gender.value) ? " is-active" : ""}`}
+              />
+            ))}
+          </Box>
+
+          <Typography className="shop-advanced-filter-title">Farve</Typography>
+          <Box className="shop-filter-chip-grid">
+            {colorOptions.map((color) => (
+              <Chip
+                key={`drawer-favorit-color-${color}`}
+                label={color}
+                clickable
+                onClick={() => toggleFacet(activeColors, color, setActiveColors)}
+                className={`shop-filter-chip${activeColors.includes(color) ? " is-active" : ""}`}
+              />
+            ))}
+          </Box>
+
+          <Typography className="shop-advanced-filter-title">Storrelse</Typography>
+          <Box className="shop-filter-chip-grid">
+            {sizeOptions.map((size) => (
+              <Chip
+                key={`drawer-favorit-size-${size}`}
+                label={size}
+                clickable
+                onClick={() => toggleFacet(activeSizes, size, setActiveSizes)}
+                className={`shop-filter-chip${activeSizes.includes(size) ? " is-active" : ""}`}
+              />
+            ))}
+          </Box>
+
+          <Typography className="shop-advanced-filter-title">Tilstand</Typography>
+          <Box className="shop-filter-chip-grid">
+            {standOptions.map((stand) => (
+              <Chip
+                key={`drawer-favorit-stand-${stand}`}
+                label={stand}
+                clickable
+                onClick={() => toggleFacet(activeStands, stand, setActiveStands)}
+                className={`shop-filter-chip${activeStands.includes(stand) ? " is-active" : ""}`}
+              />
+            ))}
+          </Box>
+
+          <Box className="shop-filter-drawer-actions">
+            <Button onClick={clearAdvancedFilters} className="shop-filter-reset-button">Nulstil</Button>
+            <Button onClick={() => setIsFilterDrawerOpen(false)} className="shop-filter-apply-button">
+              Vis produkter ({filteredProducts.length})
+            </Button>
+          </Box>
+        </Box>
+      </Drawer>
     </Box>
   )
 }

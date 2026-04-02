@@ -1,4 +1,6 @@
-export type Filter = "all" | "male" | "female";
+import type { ProductCategory } from "@/app/lib/productForm";
+
+export type Filter = "all" | ProductCategory;
 
 export function getButtonStyles(active: Filter, current: Filter) {
   if (active === current) {
