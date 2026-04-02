@@ -240,6 +240,18 @@
   overflow: hidden;
 }
 
+.shop-product-meta-line {
+  color: #f0d9b9;
+  font-size: 0.64rem !important;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .shop-product-price {
   margin-top: 0.1rem;
   color: #fff;

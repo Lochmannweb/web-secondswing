@@ -1,36 +1,36 @@
 "use client"
 
-import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { deleteProduct, updateProduct } from "@/app/lib/crud"
-import { useEffect, useState } from "react"
+import {
+  buildProductPayload,
+  CATEGORY_OPTIONS,
+  getCategoryFields,
+  getRequiredProductFields,
+  ProductFieldDefinition,
+  ProductFormState,
+  STAND_OPTIONS,
+  toProductFormState,
+} from "@/app/lib/productForm"
+import { getSupabaseClient } from "@/app/lib/supabaseClient"
+import type React from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import {
-  Box,
-  TextField,
-  Button,
   Alert,
-  MenuItem,
-  Select,
-  InputLabel,
+  Box,
+  Button,
   FormControl,
-  OutlinedInput,
   IconButton,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  TextField,
 } from "@mui/material"
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore"
 import NavigateNextIcon from "@mui/icons-material/NavigateNext"
 import "./editProdukt.css"
-
-type FormState = {
-  title: string
-  description: string
-  price: string
-  gender: "female" | "male"
-  color: string
-  size: string
-  stand: string
-  image_url?: string | null
-}
 
 export default function EditProductPage() {
   const router = useRouter()
@@ -38,17 +38,7 @@ export default function EditProductPage() {
   const productId = params.id as string | undefined
   const supabase = getSupabaseClient()
 
-  const [form, setForm] = useState<FormState>({
-    title: "",
-    description: "",
-    price: "",
-    gender: "female",
-    color: "Farve",
-    size: "Størrelse",
-    stand: "Tilstand",
-    image_url: null,
-  })
-
+  const [form, setForm] = useState<ProductFormState>(() => toProductFormState({}))
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [selectedImagePreviews, setSelectedImagePreviews] = useState<string[]>([])
   const [productImages, setProductImages] = useState<string[]>([])
@@ -59,8 +49,16 @@ export default function EditProductPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
 
-  const updateField = (key: keyof FormState, value: string) => {
-    setForm(prev => ({ ...prev, [key]: value }))
+  const useNativeSelect = useMemo(() => {
+    if (typeof window === "undefined") {
+      return false
+    }
+
+    return window.matchMedia("(hover: none), (pointer: coarse)").matches
+  }, [])
+
+  const updateField = (key: keyof ProductFormState, value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }))
   }
 
   useEffect(() => {
@@ -69,7 +67,6 @@ export default function EditProductPage() {
     }
   }, [selectedImagePreviews])
 
-  // fetch product + auth & ownership check
   useEffect(() => {
     if (!productId) {
       setMessage({ type: "error", text: "Produkt-id mangler." })
@@ -79,32 +76,32 @@ export default function EditProductPage() {
 
     const load = async () => {
       try {
-        // 1) check session
         const {
           data: { session },
         } = await supabase.auth.getSession()
 
         if (!session) {
-          setMessage({ type: "error", text: "Du skal være logget ind for at redigere produkter." })
+          setMessage({ type: "error", text: "Du skal vaere logget ind for at redigere produkter." })
           setAuthChecked(true)
           return
         }
 
-        // 2) fetch product
         const { data: product, error } = await supabase
           .from("products")
           .select("*")
           .eq("id", productId)
           .single()
 
-        if (error) throw new Error(error.message)
+        if (error) {
+          throw new Error(error.message)
+        }
+
         if (!product) {
           setMessage({ type: "error", text: "Produkt ikke fundet." })
           setAuthChecked(true)
           return
         }
 
-        // 3) ownership
         if (product.user_id !== session.user.id) {
           setMessage({ type: "error", text: "Du ejer ikke dette produkt." })
           setAuthChecked(true)
@@ -112,21 +109,9 @@ export default function EditProductPage() {
         }
 
         setIsOwner(true)
-
-        // 4) populate form
-        setForm({
-          title: product.title ?? "",
-          description: product.description ?? "",
-          price: product.price != null ? String(product.price) : "",
-          gender: (product.gender as FormState["gender"]) ?? "female",
-          color: product.color ?? "Farve",
-          size: product.size ?? "Størrelse",
-          stand: product.stand ?? "Tilstand",
-          image_url: product.image_url ?? null,
-        })
+        setForm(toProductFormState(product))
 
         const initialImages = product.image_url ? [product.image_url] : []
-
         const { data: extraImages, error: extraImagesError } = await supabase
           .from("product_images")
           .select("image_url, position")
@@ -138,10 +123,7 @@ export default function EditProductPage() {
         }
 
         const mergedImages = !extraImagesError && extraImages
-          ? [
-              ...initialImages,
-              ...extraImages.map((item) => item.image_url).filter(Boolean),
-            ]
+          ? [...initialImages, ...extraImages.map((item) => item.image_url).filter(Boolean)]
           : initialImages
 
         setProductImages(Array.from(new Set(mergedImages)))
@@ -155,19 +137,20 @@ export default function EditProductPage() {
     }
 
     load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productId])
+  }, [productId, supabase])
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? [])
-    if (files.length === 0) return
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? [])
+
+    if (files.length === 0) {
+      return
+    }
 
     selectedImagePreviews.forEach((url) => URL.revokeObjectURL(url))
-
     setImageFiles(files)
     setSelectedImagePreviews(files.map((file) => URL.createObjectURL(file)))
     setActivePreviewIndex(0)
-    e.target.value = ""
+    event.target.value = ""
   }
 
   const uploadImage = async (file: File, userId: string, index: number): Promise<string> => {
@@ -178,25 +161,114 @@ export default function EditProductPage() {
     const filePath = `${userId}/${productId ?? "tmp"}-${Date.now()}-${index}-${uniqueId}.${fileExt}`
 
     const { error } = await supabase.storage.from("avatars").upload(filePath, file)
-    if (error) throw new Error(`Kunne ikke uploade billede: ${error.message}`)
+
+    if (error) {
+      throw new Error(`Kunne ikke uploade billede: ${error.message}`)
+    }
 
     const { data } = supabase.storage.from("avatars").getPublicUrl(filePath)
     return data.publicUrl
   }
 
+  const displayImages = useMemo(() => {
+    if (selectedImagePreviews.length > 0) {
+      return selectedImagePreviews
+    }
+
+    if (productImages.length > 0) {
+      return productImages
+    }
+
+    return ["/darkimgplaceholder.jpg"]
+  }, [productImages, selectedImagePreviews])
+
+  const categoryFields = getCategoryFields(form.category)
+  const canSubmit = getRequiredProductFields(form.category).every((fieldKey) => {
+    const value = form[fieldKey]
+    return typeof value === "string" && value.trim().length > 0
+  }) && Number(form.price) > 0 && displayImages.length > 0
+
+  const renderField = (field: ProductFieldDefinition) => {
+    if (field.kind === "select" && field.options) {
+      if (useNativeSelect) {
+        return (
+          <FormControl key={field.key} fullWidth required className="edit-select-field">
+            <InputLabel shrink htmlFor={`edit-${field.key}-native`}>
+              {field.label}
+            </InputLabel>
+            <Select
+              native
+              id={`edit-${field.key}-native`}
+              value={form[field.key]}
+              onChange={(event) => updateField(field.key, event.target.value)}
+              input={<OutlinedInput notched label={field.label} />}
+            >
+              <option value="" disabled>
+                Vaelg {field.label.toLowerCase()}
+              </option>
+              {field.options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+        )
+      }
+
+      return (
+        <FormControl key={field.key} fullWidth required className="edit-select-field">
+          <InputLabel id={`edit-${field.key}-label`}>{field.label}</InputLabel>
+          <Select
+            labelId={`edit-${field.key}-label`}
+            id={`edit-${field.key}`}
+            label={field.label}
+            value={form[field.key]}
+            onChange={(event) => updateField(field.key, event.target.value)}
+            input={<OutlinedInput label={field.label} />}
+          >
+            <MenuItem value="" disabled>
+              Vaelg {field.label.toLowerCase()}
+            </MenuItem>
+            {field.options.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )
+    }
+
+    return (
+      <TextField
+        key={field.key}
+        label={field.label}
+        type={field.kind === "number" ? "number" : "text"}
+        value={form[field.key]}
+        onChange={(event) => updateField(field.key, event.target.value)}
+        required
+        fullWidth
+        className="edit-input-field"
+      />
+    )
+  }
+
   const goToPreviousPreview = () => {
-    const displayImages = selectedImagePreviews.length > 0 ? selectedImagePreviews : productImages
     setActivePreviewIndex((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1))
   }
 
   const goToNextPreview = () => {
-    const displayImages = selectedImagePreviews.length > 0 ? selectedImagePreviews : productImages
     setActivePreviewIndex((prev) => (prev === displayImages.length - 1 ? 0 : prev + 1))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!productId) return
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
+
+    if (!productId) {
+      return
+    }
+
     if (!isOwner) {
       setMessage({ type: "error", text: "Du har ikke tilladelse til at opdatere dette produkt." })
       return
@@ -212,10 +284,9 @@ export default function EditProductPage() {
       } = await supabase.auth.getUser()
 
       if (userError || !user) {
-        throw new Error("Du skal være logget ind for at redigere produkter.")
+        throw new Error("Du skal vaere logget ind for at redigere produkter.")
       }
 
-      // upload images if changed
       let imageUrl = form.image_url ?? null
       let uploadedUrls: string[] = []
 
@@ -224,20 +295,20 @@ export default function EditProductPage() {
         imageUrl = uploadedUrls[0] ?? null
       }
 
-      // prepare updates (convert price)
-      const updates: Partial<FormState> = {
-        title: form.title.trim(),
-        description: form.description.trim(),
-        price: form.price,
-        gender: form.gender,
-        color: form.color,
-        size: form.size,
-        stand: form.stand,
-        image_url: imageUrl,
+      const productPayload = buildProductPayload(form)
+
+      if (!productPayload.category) {
+        throw new Error("Vaelg en kategori for produktet.")
       }
 
-      // call shared CRUD update (throws on error)
-      await updateProduct(productId, updates)
+      if (productPayload.price === null || Number.isNaN(productPayload.price) || productPayload.price <= 0) {
+        throw new Error("Indtast en gyldig pris stoerre end 0.")
+      }
+
+      await updateProduct(productId, {
+        ...productPayload,
+        image_url: imageUrl,
+      })
 
       if (uploadedUrls.length > 0) {
         const { error: deleteImagesError } = await supabase
@@ -287,7 +358,10 @@ export default function EditProductPage() {
   }
 
   const handleDelete = async () => {
-    if (!productId) return
+    if (!productId) {
+      return
+    }
+
     if (!isOwner) {
       setMessage({ type: "error", text: "Du har ikke tilladelse til at slette dette produkt." })
       return
@@ -316,7 +390,6 @@ export default function EditProductPage() {
     }
   }
 
-  // UI: block if auth not checked or not owner
   if (!authChecked) {
     return (
       <Box className="edit-status-box">
@@ -333,53 +406,31 @@ export default function EditProductPage() {
     )
   }
 
-  const displayImages = selectedImagePreviews.length > 0
-    ? selectedImagePreviews
-    : productImages.length > 0
-      ? productImages
-      : ["/darkimgplaceholder.jpg"]
- 
   return (
     <Box component="form" onSubmit={handleSubmit} className="edit-form">
       <Box className="edit-image-wrap">
         <Box className="edit-image-stage">
-          <Box
-            className="edit-image-track"
-            sx={{ transform: `translateX(-${activePreviewIndex * 100}%)` }}
-          >
+          <Box className="edit-image-track" sx={{ transform: `translateX(-${activePreviewIndex * 100}%)` }}>
             {displayImages.map((imageSrc, index) => (
               <Box key={`${imageSrc}-${index}`} className="edit-image-slide">
-                <Image
-                  src={imageSrc}
-                  alt={`Produkt preview ${index + 1}`}
-                  fill
-                  className="edit-image"
-                />
+                <Image src={imageSrc} alt={`Produkt preview ${index + 1}`} fill className="edit-image" />
               </Box>
             ))}
           </Box>
 
-          {displayImages.length > 1 && (
+          {displayImages.length > 1 ? (
             <>
-              <IconButton
-                onClick={goToPreviousPreview}
-                className="edit-image-nav edit-image-nav-prev"
-                aria-label="Forrige billede"
-              >
+              <IconButton onClick={goToPreviousPreview} className="edit-image-nav edit-image-nav-prev" aria-label="Forrige billede">
                 <NavigateBeforeIcon />
               </IconButton>
-              <IconButton
-                onClick={goToNextPreview}
-                className="edit-image-nav edit-image-nav-next"
-                aria-label="Næste billede"
-              >
+              <IconButton onClick={goToNextPreview} className="edit-image-nav edit-image-nav-next" aria-label="Naeste billede">
                 <NavigateNextIcon />
               </IconButton>
             </>
-          )}
+          ) : null}
         </Box>
 
-        {displayImages.length > 1 && (
+        {displayImages.length > 1 ? (
           <Box className="edit-image-dots">
             {displayImages.map((_, index) => (
               <span
@@ -388,187 +439,182 @@ export default function EditProductPage() {
               />
             ))}
           </Box>
-        )}
+        ) : null}
       </Box>
 
       <Box className="edit-fields">
-      <TextField
-        label="Titel"
-        value={form.title}
-        onChange={(e) => updateField("title", e.target.value)}
-        required
-        fullWidth
-        className="edit-input-field"
-      />
+        <FormControl fullWidth required className="edit-select-field">
+          {useNativeSelect ? (
+            <>
+              <InputLabel shrink htmlFor="edit-category-native">
+                Kategori
+              </InputLabel>
+              <Select
+                native
+                id="edit-category-native"
+                value={form.category}
+                onChange={(event) => updateField("category", event.target.value)}
+                input={<OutlinedInput notched label="Kategori" />}
+              >
+                <option value="" disabled>
+                  Vaelg kategori
+                </option>
+                {CATEGORY_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </Select>
+            </>
+          ) : (
+            <>
+              <InputLabel id="edit-category-label">Kategori</InputLabel>
+              <Select
+                labelId="edit-category-label"
+                id="edit-category"
+                label="Kategori"
+                value={form.category}
+                onChange={(event) => updateField("category", event.target.value)}
+                input={<OutlinedInput label="Kategori" />}
+              >
+                <MenuItem value="" disabled>
+                  Vaelg kategori
+                </MenuItem>
+                {CATEGORY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </>
+          )}
+        </FormControl>
 
-      <TextField
-        label="Beskrivelse"
-        value={form.description}
-        onChange={(e) => updateField("description", e.target.value)}
-        fullWidth
-        multiline
-        rows={4}
-        className="edit-input-field"
-      />
-
-      <FormControl 
-        fullWidth 
-        required 
-        className="edit-select-field"
-      >
-        <InputLabel id="edit-color-label">Farve</InputLabel>
-        <Select
-          labelId="edit-color-label"
-          id="edit-color"
-          label="Farve"
-          value={form.color}
-          onChange={(e) => updateField("color", e.target.value as "Hvid" | "Sort" | "Grå")}
-          input={<OutlinedInput label="Farve" />}
-        >
-          <MenuItem value="Hvid">Hvid</MenuItem>
-          <MenuItem value="Sort">Sort</MenuItem>
-          <MenuItem value="Grå">Grå</MenuItem>
-        </Select>
-      </FormControl> 
-
-      <FormControl 
-        fullWidth 
-        required 
-        className="edit-select-field"
-      >
-        <InputLabel id="edit-size-label">Størrelse</InputLabel>
-      
-        <Select
-          labelId="edit-size-label"
-          id="edit-size"
-          label="Størrelse"
-          value={form.size}
-          onChange={(e) => updateField("size", e.target.value as "XS" | "S" | "M" | "L" | "XL")}
-          input={<OutlinedInput label="Størrelse" />}
-        >
-          <MenuItem value="XS">XS</MenuItem>
-          <MenuItem value="S">S</MenuItem>
-          <MenuItem value="M">M</MenuItem>
-          <MenuItem value="L">L</MenuItem>
-          <MenuItem value="XL">XL</MenuItem>
-        </Select>
-      </FormControl>
-
-      <FormControl 
-        fullWidth 
-        required 
-        className="edit-select-field"
-      >
-        <InputLabel id="edit-gender-label">Køn</InputLabel>
-      
-        <Select
-          labelId="edit-gender-label"
-          id="edit-gender"
-          label="Køn"
-          value={form.gender}
-          onChange={(e) => updateField("gender", e.target.value as "female" | "male")}
-          input={<OutlinedInput label="Køn" />}
-        >
-          <MenuItem value="female">Female</MenuItem>
-          <MenuItem value="male">Male</MenuItem>
-        </Select>
-      </FormControl>
-
-      <FormControl 
-        fullWidth 
-        required 
-        className="edit-select-field"
-      >
-        <InputLabel id="edit-stand-label">Tilstand</InputLabel>
-      
-        <Select
-          labelId="edit-stand-label"
-          id="edit-stand"
-          label="Tilstand"
-          value={form.stand}
-          onChange={(e) => updateField("stand", e.target.value as "Nyt" | "Brugt" | "Brugspor")}
-          input={<OutlinedInput label="Tilstand" />}
-        >
-          <MenuItem value="Nyt">Nyt</MenuItem>
-          <MenuItem value="Brugt">Brugt</MenuItem>
-          <MenuItem value="Brugspor">Brugspor</MenuItem>
-        </Select>
-      </FormControl> 
-
-      <TextField
-        label="Pris (DKK)"
-        type="number"
-        value={form.price}
-        onChange={(e) => updateField("price", e.target.value)}
-        fullWidth
-        className="edit-input-field"
-      />
-
-      <Button 
-        variant="outlined" 
-        component="label" 
-        fullWidth 
-        className="edit-image-button"
-      >
-          Skift billeder
-        <input 
-          type="file" 
-          hidden accept="image/*"
-          multiple
-          onChange={handleImageChange} 
-        />
-      </Button>
-
-      <Button 
-        type="submit" 
-        fullWidth 
-        disabled={loading}
-        className="edit-submit-button"
-      >
-        {loading ? "Opdaterer…" : "Gem ændringer"}
-      </Button>
-
-      {!showDeleteConfirm ? (
-        <Button
-          type="button"
+        <TextField
+          label="Titel"
+          value={form.title}
+          onChange={(event) => updateField("title", event.target.value)}
+          required
           fullWidth
-          disabled={loading}
-          className="edit-delete-button"
-          onClick={() => setShowDeleteConfirm(true)}
-        >
-          Slet produkt
-        </Button>
-      ) : (
-        <Box className="edit-delete-confirm-wrap">
-          <p className="edit-delete-confirm-text">Er du sikker på, at du vil slette produktet?</p>
-          <Box className="edit-delete-confirm-actions">
-            <Button
-              type="button"
-              fullWidth
-              disabled={loading}
-              className="edit-cancel-button"
-              onClick={() => setShowDeleteConfirm(false)}
-            >
-              Annuller
-            </Button>
-            <Button
-              type="button"
-              fullWidth
-              disabled={loading}
-              className="edit-confirm-delete-button"
-              onClick={handleDelete}
-            >
-              Bekræft sletning
-            </Button>
-          </Box>
-        </Box>
-      )}
+          className="edit-input-field"
+        />
 
-      {message && (
-        <Alert severity={message.type} className="edit-alert">
-          {message.text}
-        </Alert>
-      )}
+        <TextField
+          label="Beskrivelse"
+          value={form.description}
+          onChange={(event) => updateField("description", event.target.value)}
+          required
+          fullWidth
+          multiline
+          rows={4}
+          className="edit-input-field"
+        />
+
+        <TextField
+          label="Pris (DKK)"
+          type="number"
+          value={form.price}
+          onChange={(event) => updateField("price", event.target.value)}
+          required
+          fullWidth
+          className="edit-input-field"
+        />
+
+        {categoryFields.map(renderField)}
+
+        <FormControl fullWidth required className="edit-select-field">
+          {useNativeSelect ? (
+            <>
+              <InputLabel shrink htmlFor="edit-stand-native">
+                Tilstand
+              </InputLabel>
+              <Select
+                native
+                id="edit-stand-native"
+                value={form.stand}
+                onChange={(event) => updateField("stand", event.target.value)}
+                input={<OutlinedInput notched label="Tilstand" />}
+              >
+                <option value="" disabled>
+                  Vaelg tilstand
+                </option>
+                {STAND_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </Select>
+            </>
+          ) : (
+            <>
+              <InputLabel id="edit-stand-label">Tilstand</InputLabel>
+              <Select
+                labelId="edit-stand-label"
+                id="edit-stand"
+                label="Tilstand"
+                value={form.stand}
+                onChange={(event) => updateField("stand", event.target.value)}
+                input={<OutlinedInput label="Tilstand" />}
+              >
+                <MenuItem value="" disabled>
+                  Vaelg tilstand
+                </MenuItem>
+                {STAND_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </>
+          )}
+        </FormControl>
+
+        <Button variant="outlined" component="label" fullWidth className="edit-image-button">
+          Skift billeder
+          <input type="file" hidden accept="image/*" multiple onChange={handleImageChange} />
+        </Button>
+
+        <Button type="submit" fullWidth disabled={loading || !canSubmit} className="edit-submit-button">
+          {loading ? "Opdaterer..." : "Gem aendringer"}
+        </Button>
+
+        {!showDeleteConfirm ? (
+          <Button
+            type="button"
+            fullWidth
+            disabled={loading}
+            className="edit-delete-button"
+            onClick={() => setShowDeleteConfirm(true)}
+          >
+            Slet produkt
+          </Button>
+        ) : (
+          <Box className="edit-delete-confirm-wrap">
+            <p className="edit-delete-confirm-text">Er du sikker paa, at du vil slette produktet?</p>
+            <Box className="edit-delete-confirm-actions">
+              <Button
+                type="button"
+                fullWidth
+                disabled={loading}
+                className="edit-cancel-button"
+                onClick={() => setShowDeleteConfirm(false)}
+              >
+                Annuller
+              </Button>
+              <Button
+                type="button"
+                fullWidth
+                disabled={loading}
+                className="edit-confirm-delete-button"
+                onClick={handleDelete}
+              >
+                Bekraeft sletning
+              </Button>
+            </Box>
+          </Box>
+        )}
+
+        {message ? <Alert severity={message.type} className="edit-alert">{message.text}</Alert> : null}
       </Box>
     </Box>
   )

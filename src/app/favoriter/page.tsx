@@ -15,6 +15,7 @@ import {
 } from "@mui/material"
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import Link from "next/link"
+import { getProductListMeta } from "@/app/lib/productDisplay"
 import "../shop/shop.css"
 import "./favorit.css"
 
@@ -26,6 +27,16 @@ interface Product {
   image_url: string | null
   created_at: string
   gender: "male" | "female" | "unisex" | null
+  category?: string | null
+  color?: string | null
+  size?: string | null
+  stand?: string | null
+  brand?: string | null
+  club_type?: string | null
+  flex?: string | null
+  hand?: string | null
+  divider_count?: number | null
+  weight?: string | null
   sold: boolean | null;
 }
 
@@ -162,7 +173,10 @@ export default function Favoriter() {
             </Alert>
           ) : (
             <Grid container spacing={2} className="shop-product-grid">
-              {filteredProducts.map((product) => (
+              {filteredProducts.map((product) => {
+                const meta = getProductListMeta(product)
+
+                return (
                 <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id} className="shop-product-grid-item">
                   <Card className="shop-product-card">
                     <Box className="shop-product-media-wrap">
@@ -190,6 +204,11 @@ export default function Favoriter() {
                           <Typography component="h2" className="shop-product-title">
                             {product.title}
                           </Typography>
+                          {meta.length > 0 && (
+                            <Typography variant="caption" className="shop-product-meta-line">
+                              {meta.join(" • ")}
+                            </Typography>
+                          )}
                           {product.description && (
                             <Typography variant="body2" className="shop-product-description">
                               {product.description}
@@ -205,7 +224,8 @@ export default function Favoriter() {
                     </Box>
                   </Card>
                 </Grid>
-              ))}
+                )
+              })}
             </Grid>
           )}
         </Box>
