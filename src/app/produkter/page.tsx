@@ -5,6 +5,7 @@ import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress,
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { deleteProduct } from "../lib/crud"
+import { getProductListMeta } from "@/app/lib/productDisplay"
 import "../components/Products/allProducts.css"
 
 
@@ -15,6 +16,17 @@ interface Product {
   price: number | null
   image_url: string | null
   created_at: string
+  category?: string | null
+  gender?: string | null
+  color?: string | null
+  size?: string | null
+  stand?: string | null
+  brand?: string | null
+  club_type?: string | null
+  flex?: string | null
+  hand?: string | null
+  divider_count?: number | null
+  weight?: string | null
   sold: boolean | null;
 }
 
@@ -172,7 +184,10 @@ export default function ProdukterPage() {
             <Alert severity="info">Du har ikke oprettet nogen produkter endnu.</Alert>
           ) : (
             <Grid container spacing={2} className="produkter-grid">
-              {products.map((product) => (
+              {products.map((product) => {
+                const meta = getProductListMeta(product)
+
+                return (
                 <Grid key={product.id} size={{ xs: 6, sm: 6, md: 3 }} className="produkter-grid-item">
                   <Card className="produkter-card">
                     <Box className="produkter-card-media-wrap">
@@ -186,6 +201,9 @@ export default function ProdukterPage() {
                       )}
                       <Box className="produkter-card-overlay">
                         <Typography className="produkter-card-title" component="h2">{product.title}</Typography>
+                        {meta.length > 0 && (
+                          <Typography variant="caption" className="produkter-card-meta-line">{meta.join(" • ")}</Typography>
+                        )}
                         {product.description && (
                           <Typography variant="body2" className="produkter-card-desc">{product.description}</Typography>
                         )}
@@ -199,21 +217,13 @@ export default function ProdukterPage() {
                             className="produkter-action-button">
                             Rediger
                           </Button>
-
-                          <Button 
-                            onClick={() => {
-                              setSelectedProductId(product.id);
-                              setOpenDialog(true);
-                            }}
-                            className="produkter-action-button delete">
-                            Slet
-                          </Button>
                         </Box>
                       </Box>
                     </Box>
                   </Card>
                 </Grid>
-              ))}
+                )
+              })}
             </Grid>
           )}
         </Box>

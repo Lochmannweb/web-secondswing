@@ -1,6 +1,7 @@
 "use client"
 
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
+import { getProductDetailMeta } from "@/app/lib/productDisplay"
 import { Box, Button, IconButton } from "@mui/material"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
@@ -17,8 +18,16 @@ interface Product {
   image_url: string | null
   user_id: string
   color?: string | null
+  category?: string | null
+  gender?: string | null
   stand?: string | null
   size?: string | null
+  brand?: string | null
+  club_type?: string | null
+  flex?: string | null
+  hand?: string | null
+  divider_count?: number | null
+  weight?: string | null
   sold: boolean | null
 }
 
@@ -292,6 +301,7 @@ export default function ProductPage() {
   }
 
   const isOwner = product ? viewerId === product.user_id : false
+  const detailMeta = product ? getProductDetailMeta(product) : []
   const slideProgress = maxSlideRef.current > 0 ? slideX / maxSlideRef.current : 0
   const sliderStyle = {
     "--slide-progress": slideProgress,
@@ -378,13 +388,9 @@ export default function ProductPage() {
             </Box>
           </Box>
           <Box className="product-card-kategori">
-            <p className="product-meta">{product.color}</p>
-            <p className="product-meta">{product.stand}</p>
-            {product.size && (
-              <>
-                <p className="product-meta">{product.size}</p>
-              </>
-            )}
+            {detailMeta.map((meta) => (
+              <p key={meta.key} className="product-meta">{meta.value}</p>
+            ))}
           </Box>
         </Box>
 
