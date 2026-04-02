@@ -1,36 +1,38 @@
 "use client"
 
+import { CATEGORY_OPTIONS } from "@/app/lib/productForm"
 import { getButtonStyles } from "@/app/utils/filterStyles"
+import type { Filter } from "@/app/utils/filterStyles"
 import { Stack, Button } from "@mui/material"
 
 interface FilterButtonsProps {
-  activeFilter: "all" | "male" | "female"
-  onFilterChange: (filter: "all" | "male" | "female") => void
+  activeFilter: Filter
+  onFilterChange: (filter: Filter) => void
 }
 
 export default function FilterButtons({ activeFilter, onFilterChange }: FilterButtonsProps) {
   return (
-    <Stack direction="row" spacing={1} >
-      <Button 
-        sx={getButtonStyles(activeFilter, "all")} 
+    <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }}>
+      <Button
+        sx={getButtonStyles(activeFilter, "all")}
         onClick={() => onFilterChange("all")}
-        >
-          All
+      >
+        Alle
       </Button>
 
-      <Button 
-        sx={getButtonStyles(activeFilter, "female")} 
-        onClick={() => onFilterChange("female")}
-        >
-          Female
-        </Button>
+      {CATEGORY_OPTIONS.map((category) => {
+        const categoryFilter = category.value as Filter
 
-      <Button 
-        sx={getButtonStyles(activeFilter, "male")} 
-        onClick={() => onFilterChange("male")}
-        >
-          Male
-      </Button>
+        return (
+          <Button
+            key={category.value}
+            sx={getButtonStyles(activeFilter, categoryFilter)}
+            onClick={() => onFilterChange(categoryFilter)}
+          >
+            {category.label}
+          </Button>
+        )
+      })}
     </Stack>
   )
 }
