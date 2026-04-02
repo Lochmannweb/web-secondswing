@@ -66,10 +66,10 @@ export const GENDER_OPTIONS: ProductOption[] = [
 export const COLOR_OPTIONS: ProductOption[] = [
   { value: "Sort", label: "Sort" },
   { value: "Hvid", label: "Hvid" },
-  { value: "Gra", label: "Gra" },
-  { value: "Bla", label: "Bla" },
-  { value: "Rod", label: "Rod" },
-  { value: "Gron", label: "Gron" },
+  { value: "Grå", label: "Grå" },
+  { value: "Blå", label: "Blå" },
+  { value: "Rød", label: "Rød" },
+  { value: "Grøn", label: "Grøn" },
   { value: "Navy", label: "Navy" },
 ]
 

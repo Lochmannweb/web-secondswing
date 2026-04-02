@@ -4,17 +4,17 @@ import "./globals.css";
 const trustPoints = [
   "Brugt golfudstyr samlet ét sted",
   "Gratis oprettelse af annoncer",
-  "Hurtig browsing på mobil og desktop",
+  // "Hurtig browsing på mobil og desktop",
 ];
 
 const categories = [
   {
-    title: "Køller og jern",
-    description: "Find drivers, wedges og komplette sæt uden at betale nypris.",
+    title: "Bags",
+    description: "Giv godt udstyr en ny runde i stedet for at lade det stå i skuret.",
   },
   {
-    title: "Bags og vogne",
-    description: "Giv godt udstyr en ny runde i stedet for at lade det stå i skuret.",
+    title: "Køller og jern",
+    description: "Find drivers, wedges og komplette sæt uden at betale nypris.",
   },
   {
     title: "Tøj og tilbehør",
@@ -52,8 +52,8 @@ export default function Home() {
         </video>
         <div className="landing-hero-overlay" />
         <div className="landing-hero-content">
-          <p className="landing-eyebrow">Brugt golfudstyr, klar til næste runde</p>
-          <h1>Second Swing gør det nemt at købe og sælge golfudstyr i Danmark.</h1>
+          <p className="landing-eyebrow">Brugt golfudstyr - klar til et Second Swing</p>
+          <h1>Gør det nemt at købe og sælge golfudstyr i Danmark</h1>
           <div className="landing-trust-grid">
             {trustPoints.map((point) => (
               <div key={point} className="landing-trust-card">
@@ -79,7 +79,7 @@ export default function Home() {
         <section className="landing-section">
           <div className="landing-section-heading">
             <p className="landing-section-kicker">Udvalgte kategorier</p>
-            <h2>Bygget til det udstyr, golfspillere faktisk leder efter.</h2>
+            <h2>Udstyr til golfspillere</h2>
           </div>
 
           <div className="landing-card-grid">

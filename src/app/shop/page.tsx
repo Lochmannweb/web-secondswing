@@ -210,9 +210,9 @@ export default function ShopPage() {
         <Typography variant="h3" className="shop-page-title">
           Brugt golfudstyr klar til næste runde.
         </Typography>
-        <Typography className="shop-page-description">
+        {/* <Typography className="shop-page-description">
           Brugt golfudstyr, klar til næste runde.
-        </Typography>
+        </Typography> */}
       </Box>
       <Box className="shop-page-layout">
         <Box className="shop-page-sidebar">
@@ -233,7 +233,7 @@ export default function ShopPage() {
           </Box>
 
           <Box className="shop-advanced-filter-wrap">
-            <Typography className="shop-advanced-filter-title">Kon</Typography>
+            <Typography className="shop-advanced-filter-title">Køn</Typography>
             <Box className="shop-filter-chip-grid">
               {genderOptions.map((gender) => (
                 <Chip
@@ -259,7 +259,7 @@ export default function ShopPage() {
               ))}
             </Box>
 
-            <Typography className="shop-advanced-filter-title">Storrelse</Typography>
+            <Typography className="shop-advanced-filter-title">Størrelse</Typography>
             <Box className="shop-filter-chip-grid">
               {sizeOptions.map((size) => (
                 <Chip
@@ -311,7 +311,7 @@ export default function ShopPage() {
           <Typography className="shop-advanced-filter-title">Kategori</Typography>
           <FilterButtons activeFilter={activeFilter} onFilterChange={handleFilter} />
 
-          <Typography className="shop-advanced-filter-title">Kon</Typography>
+          <Typography className="shop-advanced-filter-title">KØn</Typography>
           <Box className="shop-filter-chip-grid">
             {genderOptions.map((gender) => (
               <Chip
@@ -337,7 +337,7 @@ export default function ShopPage() {
             ))}
           </Box>
 
-          <Typography className="shop-advanced-filter-title">Storrelse</Typography>
+          <Typography className="shop-advanced-filter-title">Størrelse</Typography>
           <Box className="shop-filter-chip-grid">
             {sizeOptions.map((size) => (
               <Chip

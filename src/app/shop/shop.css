@@ -110,7 +110,7 @@
   font-size: 0.64rem !important;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--shop-accent);
+  /* color: var(--shop-accent); */
   margin-top: 0.65rem !important;
   margin-bottom: 0.35rem !important;
 }
@@ -122,7 +122,7 @@
 }
 
 .shop-filter-chip.MuiChip-root {
-  border: 1px solid var(--shop-line);
+  /* border: 1px solid var(--shop-line); */
   background: transparent;
   color: #f1f1f1;
   border-radius: 6px;
@@ -224,11 +224,12 @@
 }
 
 .shop-page-sidebar .MuiButton-root {
-  border-radius: 7px;
+  border-radius: 3px;
   font-size: 0.62rem;
   letter-spacing: 0.06em;
-  min-height: 32px;
+  min-height: 25px;
   border: 1px solid var(--shop-line);
+  margin-left: 0;
 }
 
 .SearchBar-form {
@@ -241,9 +242,9 @@
 }
 
 .SearchBar-field .MuiOutlinedInput-root {
-  border-radius: 7px;
-  background: #080808;
-  min-height: 38px;
+  border-radius: 5px;
+  /* background: #080808; */
+  /* min-height: 38px; */
 }
 
 .SearchBar-field .MuiOutlinedInput-root fieldset {
@@ -259,7 +260,7 @@
 .SearchBar-input {
   color: #fff;
   font-size: 0.76rem;
-  padding: 9px 12px;
+  /* padding: 9px 12px; */
 }
 
 .SearchBar-input::placeholder {
@@ -523,11 +524,13 @@
     font-size: clamp(1.5rem, 2.6vw, 2.4rem) !important;
   }
 
-  .shop-page-sidebar {
-    padding: 14px;
+  .shop-page-sidebar,
+  .shop-page-products {
+    padding: 0;
   }
 
-  .shop-page-products {
-    padding: 14px;
+  .shop-product-card.MuiCard-root {
+    width: 70%;
+    max-height: 40vh;
   }
 }

@@ -137,7 +137,7 @@ export default function EditProduct({ productId }: EditProductProps) {
         </FormControl>
 
         <Button variant="outlined" component="label">
-          Vælg billede
+          Upload billeder
           <input type="file" hidden accept="image/*" onChange={handleImageChange} />
         </Button>
 

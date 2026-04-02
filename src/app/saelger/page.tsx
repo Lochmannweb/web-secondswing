@@ -15,7 +15,7 @@ export default function SaelgerPage() {
       <Box className="info-page-content">
         <section className="info-section">
           <p>
-            Opret en annonce pa fa minutter. Vaelg kategori, tilstand og pris. Vi anbefaler klare billeder,
+            Opret en annonce pa fa minutter. Vælg kategori, tilstand og pris. Vi anbefaler klare billeder,
             aerlig stand-beskrivelse og at inkludere maerke og model.
           </p>
         </section>

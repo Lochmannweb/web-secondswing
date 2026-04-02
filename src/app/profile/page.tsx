@@ -35,7 +35,7 @@ export default function ProfilePage() {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 599
   const menuItems = [
     { key: 'editProfile', label: 'Rediger profil', link: '/indstillinger/profiloplysninger' },
-    { key: 'createProduct', label: 'Salg nyt udstyr', link: '/opretProdukt' },
+    { key: 'createProduct', label: 'Sælg nyt udstyr', link: '/opretProdukt' },
     { key: 'myProducts', label: 'Alle produkter', link: '/produkter' },
     { key: 'fav', label: 'Favoriter', link: '/favoriter' },
     { key: 'privacy', label: 'Indstillinger', link: '/indstillinger/privatliv' },

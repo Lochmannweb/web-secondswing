@@ -13,9 +13,9 @@ type ProductDisplayData = {
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
-  clothing: "Toj",
+  clothing: "Tøj",
   shoes: "Sko",
-  clubs: "Golfkolle",
+  clubs: "Golfkølle",
   bags: "Golftaske",
   gloves: "Handsker",
   accessories: "Accessories",
@@ -114,16 +114,16 @@ export function getProductDetailMeta(product: ProductDisplayData) {
   } else if (category === "bags") {
     if (brand) rows.push({ key: "brand", value: `Brand: ${brand}` })
     if (dividerCount) rows.push({ key: "dividers", value: `Dividere: ${dividerCount}` })
-    if (weight) rows.push({ key: "weight", value: `Vaegt: ${weight}` })
+    if (weight) rows.push({ key: "weight", value: `Vægt: ${weight}` })
   } else {
     const genderLabel = GENDER_LABELS[gender]
-    if (genderLabel) rows.push({ key: "gender", value: `Kon: ${genderLabel}` })
-    if (size) rows.push({ key: "size", value: `Storrelse: ${size}` })
-    if (color) rows.push({ key: "color", value: `Farve: ${color}` })
+    if (genderLabel) rows.push({ key: "gender", value: `${genderLabel}` })
+    if (size) rows.push({ key: "size", value: `${size}` })
+    if (color) rows.push({ key: "color", value: `${color}` })
   }
 
   if (stand) {
-    rows.push({ key: "stand", value: `Tilstand: ${stand}` })
+    rows.push({ key: "stand", value: `${stand}` })
   }
 
   return rows

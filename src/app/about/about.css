@@ -55,9 +55,9 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   margin-bottom: 8px;
-  padding: 4px 12px;
-  border: 1px solid rgba(255, 215, 174, 0.4);
-  border-radius: 999px;
+  /* padding: 4px 12px; */
+  /* border: 1px solid rgba(255, 215, 174, 0.4); */
+  /* border-radius: 999px; */
 }
 
 .about-visual-copy h1 {
@@ -143,15 +143,11 @@
 }
 
 .about-reasons > div {
-  background: rgba(255, 255, 255, 0.035);
+  /* background: rgba(255, 255, 255, 0.035); */
   border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 10px;
-  padding: 13px 11px;
+  border-radius: 5px;
+  padding: 10px 11px;
   transition: border-color 0.2s;
-}
-
-.about-reasons > div:hover {
-  border-color: rgba(255, 215, 174, 0.28);
 }
 
 .about-section-block h3 {
@@ -247,11 +243,6 @@
 
   .about-reasons {
     gap: 12px;
-  }
-
-  .about-reasons > div {
-    padding: 18px 16px;
-    border-radius: 12px;
   }
 
   .about-section-block h3 {
