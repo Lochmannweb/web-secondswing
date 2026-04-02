@@ -10,7 +10,7 @@ export default function Home() {
                 <div className="about-visual">
                     <div className="about-visual-overlay" />
                     <div className="about-visual-copy">
-                        <p className="about-visual-kicker">About</p>
+                        <p className="about-visual-kicker">Om us</p>
                         <h1>Second Swing</h1>
                     </div>
                 </div>
@@ -18,26 +18,26 @@ export default function Home() {
                 <aside className="about-panel">
                     <div className="about-panel-scroll">
                         <section className="about-section-block">
-                            <h2>Our Company</h2>
+                            <h2>Omkring Second Swing</h2>
                             <p>{aboutData.Company.contentTop}</p>
                             <p>{aboutData.Company.contentMidt}</p>
                             <p>{aboutData.Company.contentBottom}</p>
                         </section>
 
                         <section className="about-section-block">
-                            <h2>Our Mission</h2>
+                            <h2>Vores Mission</h2>
                             <p>{aboutData.OurMission.contentTop}</p>
                             <p>{aboutData.OurMission.contentMidt}</p>
                         </section>
 
                         <section className="about-section-block">
-                            <h2>The Team</h2>
+                            <h2>Omkring Team</h2>
                             <p>{aboutData.OurTeam.contentTop}</p>
                             <p>{aboutData.OurTeam.contentMidt}</p>
                         </section>
 
                         <section className="about-section-block about-reasons">
-                            <h2>Why Choose Us</h2>
+                            <h2>Ydeligere</h2>
                             <div>
                                 <h3>{aboutData.ChooseUs.reasonOne.title}</h3>
                                 <p>{aboutData.ChooseUs.reasonOne.content}</p>

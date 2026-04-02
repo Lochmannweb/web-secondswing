@@ -7,26 +7,26 @@ export default function FaqPage() {
     {
       question: "Hvordan betaler jeg for en vare?",
       answer:
-        "Aftal betaling direkte med saelger. I fremtiden tilbyder vi sikre betalingslosninger gennem platformen, sa folg med i app-opdateringer.",
+        "Aftal betaling direkte med sælger. I fremtiden tilbyder vi sikre betalingsløsninger gennem platformen, så følg med i app-opdateringer.",
     },
     {
-      question: "Hvad koster det at saelge?",
-      answer: "Vi tager en kommission pa 10% af salgsprisen.",
+      question: "Hvad koster det at sælge?",
+      answer: "Vi tager en kommission på 10% af salgsprisen.",
     },
     {
       question: "Hvordan vurderer jeg stand?",
       answer:
-        "Vaelg fra: Ny, Meget fin, God, Brugbar. Beskriv alt slid og tag flere billeder.",
+        "Vælg fra: Ny, Meget fin, God, Brugbar. Beskriv alt slid og tag flere billeder.",
     },
     {
-      question: "Hvordan handterer I persondata?",
+      question: "Hvordan håndterer I persondata?",
       answer:
-        "Se vores Privatlivspolitik. Du kan altid anmode om at fa dine data slettet.",
+        "Se vores Privatlivspolitik. Du kan altid anmode om at få dine data slettet.",
     },
     {
       question: "Hvordan kontakter jeg support?",
       answer:
-        "Send en e-mail til support@secondswing.dk eller brug kontaktformularen pa siden.",
+        "Send en e-mail til support@secondswing.dk eller brug kontaktformularen på siden.",
     },
   ];
 

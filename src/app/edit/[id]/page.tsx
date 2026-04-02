@@ -204,7 +204,7 @@ export default function EditProductPage() {
               input={<OutlinedInput notched label={field.label} />}
             >
               <option value="" disabled>
-                Vaelg {field.label.toLowerCase()}
+                Vælg {field.label.toLowerCase()}
               </option>
               {field.options.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -228,7 +228,7 @@ export default function EditProductPage() {
             input={<OutlinedInput label={field.label} />}
           >
             <MenuItem value="" disabled>
-              Vaelg {field.label.toLowerCase()}
+              Vælg {field.label.toLowerCase()}
             </MenuItem>
             {field.options.map((option) => (
               <MenuItem key={option.value} value={option.value}>
@@ -298,11 +298,11 @@ export default function EditProductPage() {
       const productPayload = buildProductPayload(form)
 
       if (!productPayload.category) {
-        throw new Error("Vaelg en kategori for produktet.")
+        throw new Error("Vælg en kategori for produktet.")
       }
 
       if (productPayload.price === null || Number.isNaN(productPayload.price) || productPayload.price <= 0) {
-        throw new Error("Indtast en gyldig pris stoerre end 0.")
+        throw new Error("Indtast en gyldig pris større end 0.")
       }
 
       await updateProduct(productId, {
@@ -457,7 +457,7 @@ export default function EditProductPage() {
                 input={<OutlinedInput notched label="Kategori" />}
               >
                 <option value="" disabled>
-                  Vaelg kategori
+                  Vælg kategori
                 </option>
                 {CATEGORY_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -478,7 +478,7 @@ export default function EditProductPage() {
                 input={<OutlinedInput label="Kategori" />}
               >
                 <MenuItem value="" disabled>
-                  Vaelg kategori
+                  Vælg kategori
                 </MenuItem>
                 {CATEGORY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -536,7 +536,7 @@ export default function EditProductPage() {
                 input={<OutlinedInput notched label="Tilstand" />}
               >
                 <option value="" disabled>
-                  Vaelg tilstand
+                  Vælg tilstand
                 </option>
                 {STAND_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -557,7 +557,7 @@ export default function EditProductPage() {
                 input={<OutlinedInput label="Tilstand" />}
               >
                 <MenuItem value="" disabled>
-                  Vaelg tilstand
+                  Vælg tilstand
                 </MenuItem>
                 {STAND_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>

@@ -622,6 +622,7 @@ a {
 
   .header-menu {
     padding: 20px;
+    top: 0;
   }
 
   .landing-section {
@@ -691,13 +692,14 @@ a {
 
   .info-section summary h2 {
     font-size: small;
+
   }
   .info-section p {
     font-size: smaller;
   }
 
   .MuiPaper-root {
-    background-color: #0000009c !important;
+    background-color: #0c0c0c82 !important;
   }
 }
 

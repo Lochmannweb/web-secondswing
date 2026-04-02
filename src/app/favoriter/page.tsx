@@ -256,7 +256,7 @@ export default function Favoriter() {
           Dine favoritter samlet et sted.
         </Typography>
         <Typography className="shop-page-description">
-          Sog i dine favoritter og filtrer dem, sa du hurtigere finder det rigtige udstyr.
+          Søg i dine favoritter og filtrer dem, så du hurtigere finder det rigtige udstyr.
         </Typography>
       </Box>
 
@@ -280,7 +280,7 @@ export default function Favoriter() {
           </Box>
 
           <Box className="shop-advanced-filter-wrap">
-            <Typography className="shop-advanced-filter-title">Kon</Typography>
+            <Typography className="shop-advanced-filter-title">Køn</Typography>
             <Box className="shop-filter-chip-grid">
               {genderOptions.map((gender) => (
                 <Chip
@@ -306,7 +306,7 @@ export default function Favoriter() {
               ))}
             </Box>
 
-            <Typography className="shop-advanced-filter-title">Storrelse</Typography>
+            <Typography className="shop-advanced-filter-title">Størrelse</Typography>
             <Box className="shop-filter-chip-grid">
               {sizeOptions.map((size) => (
                 <Chip
