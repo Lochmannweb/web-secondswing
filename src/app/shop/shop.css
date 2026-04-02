@@ -230,6 +230,7 @@
   min-height: 25px;
   border: 1px solid var(--shop-line);
   margin-left: 0;
+  background: transparent;
 }
 
 .SearchBar-form {
@@ -394,6 +395,7 @@
   text-transform: uppercase;
   opacity: 0.9;
   display: -webkit-box;
+  line-clamp: 1;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -512,7 +514,7 @@
 
 @media (min-width: 980px) {
   .shop-page {
-    padding: 118px 28px 36px;
+    padding: 118px 28px 25px;
   }
 
   .shop-page-layout {
@@ -529,8 +531,19 @@
     padding: 0;
   }
 
-  .shop-product-card.MuiCard-root {
+  .shop-product-grid.MuiGrid-container {
+    justify-content: flex-start;
+    column-gap: 0.85rem;
+    row-gap: 1rem;
+  }
+
+  .shop-product-grid-item {
+    max-width: 290px;
+    flex-basis: 290px !important;
+  }
+
+  /* .shop-product-card.MuiCard-root {
     width: 70%;
     max-height: 40vh;
-  }
+  } */
 }

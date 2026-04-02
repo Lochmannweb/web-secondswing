@@ -91,19 +91,21 @@ function HeaderMenu() {
                 </Box>
 
                 <nav className="header-drawer-nav">
+                    <Link href="/" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                        FORSIDEN
+                    </Link>
                     <Link href="/shop" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
                         SHOP
                     </Link>
-                    <Link href="/about" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
-                        OM OS
-                    </Link>
-                    <Link href="/favoriter" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
-                        FAVORITTER
-                    </Link>
+
+
                     {isLoggedIn ? (
                         <>
-                            <Link href="/opretProdukt" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                            {/* <Link href="/opretProdukt" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
                                 SÆLG UDSTYR
+                            </Link> */}
+                            <Link href="/favoriter" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                                FAVORITTER
                             </Link>
                             <Link href="/profile" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
                                 PROFIL
@@ -117,6 +119,9 @@ function HeaderMenu() {
                             LOG IND
                         </button>
                     )}
+                    <Link href="/about" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                        OM OS
+                    </Link>
                 </nav>
             </Box>
         </Drawer>

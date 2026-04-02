@@ -4,6 +4,30 @@
   gap: 2rem;
 }
 
+.opret-back-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 0.25rem;
+}
+
+.opret-back-button.MuiButton-root {
+  color: #d6d6d6;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 3px;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  min-width: auto;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.opret-back-button.MuiButton-root:hover {
+  border-color: rgba(255, 215, 174, 0.45);
+  background: rgba(255, 215, 174, 0.08);
+  color: #ffffff;
+}
+
 .opret-image-wrap {
   width: 100%;
   align-self: center;
@@ -78,13 +102,10 @@
 .opret-fields {
   width: 100%;
   padding: 0px 20px 40px;
-  /* background: rgba(18, 18, 18, 0.52); */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 0.3rem;
-  /* border: 1px solid rgba(255, 255, 255, 0.08); */
   display: grid;
-  grid-template-columns: 1fr;
   gap: 1.35rem;
 }
 
@@ -215,45 +236,28 @@
     display: flex;
     gap: 0rem;
     align-items: stretch;
-    min-height: 100vh;
-  }
-
-  .opret-image-wrap,
-  .opret-fields {
-    flex: 1 1 0;
-    min-height: 100vh;
   }
 
   .opret-image-stage {
-    height: 100%;
-    min-height: 100vh;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
-  }
-
-  .opret-image-slide {
-    height: 100%;
-    min-height: 100vh;
   }
 
   .opret-fields {
     display: grid;
-    /* grid-template-columns: 1fr 1fr; */
-    /* gap: 1.5rem; */
-    padding: 5.5rem 2.5rem 3.5rem;
-    /* border: 1px solid rgba(255, 255, 255, 0.08); */
-    background: linear-gradient(
-      160deg,
-      rgba(14, 14, 14, 0.88) 0%,
-      rgba(10, 10, 10, 0.72) 62%,
-      rgba(96, 149, 77, 0.12) 100%
-    );
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.32);
+    gap: 10px;
+    padding: 0 20px;
+    background: transparent !important;
   }
 
   .opret-image-button.MuiButton-root,
   .opret-submit-button.MuiButton-root {
     grid-column: 1 / -1;
+  }
+
+  .opret-back-button.MuiButton-root {
+   position: absolute;
+   top: 2rem;
+   z-index: 1000 !important;
   }
 }
 
@@ -261,13 +265,35 @@
   .opret-form {
     margin: 0;
     padding: 0;
+    /* min-height: 100vh; */
   }
 
   .opret-fields {
-    /* padding: 6rem 3rem 4rem; */
+    padding: 6rem 3rem 4rem;
+    background: linear-gradient(
+      160deg,
+      rgba(14, 14, 14, 0.88) 0%,
+      rgba(10, 10, 10, 0.72) 62%,
+      rgba(96, 149, 77, 0.12) 100%
+    ) !important;
   }
 
   .opret-submit-button.MuiButton-root {
     min-height: 44px;
+  }
+
+  .opret-select-field .MuiOutlinedInput-root,
+  .opret-input-field .MuiOutlinedInput-root {
+    margin-bottom: 1rem;
+  }
+
+  .opret-image-slide,
+  .opret-image-wrap {
+    height: 100vh !important;
+  }
+
+  .opret-image-stage {
+    height: 100vh !important;
+    max-height: none;
   }
 }

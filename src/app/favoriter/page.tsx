@@ -25,8 +25,10 @@ import {
   Drawer,
 } from "@mui/material"
 import FavoriteIcon from '@mui/icons-material/Favorite'
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore"
 import TuneIcon from "@mui/icons-material/Tune"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { getProductListMeta } from "@/app/lib/productDisplay"
 import "../shop/shop.css"
 import "./favorit.css"
@@ -62,6 +64,7 @@ const normalizeFacetValue = (value: string | null | undefined) => {
 }
 
 export default function Favoriter() {
+  const router = useRouter()
   const [products, setProducts] = useState<Product[]>([])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
@@ -237,6 +240,15 @@ export default function Favoriter() {
     setActiveGenders([])
   }
 
+  const handleBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back()
+      return
+    }
+
+    router.push("/profile")
+  }
+
   if (loading) return <Alert severity="info" className="shop-loading-alert">Indlaeser favoritter...</Alert>
   if (loginRequired) {
     return (
@@ -248,20 +260,30 @@ export default function Favoriter() {
 
   return (
     <Box className="shop-page favoriter-page">
-      <Box className="shop-page-header">
-        <Typography variant="overline" className="shop-page-kicker">
-          Favoritter
-        </Typography>
-        <Typography variant="h3" className="shop-page-title">
-          Dine favoritter samlet et sted.
-        </Typography>
-        <Typography className="shop-page-description">
-          Søg i dine favoritter og filtrer dem, så du hurtigere finder det rigtige udstyr.
-        </Typography>
-      </Box>
-
       <Box className="shop-page-layout">
         <Box className="shop-page-sidebar">
+          <Box className="favoriter-back-row">
+            <Button
+              className="favoriter-back-button"
+              onClick={handleBack}
+              startIcon={<NavigateBeforeIcon />}
+            >
+              Tilbage
+            </Button>
+          </Box>
+
+          <Box className="shop-page-header">
+            <Typography variant="overline" className="shop-page-kicker">
+              Favoritter
+            </Typography>
+            <Typography variant="h3" className="shop-page-title">
+              Brugt golfudstyr klar til næste runde.
+            </Typography>
+            {/* <Typography className="shop-page-description">
+              Søg i dine favoritter og filtrer dem, så du hurtigere finder det rigtige udstyr.
+            </Typography> */}
+          </Box>
+
           <Box className="shop-mobile-search-row">
             <Box className="shop-mobile-search-grow">
               <SearchBar onSearch={handleSearch} />

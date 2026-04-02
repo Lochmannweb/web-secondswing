@@ -7,7 +7,6 @@ import { Box, Button } from '@mui/material'
 import Image from 'next/image'
 import Profiloplysninger from '../indstillinger/profiloplysninger/page'
 import OpretProdukt from '../components/Products/OpretProdukt'
-import ProdukterPage from '../produkter/page'
 import Favoriter from '../favoriter/page'
 import PrivatlivPage from '../indstillinger/privatliv/page'
 import FaqPage from '../faq/page'
@@ -31,19 +30,19 @@ export default function ProfilePage() {
   const [needsLogin, setNeedsLogin] = useState(false)
   const supabase = getSupabaseClient()  
 
-  const [activeSection, setActiveSection] = useState<string>("fav")
+  const [activeSection, setActiveSection] = useState<string>("editProfile")
   const isMobile = typeof window !== "undefined" && window.innerWidth < 599
   const menuItems = [
-    { key: 'editProfile', label: 'Rediger profil', link: '/indstillinger/profiloplysninger' },
-    { key: 'createProduct', label: 'Sælg nyt udstyr', link: '/opretProdukt' },
-    { key: 'myProducts', label: 'Alle produkter', link: '/produkter' },
     { key: 'fav', label: 'Favoriter', link: '/favoriter' },
+    { key: 'myProducts', label: 'Mine produkter', link: '/produkter' },
+    { key: 'createProduct', label: 'Sælg nyt udstyr', link: '/opretProdukt' },
+    { key: 'editProfile', label: 'Rediger profil', link: '/indstillinger/profiloplysninger' },
     { key: 'privacy', label: 'Indstillinger', link: '/indstillinger/privatliv' },
   ] as const
 
   useEffect(() => {
     const section = searchParams.get("section")
-    const allowedSections = ["editProfile", "createProduct", "myProducts", "fav", "privacy", "faq"]
+    const allowedSections = ["editProfile", "createProduct", "fav", "privacy", "faq"]
 
     if (section && allowedSections.includes(section)) {
       setActiveSection(section)
@@ -53,6 +52,11 @@ export default function ProfilePage() {
 
   // funktion der skifter mellem indhold eller links
   const handleNavigation = (target: string, link: string) => {
+    if (target === "createProduct" || target === "myProducts" || target === "fav") {
+      router.push(link)
+      return
+    }
+
     if(isMobile) {
       router.push(link)
     } else {
@@ -211,7 +215,6 @@ export default function ProfilePage() {
             {/* {activeSection === "profil" && <p>Vælg noget fra menuen.</p>} */}
             {activeSection === "editProfile" && <Profiloplysninger />}
             {activeSection === "createProduct" && <OpretProdukt />}
-            {activeSection === "myProducts" && <ProdukterPage />}
             {activeSection === "fav" && <Favoriter />}
             {activeSection === "privacy" && <PrivatlivPage />}
             {activeSection === "faq" && <FaqPage />}
