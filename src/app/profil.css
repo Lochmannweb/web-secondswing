@@ -22,6 +22,78 @@
   width: 100%;
   min-width: 0;
   justify-self: stretch;
+  padding: 14px;
+  /* border: 1px solid rgba(255, 255, 255, 0.08); */
+  border-radius: 10px;
+  /* background: linear-gradient(180deg, rgba(16, 16, 16, 0.94), rgba(9, 9, 9, 0.98)); */
+}
+
+.profiloplysninger-form-header {
+  margin-bottom: 10px;
+}
+
+.profiloplysninger-form-kicker {
+  margin: 0;
+  color: #ffd7ae;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.62rem;
+}
+
+.profiloplysninger-form-title {
+  margin: 6px 0 0;
+  font-size: 1.02rem;
+  font-weight: 500;
+  color: #f7f7f7;
+}
+
+.profiloplysninger-upload-button.MuiButton-root {
+  margin-bottom: 6px;
+  justify-content: flex-start;
+  color: #d5d5d5;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+  padding: 10px 12px;
+}
+
+.profiloplysninger-form .MuiOutlinedInput-root {
+  border-radius: 3px !important;
+  background: none !important;
+}
+
+.profiloplysninger-upload-button.MuiButton-root:hover {
+  border-color: rgba(255, 215, 174, 0.45);
+  background: rgba(255, 215, 174, 0.06);
+}
+
+.profiloplysninger-save-button.MuiButton-root {
+  margin-top: 8px;
+  justify-content: flex-start;
+  /* border-radius: 10px; */
+  background: transparent;
+  color: #f8efe4;
+  border: 1px solid rgba(255, 215, 174, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+  padding: 10px 12px;
+}
+
+.profiloplysninger-save-button.MuiButton-root:hover {
+  background: rgba(255, 215, 174, 0.22);
+  border-color: rgba(255, 215, 174, 0.58);
+}
+
+.profiloplysninger-save-button.MuiButton-root.Mui-disabled {
+  color: rgba(255, 255, 255, 0.45);
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.profiloplysninger-alert {
+  margin-top: 10px;
 }
 
 @media (min-width: 900px) {
@@ -32,6 +104,14 @@
     column-gap: 16px;
     align-items: start;
     justify-items: stretch;
+  }
+
+  .profiloplysninger-image-wrap {
+    display: none;
+  }
+
+  .profiloplysninger-form {
+    padding: 18px;
   }
 }
 

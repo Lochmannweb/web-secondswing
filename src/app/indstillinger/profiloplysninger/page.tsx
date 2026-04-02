@@ -21,21 +21,33 @@ export default function Profiloplysninger() {
   const router = useRouter()
 
   const inputStyle = {
-    "& .MuiOutlinedInput-root": {
-      color: "white",
-      "& fieldset": { borderColor: "none" },
-      "&:hover fieldset": { borderColor: "none" },
-      "&.Mui-focused fieldset": { borderColor: "none" },
+    "& .MuiInputBase-input": {
+      color: "#f1f1f1",
+      fontSize: "0.9rem",
+      letterSpacing: "0.01em",
     },
-    "& .MuiInputLabel-root": { color: "white" },
-    "& .MuiInputLabel-root.Mui-focused": { color: "white" },
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "10px",
+      backgroundColor: "rgba(255, 255, 255, 0.015)",
+      "& fieldset": { borderColor: "rgba(255, 255, 255, 0.12)" },
+      "&:hover fieldset": { borderColor: "rgba(255, 215, 174, 0.35)" },
+      "&.Mui-focused fieldset": { borderColor: "rgba(255, 215, 174, 0.55)" },
+    },
+    "& .MuiInputLabel-root": {
+      color: "#b8b8b8",
+      fontSize: "0.74rem",
+      letterSpacing: "0.08em",
+      textTransform: "uppercase",
+    },
+    "& .MuiInputLabel-root.Mui-focused": { color: "#ffd7ae" },
   }
-  
 
-  // Hent profilens avatar_url når siden loader
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser()
       if (userError || !user) return
 
       setEmail(user.email ?? "")
@@ -52,7 +64,10 @@ export default function Profiloplysninger() {
 
       if (!error && data?.avatar_url) {
         setImagePreview(data.avatar_url)
-        if (data.display_name) setDisplayName(data.display_name)
+      }
+
+      if (!error && data?.display_name) {
+        setDisplayName(data.display_name)
       }
     }
 
@@ -61,14 +76,14 @@ export default function Profiloplysninger() {
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    if (file) {
-      setImageFile(file)
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string)
-      }
-      reader.readAsDataURL(file)
+    if (!file) return
+
+    setImageFile(file)
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setImagePreview((e.target?.result as string) || "/placeholderprofile.jpg")
     }
+    reader.readAsDataURL(file)
   }
 
   const uploadImage = async (file: File): Promise<string> => {
@@ -76,35 +91,36 @@ export default function Profiloplysninger() {
     const fileName = `${Date.now()}.${fileExt}`
 
     const { error: uploadError } = await supabase.storage.from("avatars").upload(fileName, file)
-    if (uploadError) throw new Error(`Kunne ikke uploade billede: ${uploadError.message}`)
+    if (uploadError) {
+      throw new Error(`Kunne ikke uploade billede: ${uploadError.message}`)
+    }
 
     const { data } = supabase.storage.from("avatars").getPublicUrl(fileName)
-    if (!data?.publicUrl) throw new Error("Kunne ikke generere offentlig URL for billedet")
+    if (!data?.publicUrl) {
+      throw new Error("Kunne ikke generere offentlig URL for billedet")
+    }
+
     return data.publicUrl
   }
 
   const handleSubmit = async () => {
-    setLoading(true);
-    setMessage(null);
+    setLoading(true)
+    setMessage(null)
 
     try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError || !user) throw new Error("Du skal være logget ind");
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser()
 
-      let newAvatarUrl = imagePreview; 
-
-      // Hvis der er valgt nyt billede → upload
-      if (imageFile) {
-        newAvatarUrl = await uploadImage(imageFile);
+      if (userError || !user) {
+        throw new Error("Du skal være logget ind")
       }
 
-      // Opdater ALT hvad der er ændret
-      // const updates = {
-      //   id: user.id,
-      //   avatar_url: newAvatarUrl,
-      //   display_name: displayName,
-      //   updated_at: new Date(),
-      // };
+      let newAvatarUrl = imagePreview
+      if (imageFile) {
+        newAvatarUrl = await uploadImage(imageFile)
+      }
 
       const { error: updateError } = await supabase
         .from("profiles")
@@ -113,9 +129,11 @@ export default function Profiloplysninger() {
           display_name: displayName.trim(),
           updated_at: new Date(),
         })
-        .eq("id", user.id);
+        .eq("id", user.id)
 
-      if (updateError) throw new Error(updateError.message);
+      if (updateError) {
+        throw new Error(updateError.message)
+      }
 
       const authUpdates: {
         email?: string
@@ -135,26 +153,25 @@ export default function Profiloplysninger() {
       }
 
       const { error: authUpdateError } = await supabase.auth.updateUser(authUpdates)
-      if (authUpdateError) throw new Error(authUpdateError.message)
+      if (authUpdateError) {
+        throw new Error(authUpdateError.message)
+      }
 
-      setImagePreview(newAvatarUrl);
-      setImageFile(null);
+      setImagePreview(newAvatarUrl)
+      setImageFile(null)
       setOriginalEmail(email.trim())
-
-      setMessage({ type: "success", text: "Profil opdateret!" });
+      setMessage({ type: "success", text: "Profil opdateret" })
       router.refresh()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setMessage({ type: "error", text: err.message || "Der opstod en fejl" });
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Der opstod en fejl"
+      setMessage({ type: "error", text: errorMessage })
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-
-  // opdater kvalitet på google profil billede, da googles opløsning af billeder er ekstrem lort
   function upgradeGoogleAvatar(url: string) {
-    return url.replace(/=s\d+-c$/, "=s512-c");
+    return url.replace(/=s\d+-c$/, "=s512-c")
   }
 
   return (
@@ -167,38 +184,37 @@ export default function Profiloplysninger() {
     >
       <Box className="profiloplysninger-image-wrap">
         <Image
-            src={upgradeGoogleAvatar(imagePreview)}
-            alt="Profil preview"
-            width={500}
-            height={500}
-            className="profiloplysninger-image"
-            style={{ 
-                width: "100%",
-                height: "auto",
-                borderRadius: "0.3rem",
-            }}
-            priority
+          src={upgradeGoogleAvatar(imagePreview)}
+          alt="Profil preview"
+          width={500}
+          height={500}
+          className="profiloplysninger-image"
+          style={{
+            width: "100%",
+            height: "auto",
+            borderRadius: "0.45rem",
+          }}
+          priority
         />
       </Box>
 
-      <Box className="profiloplysninger-form" sx={{ borderRadius: "0.3rem" }}>
-        <Button 
-            variant="outlined" 
-            component="label"
-            fullWidth 
-            sx={{ 
-                color: "gray",
-                border: "none",
-                justifyContent: "left",
-                "&:hover": {
-                    backgroundColor: "#0b0b0bc3",
-                }
-            }}>
-              Skift profil billede
-            <input type="file" hidden accept="image/*" onChange={handleImageChange} />
+      <Box className="profiloplysninger-form">
+        <Box className="profiloplysninger-form-header">
+          <p className="profiloplysninger-form-kicker">Rediger profil</p>
+          <h3 className="profiloplysninger-form-title">Dine oplysninger</h3>
+        </Box>
+
+        <Button
+          variant="outlined"
+          component="label"
+          fullWidth
+          className="profiloplysninger-upload-button"
+        >
+          Vælg nyt billede
+          <input type="file" hidden accept="image/*" onChange={handleImageChange} />
         </Button>
 
-        <TextField 
+        <TextField
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
           fullWidth
@@ -243,30 +259,25 @@ export default function Profiloplysninger() {
           label="Om mig"
           margin="dense"
           multiline
-          minRows={3}
+          minRows={4}
         />
 
         <Button
-            variant="contained"
-            fullWidth
-            onClick={handleSubmit}
-            disabled={loading}
-            sx={{
-              backgroundColor: "transparent",
-              justifyContent: "left",
-              color: "gray",
-              "&:hover": {
-                backgroundColor: "#0b0b0bc3",
-              }
-            }}
+          variant="contained"
+          fullWidth
+          className="profiloplysninger-save-button"
+          onClick={handleSubmit}
+          disabled={loading}
         >
-            {loading ? "Gemmer..." : "Gem ændringer"}
+          {loading ? "Gemmer..." : "Gem ændringer"}
         </Button>
 
-        {message && <Alert severity={message.type}>{message.text}</Alert>}
+        {message && (
+          <Alert severity={message.type} className="profiloplysninger-alert">
+            {message.text}
+          </Alert>
+        )}
       </Box>
     </Box>
   )
 }
-
-
