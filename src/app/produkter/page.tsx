@@ -3,6 +3,8 @@
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress, Grid, Divider, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import Link from "next/link"
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore"
+import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { deleteProduct } from "../lib/crud"
 import { getProductListMeta } from "@/app/lib/productDisplay"
@@ -31,6 +33,7 @@ interface Product {
 }
 
 export default function ProdukterPage() {
+  const router = useRouter()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -98,6 +101,15 @@ export default function ProdukterPage() {
     }
   }
 
+  const handleBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back()
+      return
+    }
+
+    router.push("/profile")
+  }
+
 
 
 
@@ -151,20 +163,30 @@ export default function ProdukterPage() {
         </DialogActions>
       </Dialog>
 
-      <Box className="produkter-page-header">
-        <Typography variant="overline" className="produkter-page-kicker">
-          Alle produkter
-        </Typography>
-        <Typography variant="h3" className="produkter-page-title">
-          Dine opslag samlet i samme overblik.
-        </Typography>
-        <Typography className="produkter-page-description">
-          Rediger eller slet dine produkter fra et enkelt sted, med samme layout som shoppen.
-        </Typography>
-      </Box>
-
       <Box className="produkter-page-layout">
         <Box className="produkter-page-sidebar">
+          <Box className="produkter-back-row">
+            <Button
+              className="produkter-back-button"
+              onClick={handleBack}
+              startIcon={<NavigateBeforeIcon />}
+            >
+              Tilbage
+            </Button>
+          </Box>
+
+          <Box className="produkter-page-header">
+            <Typography variant="overline" className="produkter-page-kicker">
+              Alle produkter
+            </Typography>
+            <Typography variant="h3" className="produkter-page-title">
+              Dine opslag samlet i samme overblik.
+            </Typography>
+            <Typography className="produkter-page-description">
+              Rediger eller slet dine produkter fra et enkelt sted, med samme layout som shoppen.
+            </Typography>
+          </Box>
+
           <Box className="produkter-side-card">
             <Typography variant="overline" className="produkter-side-label">
               Status

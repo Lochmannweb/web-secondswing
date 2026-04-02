@@ -203,19 +203,20 @@ export default function ShopPage() {
 
   return (
     <Box className={"shop-page"}>
-      <Box className="shop-page-header">
-        <Typography variant="overline" className="shop-page-kicker">
-          Shop
-        </Typography>
-        <Typography variant="h3" className="shop-page-title">
-          Brugt golfudstyr klar til næste runde.
-        </Typography>
-        {/* <Typography className="shop-page-description">
-          Brugt golfudstyr, klar til næste runde.
-        </Typography> */}
-      </Box>
       <Box className="shop-page-layout">
         <Box className="shop-page-sidebar">
+          <Box className="shop-page-header">
+            <Typography variant="overline" className="shop-page-kicker">
+              Shop
+            </Typography>
+            <Typography variant="h3" className="shop-page-title">
+              Brugt golfudstyr klar til næste runde.
+            </Typography>
+            {/* <Typography className="shop-page-description">
+              Brugt golfudstyr, klar til næste runde.
+            </Typography> */}
+          </Box>
+
           <Box className="shop-mobile-search-row">
             <Box className="shop-mobile-search-grow">
               <SearchBar onSearch={handleSearch} />

@@ -2,6 +2,34 @@
   color: #ffb8c4;
 }
 
+.favoriter-back-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 0.5rem;
+}
+/* @media (max-width: 599px) {
+  .favoriter-back-row {
+    display: none;
+  }
+} */
+
+.favoriter-back-button.MuiButton-root {
+  color: #d6d6d6;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  min-width: auto;
+}
+
+.favoriter-back-button.MuiButton-root:hover {
+  border-color: rgba(255, 184, 196, 0.45);
+  background: rgba(255, 184, 196, 0.08);
+  color: #ffffff;
+}
+
 .favoriter-login-alert.MuiAlert-root {
   background-color: #070707 !important;
   color: #fff !important;
@@ -22,4 +50,21 @@
 .favorit-remove-button.MuiIconButton-root:hover {
   color: #ff95ab;
   background: rgba(255, 120, 147, 0.2);
+}
+
+@media (min-width: 980px) {
+  .favoriter-page .shop-page-products {
+    width: 100%;
+  }
+
+  .favoriter-page .shop-product-grid.MuiGrid-container {
+    justify-content: flex-start;
+    column-gap: 0.85rem;
+    row-gap: 1rem;
+  }
+
+  .favoriter-page .shop-product-grid-item {
+    max-width: 290px;
+    flex-basis: 290px !important;
+  }
 }

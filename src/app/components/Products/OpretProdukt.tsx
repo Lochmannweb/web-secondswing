@@ -14,7 +14,7 @@ import {
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import type React from "react"
 import { useEffect, useMemo, useState } from "react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   Alert,
   Box,
@@ -34,6 +34,7 @@ import "./opretProdukt.css"
 
 export default function CreateProduct() {
   const router = useRouter()
+  const pathname = usePathname()
   const supabase = getSupabaseClient()
 
   const [form, setForm] = useState<ProductFormState>(() => createEmptyProductForm())
@@ -132,6 +133,15 @@ export default function CreateProduct() {
 
   const goToNextPreview = () => {
     setActivePreviewIndex((prev) => (prev === imagePreviews.length - 1 ? 0 : prev + 1))
+  }
+
+  const handleBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back()
+      return
+    }
+
+    router.push("/profile")
   }
 
   async function signInWithGoogle() {
@@ -347,6 +357,18 @@ export default function CreateProduct() {
       </Box>
 
       <Box className="opret-fields">
+        {pathname === "/opretProdukt" ? (
+          <Box className="opret-back-row">
+            <Button
+              className="opret-back-button"
+              onClick={handleBack}
+              startIcon={<NavigateBeforeIcon />}
+            >
+              Tilbage
+            </Button>
+          </Box>
+        ) : null}
+
         <FormControl fullWidth required className="opret-select-field">
           {useNativeSelect ? (
             <>
