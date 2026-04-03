@@ -64,7 +64,7 @@
   }
 
   .favoriter-page .shop-product-grid-item {
-    max-width: 290px;
-    flex-basis: 290px !important;
+    max-width: 145px;
+    flex-basis: 145px !important;
   }
 }

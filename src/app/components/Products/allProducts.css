@@ -38,13 +38,13 @@
 }
 
 .produkter-back-button.MuiButton-root {
-  color: #d6d6d6;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffd7ae !important;
+  /* border: 1px solid rgba(255, 255, 255, 0.18); */
   border-radius: 6px;
   font-size: 0.62rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 6px 10px;
+  padding:  0;
   min-width: auto;
 }
 
@@ -104,9 +104,9 @@
 
 .produkter-side-card {
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  background: linear-gradient(180deg, rgba(18, 18, 18, 0.9), rgba(10, 10, 10, 0.88));
-  padding: 14px;
+  border-radius: 3px;
+  /* background: linear-gradient(180deg, rgba(18, 18, 18, 0.9), rgba(10, 10, 10, 0.88)); */
+  padding: 5px;
 }
 
 .produkter-side-label {
@@ -214,7 +214,7 @@
 }
 
 .produkter-card-title {
-  font-size: 0.94rem !important;
+  font-size: 12px !important;
   font-weight: 300 !important;
   color: #fff;
   line-height: 1.2;
@@ -253,9 +253,9 @@
 
 .produkter-card-price {
   margin-top: 0.1rem;
-  color: #fff !important;
-  font-weight: 700 !important;
-  font-size: 1rem !important;
+  color: #aeaeae !important;
+  font-weight: 100 !important;
+  font-size: xx-small !important;
 }
 
 .produkter-actions {
@@ -263,9 +263,9 @@
 }
 
 .produkter-action-button.MuiButton-root {
-  min-height: 30px;
+  max-height: 20px;
   border: 1px solid rgba(255, 255, 255, 0.45);
-  border-radius: 5px;
+  border-radius: 3px;
   color: #fff;
   font-size: 0.58rem;
   letter-spacing: 0.08em;
@@ -276,8 +276,6 @@
 
 .produkter-action-button.MuiButton-root:hover {
   color: #fff;
-  border-color: #1f5a1f;
-  background: rgba(31, 90, 31, 0.3);
 }
 
 .produkter-action-button.delete.MuiButton-root:hover {
@@ -369,7 +367,7 @@
   }
 
   .produkter-grid-item {
-    max-width: 290px;
-    flex-basis: 290px !important;
+    max-width: 145px;
+    flex-basis: 145px !important;
   }
 }

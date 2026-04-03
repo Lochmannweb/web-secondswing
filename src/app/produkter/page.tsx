@@ -7,7 +7,6 @@ import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { deleteProduct } from "../lib/crud"
-import { getProductListMeta } from "@/app/lib/productDisplay"
 import "../components/Products/allProducts.css"
 
 
@@ -172,12 +171,12 @@ export default function ProdukterPage() {
             >
               <NavigateBeforeIcon />
             </Button>
-          </Box>
-
-          <Box className="produkter-page-header">
             <Typography variant="overline" className="produkter-page-kicker">
               Alle produkter
             </Typography>
+          </Box>
+
+          <Box className="produkter-page-header">
             <Typography variant="h3" className="produkter-page-title">
               Dine opslag samlet i samme overblik.
             </Typography>
@@ -193,10 +192,6 @@ export default function ProdukterPage() {
             <Typography className="produkter-side-value">
               {products.length} aktive produkter
             </Typography>
-            <Divider className="produkter-divider" />
-            <Typography className="produkter-side-text">
-              Klik på Rediger for at opdatere et opslag eller Slet for at fjerne det helt.
-            </Typography>
           </Box>
         </Box>
 
@@ -206,8 +201,6 @@ export default function ProdukterPage() {
           ) : (
             <Grid container spacing={2} className="produkter-grid">
               {products.map((product) => {
-                const meta = getProductListMeta(product)
-
                 return (
                 <Grid key={product.id} size={{ xs: 6, sm: 6, md: 3 }} className="produkter-grid-item">
                   <Card className="produkter-card">
@@ -222,17 +215,11 @@ export default function ProdukterPage() {
                       )}
                       <Box className="produkter-card-overlay">
                         <Typography className="produkter-card-title" component="h2">{product.title}</Typography>
-                        {meta.length > 0 && (
-                          <Typography variant="caption" className="produkter-card-meta-line">{meta.join(" • ")}</Typography>
-                        )}
-                        {product.description && (
-                          <Typography variant="body2" className="produkter-card-desc">{product.description}</Typography>
-                        )}
                         {product.price !== null && (
                           <Typography className="produkter-card-price">{product.price.toFixed(2)} DKK</Typography>
                         )}
                         <Box className="produkter-actions">
-                          <Button 
+                          <Button
                             component={Link}
                             href={`/edit/${product.id}`}
                             className="produkter-action-button">
