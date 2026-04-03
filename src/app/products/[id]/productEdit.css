@@ -283,6 +283,10 @@
   transition: border-color 0.25s ease;
 }
 
+.product-chat-button {
+  margin-bottom: 0.65rem;
+}
+
 .product-action-button::before {
   content: "";
   position: absolute;

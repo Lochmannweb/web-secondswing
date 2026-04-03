@@ -169,9 +169,8 @@ export default function ProdukterPage() {
             <Button
               className="produkter-back-button"
               onClick={handleBack}
-              startIcon={<NavigateBeforeIcon />}
             >
-              Tilbage
+              <NavigateBeforeIcon />
             </Button>
           </Box>
 

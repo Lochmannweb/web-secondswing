@@ -107,6 +107,9 @@ function HeaderMenu() {
                             <Link href="/favoriter" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
                                 FAVORITTER
                             </Link>
+                            <Link href="/chats" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
+                                CHAT HISTORIK
+                            </Link>
                             <Link href="/profile" className="header-drawer-link" onClick={() => setDrawerOpen(false)}>
                                 PROFIL
                             </Link>

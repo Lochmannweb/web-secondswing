@@ -362,9 +362,8 @@ export default function CreateProduct() {
             <Button
               className="opret-back-button"
               onClick={handleBack}
-              startIcon={<NavigateBeforeIcon />}
             >
-              Tilbage
+              <NavigateBeforeIcon />
             </Button>
           </Box>
         ) : null}

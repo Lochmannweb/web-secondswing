@@ -31,7 +31,6 @@ export default function PrivatlivPage() {
       <Box sx={{ display: { xs: "flex", sm: "none" }, mb: 1 }}>
         <Button
           onClick={handleBack}
-          startIcon={<NavigateBeforeIcon />}
           sx={{
             color: "#d6d6d6",
             border: "1px solid rgba(255, 255, 255, 0.18)",
@@ -44,7 +43,7 @@ export default function PrivatlivPage() {
             minWidth: "auto",
           }}
         >
-          Tilbage
+          <NavigateBeforeIcon />
         </Button>
       </Box>
 
