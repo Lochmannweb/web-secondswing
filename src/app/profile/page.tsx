@@ -35,7 +35,7 @@ export default function ProfilePage() {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 599
   const menuItems = [
     { key: 'fav', label: 'Favoriter', link: '/favoriter' },
-    // { key: 'messages', label: 'Beskeder', link: '/chats' },
+    { key: 'messages', label: 'Beskeder', link: '/chats' },
     { key: 'myProducts', label: 'Mine produkter', link: '/produkter' },
     { key: 'createProduct', label: 'Sælg nyt udstyr', link: '/opretProdukt' },
     { key: 'editProfile', label: 'Rediger profil', link: '/indstillinger/profiloplysninger' },
@@ -232,7 +232,7 @@ export default function ProfilePage() {
                     className={`profile-action-button${activeSection === item.key ? ' is-active' : ''}`}
                     onClick={() => handleNavigation(item.key, item.link)}
                   >
-                    {item.key === "messages" ? (
+                    {String(item.key) === "messages" ? (
                       <Badge
                         color="error"
                         badgeContent={unreadMessageCount}
