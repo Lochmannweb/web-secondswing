@@ -319,15 +319,7 @@ export default function ProductPage() {
     <Box className="product-page">
       <Box className="product-image-wrapper">
         {productImages.length > 0 && (
-          <Box
-            className="product-image-slider"
-            onPointerDown={onImagePointerDown}
-            onPointerUp={onImagePointerUp}
-            onPointerCancel={resetImageSwipe}
-            onTouchStart={onImageTouchStart}
-            onTouchEnd={onImageTouchEnd}
-            onTouchCancel={resetImageSwipe}
-          >
+          <Box className="product-image-slider">
             <Box
               className="product-image-track"
               sx={{ transform: `translateX(-${activeImageIndex * 100}%)` }}
@@ -343,40 +335,46 @@ export default function ProductPage() {
                 </Box>
               ))}
             </Box>
-
-            {productImages.length > 1 && (
-              <>
-                <Button
-                  className="product-image-nav prev"
-                  onClick={() => setActiveImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1))}
-                >
-                  ←
-                </Button>
-                <Button
-                  className="product-image-nav next"
-                  onClick={() => setActiveImageIndex((prev) => (prev === productImages.length - 1 ? 0 : prev + 1))}
-                >
-                  →
-                </Button>
-                {/* <p className="product-image-swipe-hint">Slide mod hojre for flere billeder</p> */}
-              </>
-            )}
           </Box>
         )}
       </Box>
 
-      <Box className="product-details">
+      <Box
+        className="product-scroll-spacer"
+        onPointerDown={onImagePointerDown}
+        onPointerUp={onImagePointerUp}
+        onPointerCancel={resetImageSwipe}
+        onTouchStart={onImageTouchStart}
+        onTouchEnd={onImageTouchEnd}
+        onTouchCancel={resetImageSwipe}
+      >
         {productImages.length > 1 && (
-          <Box className="product-top-dots">
-            {productImages.map((_, index) => (
-              <span
-                key={`product-image-dot-${index}`}
-                className={`product-image-dot${index === activeImageIndex ? " active" : ""}`}
-              />
-            ))}
-          </Box>
+          <>
+            {/* <Button
+              className="product-image-nav prev"
+              onClick={() => setActiveImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1))}
+            >
+              ←
+            </Button>
+            <Button
+              className="product-image-nav next"
+              onClick={() => setActiveImageIndex((prev) => (prev === productImages.length - 1 ? 0 : prev + 1))}
+            >
+              →
+            </Button> */}
+            <Box className="product-top-dots">
+              {productImages.map((_, index) => (
+                <span
+                  key={`product-image-dot-${index}`}
+                  className={`product-image-dot${index === activeImageIndex ? " active" : ""}`}
+                />
+              ))}
+            </Box>
+          </>
         )}
+      </Box>
 
+      <Box className="product-details">
         <Box className="product-card">
           <Box className="product-card-content-top">
             <Box>
