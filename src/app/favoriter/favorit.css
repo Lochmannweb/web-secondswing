@@ -15,7 +15,7 @@
 
 .favoriter-back-button.MuiButton-root {
   color: #d6d6d6;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: none !important;
   border-radius: 6px;
   font-size: 0.62rem;
   letter-spacing: 0.08em;
@@ -33,7 +33,7 @@
 .favoriter-login-alert.MuiAlert-root {
   background-color: #070707 !important;
   color: #fff !important;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  /* border: 1px solid rgba(255, 255, 255, 0.12); */
   border-radius: 6px;
   margin: 92px 16px 0;
 }

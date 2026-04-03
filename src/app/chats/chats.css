@@ -29,8 +29,9 @@
 }
 
 .chats-list-panel {
-  padding: 0.8rem 0.9rem;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 13px !important;
+  position: absolute;
+  /* border-right: 1px solid rgba(255, 255, 255, 0.1); */
 }
 
 .chats-panel-title {
@@ -318,6 +319,9 @@
     .chats-messages-list {
         max-height: 80vh;
     }
+     .chats-list-panel {
+        position: relative;
+     }
 
     .chats-message-time {
     font-size: 10px !important;
