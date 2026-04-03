@@ -6,7 +6,7 @@ import { Box, Button, IconButton } from "@mui/material"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
 import Image from "next/image"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type TouchEvent } from "react"
 import "./productEdit.css"
 
@@ -33,6 +33,7 @@ interface Product {
 
 export default function ProductPage() {
   const params = useParams()
+  const router = useRouter()
   const produktId = params.id as string | undefined
   const supabase = getSupabaseClient()
 
@@ -41,6 +42,7 @@ export default function ProductPage() {
   const [error, setError] = useState<string | null>(null)
   const [viewerId, setViewerId] = useState<string | null>(null)
   const [isFavorite, setIsFavorite] = useState(false)
+  const [isCreatingChat, setIsCreatingChat] = useState(false)
   const [slideX, setSlideX] = useState(0)
   const [productImages, setProductImages] = useState<string[]>([])
   const [activeImageIndex, setActiveImageIndex] = useState(0)
@@ -183,6 +185,54 @@ export default function ProductPage() {
     }
 
     setIsFavorite(true)
+  }
+
+  const openOrCreateChat = async () => {
+    if (!viewerId) {
+      await handleGoogleLogin()
+      return
+    }
+
+    if (!product || viewerId === product.user_id) {
+      return
+    }
+
+    setIsCreatingChat(true)
+
+    try {
+      const { data: existingChats, error: existingError } = await supabase
+        .from("chats")
+        .select("id")
+        .or(`and(buyer_id.eq.${viewerId},seller_id.eq.${product.user_id}),and(buyer_id.eq.${product.user_id},seller_id.eq.${viewerId})`)
+        .limit(1)
+
+      if (existingError) {
+        throw new Error(existingError.message)
+      }
+
+      const existingChatId = existingChats?.[0]?.id
+      if (existingChatId) {
+        router.push(`/chats?chatId=${existingChatId}`)
+        return
+      }
+
+      const { data: insertedChat, error: insertError } = await supabase
+        .from("chats")
+        .insert([{ buyer_id: viewerId, seller_id: product.user_id }])
+        .select("id")
+        .single()
+
+      if (insertError || !insertedChat?.id) {
+        throw new Error(insertError?.message ?? "Kunne ikke oprette samtale")
+      }
+
+      router.push(`/chats?chatId=${insertedChat.id}`)
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Kunne ikke starte samtale"
+      setError(msg)
+    } finally {
+      setIsCreatingChat(false)
+    }
   }
 
   const onHeartPointerDown = (event: PointerEvent<HTMLButtonElement>) => {
@@ -400,40 +450,52 @@ export default function ProductPage() {
             >
               {product.sold ? "Markér som ledig igen" : "Markér som solgt"}
             </Button>
-          ) : viewerId ? (
-            <Box
-              ref={sliderRef}
-              className={`product-purchase-slider${product.sold ? " sold" : ""}${slideX > 0 ? " slide-active" : ""}`}
-              style={sliderStyle}
-            >
-              <IconButton
-                onClick={onFavoriteClick}
-                onPointerDown={onHeartPointerDown}
-                onPointerMove={onHeartPointerMove}
-                onPointerUp={onHeartPointerUp}
-                onPointerCancel={onHeartPointerUp}
-                className={`product-favorite-button${isFavorite ? " active" : ""}`}
-                aria-label={isFavorite ? "Fjern fra favoritter" : "Gem som favorit"}
-                sx={{ transform: `translateX(${slideX}px)` }}
-              >
-                {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-              </IconButton>
-
-              {!product.sold && (
-                <p className="product-slide-hint" aria-hidden>
-                  Klar til et Second Swing! <span>»»</span>
-                </p>
-              )}
-
-              <p className="product-purchase-label">{product.sold ? "Solgt" : "Køb"}</p>
-            </Box>
           ) : (
-            <Button
-              onClick={handleGoogleLogin}
-              className="product-action-button"
-            >
-              Log ind for at gemme favorit
-            </Button>
+            <>
+              <Button
+                onClick={openOrCreateChat}
+                className="product-action-button product-chat-button"
+                disabled={isCreatingChat}
+              >
+                {viewerId ? (isCreatingChat ? "Åbner chat..." : "Skriv til sælger") : "Log ind for at skrive til sælger"}
+              </Button>
+
+              {viewerId ? (
+                <Box
+                  ref={sliderRef}
+                  className={`product-purchase-slider${product.sold ? " sold" : ""}${slideX > 0 ? " slide-active" : ""}`}
+                  style={sliderStyle}
+                >
+                  <IconButton
+                    onClick={onFavoriteClick}
+                    onPointerDown={onHeartPointerDown}
+                    onPointerMove={onHeartPointerMove}
+                    onPointerUp={onHeartPointerUp}
+                    onPointerCancel={onHeartPointerUp}
+                    className={`product-favorite-button${isFavorite ? " active" : ""}`}
+                    aria-label={isFavorite ? "Fjern fra favoritter" : "Gem som favorit"}
+                    sx={{ transform: `translateX(${slideX}px)` }}
+                  >
+                    {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                  </IconButton>
+
+                  {!product.sold && (
+                    <p className="product-slide-hint" aria-hidden>
+                      Klar til et Second Swing! <span>»»</span>
+                    </p>
+                  )}
+
+                  <p className="product-purchase-label">{product.sold ? "Solgt" : "Køb"}</p>
+                </Box>
+              ) : (
+                <Button
+                  onClick={handleGoogleLogin}
+                  className="product-action-button"
+                >
+                  Log ind for at gemme favorit
+                </Button>
+              )}
+            </>
           )}
         </Box>
       </Box>

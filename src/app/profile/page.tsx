@@ -1,9 +1,9 @@
 'use client'
 
 import { getSupabaseClient } from '@/app/lib/supabaseClient'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Box, Button } from '@mui/material'
+import { Badge, Box, Button } from '@mui/material'
 import Image from 'next/image'
 import Profiloplysninger from '../indstillinger/profiloplysninger/page'
 import OpretProdukt from '../components/Products/OpretProdukt'
@@ -28,12 +28,14 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [needsLogin, setNeedsLogin] = useState(false)
-  const supabase = getSupabaseClient()  
+  const [unreadMessageCount, setUnreadMessageCount] = useState(0)
+  const supabase = useMemo(() => getSupabaseClient(), [])
 
   const [activeSection, setActiveSection] = useState<string>("editProfile")
   const isMobile = typeof window !== "undefined" && window.innerWidth < 599
   const menuItems = [
     { key: 'fav', label: 'Favoriter', link: '/favoriter' },
+    { key: 'messages', label: 'Beskeder', link: '/chats' },
     { key: 'myProducts', label: 'Mine produkter', link: '/produkter' },
     { key: 'createProduct', label: 'Sælg nyt udstyr', link: '/opretProdukt' },
     { key: 'editProfile', label: 'Rediger profil', link: '/indstillinger/profiloplysninger' },
@@ -49,10 +51,72 @@ export default function ProfilePage() {
     }
   }, [searchParams])
 
+  useEffect(() => {
+    let isMounted = true
+
+    const loadUnreadCount = async () => {
+      const { data: userData } = await supabase.auth.getUser()
+      const currentUserId = userData.user?.id
+
+      if (!currentUserId) {
+        if (isMounted) {
+          setUnreadMessageCount(0)
+        }
+        return
+      }
+
+      const { count } = await supabase
+        .from("messages")
+        .select("id", { count: "exact", head: true })
+        .eq("receiver_id", currentUserId)
+        .is("read_at", null)
+
+      if (isMounted) {
+        setUnreadMessageCount(count ?? 0)
+      }
+    }
+
+    loadUnreadCount()
+
+    const syncUnreadCount = async () => {
+      await loadUnreadCount()
+    }
+
+    const channelPromise = supabase.auth.getUser().then(({ data }) => {
+      const currentUserId = data.user?.id
+      if (!currentUserId) {
+        return null
+      }
+
+      return supabase
+        .channel(`profile-unread-${currentUserId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "messages",
+            filter: `receiver_id=eq.${currentUserId}`,
+          },
+          syncUnreadCount
+        )
+        .subscribe()
+    })
+
+    return () => {
+      isMounted = false
+      channelPromise.then((channel) => {
+        if (channel) {
+          supabase.removeChannel(channel)
+        }
+      })
+    }
+  }, [supabase])
+
 
   // funktion der skifter mellem indhold eller links
   const handleNavigation = (target: string, link: string) => {
-    if (target === "createProduct" || target === "myProducts" || target === "fav") {
+    if (target === "createProduct" || target === "myProducts" || target === "fav" || target === "messages") {
       router.push(link)
       return
     }
@@ -168,7 +232,16 @@ export default function ProfilePage() {
                     className={`profile-action-button${activeSection === item.key ? ' is-active' : ''}`}
                     onClick={() => handleNavigation(item.key, item.link)}
                   >
-                    {item.label}
+                    {String(item.key) === "messages" ? (
+                      <Badge
+                        color="error"
+                        badgeContent={unreadMessageCount}
+                        max={99}
+                        invisible={unreadMessageCount === 0}
+                      >
+                        {item.label}
+                      </Badge>
+                    ) : item.label}
                   </Button>
                 ))}
 

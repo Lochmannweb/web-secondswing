@@ -68,7 +68,7 @@ const nextConfig = {
               "worker-src 'self' blob:",
 
               "style-src 'self' 'unsafe-inline'",
-              "connect-src 'self' https://*.supabase.co https://accounts.google.com https://oauth2.googleapis.com",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://accounts.google.com https://oauth2.googleapis.com",
               "img-src 'self' data: blob: https://*.supabase.co https://lh3.googleusercontent.com",
               "font-src 'self'",
               "frame-src https://accounts.google.com",

@@ -266,9 +266,8 @@ export default function Favoriter() {
             <Button
               className="favoriter-back-button"
               onClick={handleBack}
-              startIcon={<NavigateBeforeIcon />}
             >
-              Tilbage
+              <NavigateBeforeIcon />
             </Button>
           </Box>
 
