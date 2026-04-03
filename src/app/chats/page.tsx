@@ -93,6 +93,11 @@ export default function ChatsPage() {
   }
 
   const goBackToChatList = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back()
+      return
+    }
+
     setActiveChatId(null)
     router.replace("/chats")
   }

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   CLOTHING_SIZE_OPTIONS,
   COLOR_OPTIONS,
@@ -14,6 +15,7 @@ import SearchBar from "@/app/components/Shop/SearchBar"
 import AllProducts from "@/app/components/Products/AllProducts"
 import { Alert, Box, Button, Chip, Drawer, Typography } from "@mui/material"
 import TuneIcon from "@mui/icons-material/Tune"
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore"
 import FilterButtons from "@/app/components/Shop/FilterButtons"
 import type { Filter } from "@/app/utils/filterStyles"
 import "./shop.css"
@@ -58,6 +60,15 @@ export default function ShopPage() {
   const [activeGenders, setActiveGenders] = useState<string[]>([])
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false)
   const supabase = getSupabaseClient()
+  const router = useRouter()
+
+  const handleBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back()
+      return
+    }
+    router.push("/")
+  }
 
 
 
@@ -205,10 +216,15 @@ export default function ShopPage() {
     <Box className={"shop-page"}>
       <Box className="shop-page-layout">
         <Box className="shop-page-sidebar">
-          <Box className="shop-page-header">
+          <Box className="shop-back-row">
+            <Button className="shop-back-button" onClick={handleBack}>
+              <NavigateBeforeIcon />
+            </Button>
             <Typography variant="overline" className="shop-page-kicker">
               Shop
             </Typography>
+          </Box>
+          <Box className="shop-page-header">
             <Typography variant="h3" className="shop-page-title">
               Brugt golfudstyr klar til næste runde.
             </Typography>

@@ -13,7 +13,6 @@ import {
 } from "@mui/material"
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import { getProductListMeta } from "@/app/lib/productDisplay"
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
 
 interface Product {
@@ -112,8 +111,6 @@ const toggleFavorite = async (productId: string) => {
   return (
     <Grid container spacing={2} className="shop-product-grid">
       {products.map((product) => {
-        const meta = getProductListMeta(product)
-
         return (
         <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id} className="shop-product-grid-item">
           <Card className="shop-product-card">
@@ -144,16 +141,6 @@ const toggleFavorite = async (productId: string) => {
                   <Typography component="h2" className="shop-product-title">
                     {product.title}
                   </Typography>
-                  {meta.length > 0 && (
-                    <Typography variant="caption" className="shop-product-meta-line">
-                      {meta.join(" • ")}
-                    </Typography>
-                  )}
-                  {product.description && (
-                    <Typography variant="body2" className="shop-product-description">
-                      {product.description}
-                    </Typography>
-                  )}
                   {product.price && (
                     <Typography className="shop-product-price">
                       {product.price.toFixed(2)} DKK

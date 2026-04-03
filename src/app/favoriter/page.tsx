@@ -29,7 +29,6 @@ import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore"
 import TuneIcon from "@mui/icons-material/Tune"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { getProductListMeta } from "@/app/lib/productDisplay"
 import "../shop/shop.css"
 import "./favorit.css"
 
@@ -269,12 +268,12 @@ export default function Favoriter() {
             >
               <NavigateBeforeIcon />
             </Button>
-          </Box>
-
-          <Box className="shop-page-header">
             <Typography variant="overline" className="shop-page-kicker">
               Favoritter
             </Typography>
+          </Box>
+
+          <Box className="shop-page-header">
             <Typography variant="h3" className="shop-page-title">
               Brugt golfudstyr klar til næste runde.
             </Typography>
@@ -363,8 +362,6 @@ export default function Favoriter() {
           ) : (
             <Grid container spacing={2} className="shop-product-grid">
               {filteredProducts.map((product) => {
-                const meta = getProductListMeta(product)
-
                 return (
                 <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id} className="shop-product-grid-item">
                   <Card className="shop-product-card">
@@ -393,16 +390,6 @@ export default function Favoriter() {
                           <Typography component="h2" className="shop-product-title">
                             {product.title}
                           </Typography>
-                          {meta.length > 0 && (
-                            <Typography variant="caption" className="shop-product-meta-line">
-                              {meta.join(" • ")}
-                            </Typography>
-                          )}
-                          {product.description && (
-                            <Typography variant="body2" className="shop-product-description">
-                              {product.description}
-                            </Typography>
-                          )}
                           {product.price && (
                             <Typography className="shop-product-price">
                               {product.price.toFixed(2)} DKK

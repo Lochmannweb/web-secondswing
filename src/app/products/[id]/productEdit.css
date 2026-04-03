@@ -218,6 +218,21 @@
   z-index: 1;
 }
 
+.product-cta-wrap.MuiBox-root {
+  display: grid;
+  gap: 1rem;
+}
+.product-cta-wrap.MuiBox-root .MuiButtonBase-root {
+  font-size: x-small;
+}
+.product-action-button:before {
+  background-color: #2f2f2f !important;
+}
+.product-action-button:not(.sold):hover {
+  border: none !important;  
+}
+
+
 .product-slide-hint {
   position: absolute;
   left: 50px;
@@ -328,6 +343,10 @@
 
 @media (min-width: 600px) {
   /* ── Desktop: two-column split ── */
+
+  .product-slide-hint {
+    font-size: x-small;
+  }
 
   .product-scroll-spacer {
     display: none;
