@@ -284,7 +284,7 @@ export default function Favoriter() {
 
           <Box className="shop-mobile-search-row">
             <Box className="shop-mobile-search-grow">
-              <SearchBar onSearch={handleSearch} />
+              <SearchBar value={searchQuery} onChange={setSearchQuery} />
             </Box>
             <Button
               className="shop-mobile-filter-trigger"
