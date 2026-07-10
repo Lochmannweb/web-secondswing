@@ -16,7 +16,7 @@
   grid-template-rows: 50vh 50vh;
   height: 100vh;
   overflow: hidden;
-  background-color: #090404;
+  background-color: var(--color-bg);
 }
 
 /* ── Visual — hero image side ───────────────────── */
