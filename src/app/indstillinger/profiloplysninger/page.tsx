@@ -12,6 +12,10 @@ export default function Profiloplysninger() {
   const [email, setEmail] = useState("")
   const [phone, setPhone] = useState("")
   const [location, setLocation] = useState("")
+  const [shippingStreet, setShippingStreet] = useState("")
+  const [shippingPostalCode, setShippingPostalCode] = useState("")
+  const [shippingCity, setShippingCity] = useState("")
+  const [shippingCountry, setShippingCountry] = useState("Danmark")
   const [bio, setBio] = useState("")
   const [originalEmail, setOriginalEmail] = useState("")
   const [imageFile, setImageFile] = useState<File | null>(null)
@@ -55,6 +59,10 @@ export default function Profiloplysninger() {
       setOriginalEmail(user.email ?? "")
       setPhone((user.user_metadata?.phone as string) ?? "")
       setLocation((user.user_metadata?.location as string) ?? "")
+      setShippingStreet((user.user_metadata?.shipping_street as string) ?? "")
+      setShippingPostalCode((user.user_metadata?.shipping_postal_code as string) ?? "")
+      setShippingCity((user.user_metadata?.shipping_city as string) ?? "")
+      setShippingCountry((user.user_metadata?.shipping_country as string) || "Danmark")
       setBio((user.user_metadata?.bio as string) ?? "")
 
       const { data, error } = await supabase
@@ -158,6 +166,11 @@ export default function Profiloplysninger() {
         ...user.user_metadata,
         phone: phone.trim(),
         location: location.trim(),
+        shipping_full_name: displayName.trim(),
+        shipping_street: shippingStreet.trim(),
+        shipping_postal_code: shippingPostalCode.trim(),
+        shipping_city: shippingCity.trim(),
+        shipping_country: shippingCountry.trim(),
         bio: bio.trim(),
         display_name: displayName.trim(),
       }
@@ -277,6 +290,42 @@ export default function Profiloplysninger() {
           fullWidth
           sx={inputStyle}
           label="Lokation"
+          margin="dense"
+        />
+
+        <TextField
+          value={shippingStreet}
+          onChange={(e) => setShippingStreet(e.target.value)}
+          fullWidth
+          sx={inputStyle}
+          label="Leveringsadresse"
+          margin="dense"
+        />
+
+        <TextField
+          value={shippingPostalCode}
+          onChange={(e) => setShippingPostalCode(e.target.value)}
+          fullWidth
+          sx={inputStyle}
+          label="Postnummer"
+          margin="dense"
+        />
+
+        <TextField
+          value={shippingCity}
+          onChange={(e) => setShippingCity(e.target.value)}
+          fullWidth
+          sx={inputStyle}
+          label="By"
+          margin="dense"
+        />
+
+        <TextField
+          value={shippingCountry}
+          onChange={(e) => setShippingCountry(e.target.value)}
+          fullWidth
+          sx={inputStyle}
+          label="Land"
           margin="dense"
         />
 
