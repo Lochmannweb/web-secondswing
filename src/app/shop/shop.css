@@ -1,20 +1,18 @@
 /* Shop page styling */
 
 .shop-page {
-  --shop-bg: #090404;
-  --shop-panel: #0f0f0f;
-  --shop-panel-soft: #141414;
-  --shop-line: rgba(255, 255, 255, 0.1);
-  --shop-text-soft: #c0c0c0;
-  --shop-accent: #ffd7ae;
+  --shop-bg: var(--color-bg);
+  --shop-panel: var(--color-bg);
+  --shop-panel-soft: var(--color-surface-muted);
+  --shop-line: var(--color-border);
+  --shop-text-soft: var(--color-text-muted);
+  --shop-accent: var(--color-text);
 
   position: relative;
   min-height: 100vh;
   padding: 86px 16px 24px;
-  background:
-    radial-gradient(120% 100% at 100% -10%, rgba(255, 215, 174, 0.12), transparent 56%),
-    radial-gradient(100% 100% at -10% 90%, rgba(255, 255, 255, 0.08), transparent 56%),
-    var(--shop-bg);
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 .shop-page::before {
@@ -22,7 +20,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent 180px);
+  background-image: linear-gradient(to bottom, var(--color-surface-muted), transparent 180px);
 }
 
 .shop-back-row {
@@ -32,7 +30,7 @@
 }
 
 .shop-back-button.MuiButton-root {
-  color: #ffd7ae !important;
+  color: var(--color-text) !important;
   border: none !important;
   border-radius: 6px;
   font-size: 0.62rem;
@@ -43,9 +41,8 @@
 }
 
 .shop-back-button.MuiButton-root:hover {
-  /* border-color: rgba(255, 215, 174, 0.45); */
-  background: rgba(255, 215, 174, 0.08);
-  color: #ffffff;
+  background: var(--color-surface-muted);
+  color: var(--color-text) !important;
 }
 
 .shop-page-header {
