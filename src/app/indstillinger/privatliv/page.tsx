@@ -6,7 +6,7 @@ import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { Box, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
-import "./cookiePrivatliv.css";
+import "../../profil.css";
 
 export default function PrivatlivPage() {
   const router = useRouter();
@@ -17,47 +17,36 @@ export default function PrivatlivPage() {
     router.push("/");
   };
 
-  const handleBack = () => {
-    if (typeof window !== "undefined" && window.history.length > 1) {
-      router.back();
-      return;
-    }
-
-    router.push("/profile");
-  };
-
   return (
-    <Box className="info-page privatliv-scroll-page cookie-privatliv-page">
-      <Box sx={{ display: { xs: "flex", sm: "none" }, mb: 1 }}>
-        <Button
-          onClick={handleBack}
-          sx={{
-            color: "#d6d6d6",
-            border: "1px solid rgba(255, 255, 255, 0.18)",
-            borderRadius: "6px",
-            fontSize: "0.62rem",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            px: 1.2,
-            py: 0.7,
-            minWidth: "auto",
-          }}
-        >
-          <NavigateBeforeIcon />
-        </Button>
+    <Box className="settings-layout">
+      <Button
+        onClick={() => router.push("/profile")}
+        className="profil-back"
+        startIcon={<NavigateBeforeIcon />}
+      >
+        Tilbage
+      </Button>
+
+      <Box className="settings-header">
+        <p className="settings-kicker">Profil</p>
+        <h1 className="settings-title">Indstillinger</h1>
       </Box>
 
-      <Box className="privatliv-scroll-block cookie-privatliv-block">
+      <Box className="settings-block">
         <CookiePage />
       </Box>
-      <Box className="privatliv-scroll-block cookie-privatliv-block">
+
+      <Box className="settings-block">
         <FaqPage />
       </Box>
-      <Box className="privatliv-scroll-block privatliv-logout-wrap cookie-privatliv-logout-wrap">
-        <Button id="logout-button" className="profile-action-button" onClick={handleLogout}>
-          Log ud
-        </Button>
-      </Box>
+
+      <Button
+        onClick={handleLogout}
+        className="profile-action-button profile-action-button--primary"
+        fullWidth
+      >
+        Log ud
+      </Button>
     </Box>
   );
 }
