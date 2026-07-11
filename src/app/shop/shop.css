@@ -410,12 +410,13 @@
 .shop-filter-apply-button.MuiButton-root {
   background: #4a7340;
   border-color: #4a7340;
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 .shop-filter-apply-button.MuiButton-root:hover {
   background: #3d5c32;
   border-color: #3d5c32;
+  color: #ffffff !important;
 }
 
 .SearchBar-form {

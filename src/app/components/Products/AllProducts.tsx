@@ -31,9 +31,10 @@ interface Product {
 
 interface AllProductsProps {
   products: Product[];
+  onFavoriteRemoved?: (productId: string) => void;
 }
 
-export default function AllProducts({ products }: AllProductsProps) {
+export default function AllProducts({ products, onFavoriteRemoved }: AllProductsProps) {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const supabase = getSupabaseClient();
@@ -71,6 +72,7 @@ export default function AllProducts({ products }: AllProductsProps) {
           .eq("user_id", userId)
           .eq("product_id", productId);
         if (error) console.error("Fejl ved sletning:", error);
+        else onFavoriteRemoved?.(productId);
       } else {
         setFavorites([...favorites, productId]);
         const { error } = await supabase
