@@ -1,6 +1,6 @@
 export const aboutData = {
     Company: {
-        title: "Second Swing",
+        title: "Om Os",
         contentTop: "Second Swing blev skabt af passionerede golfspillere, der ville gøre det lettere og billigere at købe og sælge brugt golfudstyr.",
         contentMidt: "Vi oplevede selv, hvor dyrt nyt udstyr er, og hvor meget brugt udstyr stadig har at tilbyde. Derfor skabte vi en platform, hvor golfspillere nemt kan handle direkte med hinanden.",
         contentBottom: "Vores mission er at give golfudstyr nyt liv og gøre sporten mere tilgængelig for alle – mere golf, mindre omkostning.",

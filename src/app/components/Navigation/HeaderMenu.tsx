@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 function HeaderMenu() {
   const supabase = getSupabaseClient();
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  const isHeroPage = pathname === "/" || pathname === "/about";
   useNavigationTracking();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -52,7 +52,7 @@ function HeaderMenu() {
 
   return (
     <>
-      <header className={`site-header${isHome ? " site-header--hero" : ""}`}>
+      <header className={`site-header${isHeroPage ? " site-header--hero" : ""}`}>
         <nav className="site-header-left" aria-label="Primær navigation">
           {isLoggedIn ? (
             <Link href="/profile" className="site-header-link">
