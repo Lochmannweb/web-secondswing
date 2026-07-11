@@ -5,7 +5,7 @@ import { Box, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import "../../profil.css";
 
-export default function SikkerhedPage() {
+export default function KobSalgPage() {
   const router = useRouter();
 
   return (
@@ -19,19 +19,20 @@ export default function SikkerhedPage() {
       </Button>
 
       <Box className="settings-header">
-        <p className="settings-kicker">Sikkerhed & privatliv</p>
-        <h1 className="settings-title">Sikkerhed</h1>
+        <p className="settings-kicker">Køb & salg</p>
+        <h1 className="settings-title">Køb, salg & fragt</h1>
       </Box>
 
       <p className="settings-stub-text">
-        Beskyt din konto med stærkere login og overblik over aktive enheder.
+        Her kan du snart vælge standard fragt, håndtere tilbud og sætte præferencer for dine
+        annoncer — ligesom på andre markedspladser.
       </p>
 
       <ul className="settings-stub-list">
-        <li>Login med Google</li>
-        <li>To-faktor godkendelse</li>
-        <li>Loginaktivitet og enheder</li>
-        <li>Blokerede brugere</li>
+        <li>Standard leveringsmetode</li>
+        <li>Samler selv op / sender med</li>
+        <li>Automatisk accepter tilbud</li>
+        <li>Standard annonce-indstillinger</li>
       </ul>
     </Box>
   );

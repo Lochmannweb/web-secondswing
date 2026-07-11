@@ -2,6 +2,7 @@
 
 import { useNavigationTracking } from "@/app/hooks/useNavigationTracking";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
+import NotificationBell from "@/app/components/Navigation/NotificationBell";
 import { Box, Drawer, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Link from "next/link";
@@ -83,6 +84,7 @@ function HeaderMenu() {
           <Link href="/opretProdukt" className="site-header-cta">
             OPRET ANNONCE
           </Link>
+          {isLoggedIn && <NotificationBell isHero={isHeroPage} />}
           <button
             type="button"
             className="site-header-menu-btn"
@@ -148,13 +150,22 @@ function HeaderMenu() {
             </Link>
 
             {isLoggedIn && (
-              <Link
-                href="/chats"
-                className="header-drawer-link"
-                onClick={() => setDrawerOpen(false)}
-              >
-                CHAT HISTORIK
-              </Link>
+              <>
+                <Link
+                  href="/notifikationer"
+                  className="header-drawer-link"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  NOTIFIKATIONER
+                </Link>
+                <Link
+                  href="/chats"
+                  className="header-drawer-link"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  CHAT HISTORIK
+                </Link>
+              </>
             )}
             <Link
               href="/opretProdukt"
