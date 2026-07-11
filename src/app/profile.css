@@ -120,6 +120,12 @@
   color: #ffffff !important;
 }
 
+.profile-action-button--logout.MuiButton-root:hover {
+  background: rgba(140, 47, 47, 0.06);
+  border-color: #8c2f2f;
+  color: #8c2f2f;
+}
+
 .profile-login-gate {
   max-width: 520px;
   margin: 0 auto;
@@ -177,12 +183,22 @@
   max-width: 1180px;
 }
 
-.profile-page--standalone .profil-layout,
-.profile-page--standalone .settings-layout {
+.profile-page--standalone .profil-layout {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
   align-items: start;
+}
+
+.profile-page--standalone .settings-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: start;
+  justify-items: stretch;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
 }
 
 @media (min-width: 900px) {
@@ -192,8 +208,7 @@
   }
 
   .profile-layout,
-  .profile-page--standalone .profil-layout,
-  .profile-page--standalone .settings-layout {
+  .profile-page--standalone .profil-layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: clamp(2rem, 5vw, 4rem);
   }

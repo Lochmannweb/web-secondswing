@@ -147,6 +147,9 @@
 .settings-layout {
   display: grid;
   gap: 1.25rem;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
 }
 
 .settings-header {
@@ -173,6 +176,14 @@
 .settings-block {
   display: grid;
   gap: 0.5rem;
+  min-width: 0;
+}
+
+.settings-content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: start;
 }
 
 .settings-block .info-page {
@@ -193,7 +204,7 @@
 }
 
 .settings-block .info-section {
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: none;
 }
 
 .settings-block .info-section summary {

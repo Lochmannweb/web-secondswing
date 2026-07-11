@@ -1,0 +1,134 @@
+/* Mine produkter — extends shop catalog layout */
+
+.produkter-page .shop-catalog-toolbar-actions {
+  flex-wrap: wrap;
+}
+
+.produkter-create-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  background: var(--color-cta-bg);
+  color: var(--color-cta-text);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.produkter-create-link:hover {
+  opacity: 0.85;
+}
+
+.produkter-inline-link {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.produkter-product-card {
+  gap: 0.65rem;
+}
+
+.produkter-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.produkter-edit-button.MuiButton-root,
+.produkter-delete-button.MuiButton-root {
+  min-height: 32px;
+  border-radius: 999px;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.produkter-edit-button.MuiButton-root {
+  background: #4a7340 !important;
+  border: 1px solid #4a7340 !important;
+  color: #ffffff !important;
+}
+
+.produkter-edit-button.MuiButton-root:hover {
+  background: #3d5c32 !important;
+  border-color: #3d5c32 !important;
+}
+
+.produkter-delete-button.MuiButton-root {
+  background: transparent !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.produkter-delete-button.MuiButton-root:hover {
+  border-color: #8c2f2f !important;
+  color: #8c2f2f !important;
+  background: rgba(140, 47, 47, 0.06) !important;
+}
+
+.produkter-dialog-paper.MuiPaper-root {
+  background: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.25rem 0.25rem 0.5rem;
+}
+
+.produkter-dialog-title.MuiDialogTitle-root {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  padding-bottom: 0.25rem;
+}
+
+.produkter-dialog-copy {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.produkter-dialog-actions.MuiDialogActions-root {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+  padding: 0.75rem 1.25rem 1rem;
+}
+
+.produkter-dialog-cancel.MuiButton-root,
+.produkter-dialog-delete.MuiButton-root {
+  min-height: 36px;
+  border-radius: 7px;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.produkter-dialog-cancel.MuiButton-root {
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.produkter-dialog-delete.MuiButton-root {
+  background: #8c2f2f !important;
+  border: 1px solid #8c2f2f !important;
+  color: #ffffff !important;
+}
+
+.produkter-dialog-delete.MuiButton-root:hover {
+  background: #742626 !important;
+  border-color: #742626 !important;
+}
+
+@media (max-width: 599px) {
+  .produkter-create-link {
+    width: 100%;
+    justify-content: center;
+  }
+}
