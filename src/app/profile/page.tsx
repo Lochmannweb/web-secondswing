@@ -18,7 +18,7 @@ const menuItems = [
   { key: "messages", label: "Beskeder", link: "/chats", primary: false },
   { key: "fav", label: "Favoritter", link: "/favoriter", primary: false },
   { key: "myProducts", label: "Mine produkter", link: "/produkter", primary: false },
-  { key: "createProduct", label: "Sælg nyt udstyr", link: "/opretProdukt", primary: true },
+  { key: "createProduct", label: "Sælg nyt udstyr", link: "/opretProdukt", primary: false },
   { key: "editProfile", label: "Rediger profil", link: "/indstillinger/profiloplysninger", primary: false },
   { key: "privacy", label: "Indstillinger", link: "/indstillinger/privatliv", primary: false },
 ] as const;
@@ -131,6 +131,11 @@ export default function ProfilePage() {
     });
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+  };
+
   function upgradeGoogleAvatar(url: string) {
     return url.replace(/=s\d+-c$/, "=s512-c");
   }
@@ -204,6 +209,9 @@ export default function ProfilePage() {
                 )}
               </Button>
             ))}
+            <Button onClick={handleLogout} className="profile-action-button profile-action-button--logout">
+              Log ud
+            </Button>
           </Box>
         </Box>
       </Box>
