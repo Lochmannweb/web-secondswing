@@ -167,7 +167,7 @@ export default function Profiloplysninger() {
 
       <Box className="profil-fields">
         <Button
-          onClick={() => router.push("/profile")}
+          onClick={() => router.push("/indstillinger")}
           className="profil-back"
           startIcon={<NavigateBeforeIcon />}
         >
@@ -175,8 +175,8 @@ export default function Profiloplysninger() {
         </Button>
 
         <Box className="profil-form-header">
-          <p className="profil-form-kicker">Profil</p>
-          <h1 className="profil-form-title">Rediger oplysninger</h1>
+          <p className="profil-form-kicker">Indstillinger</p>
+          <h1 className="profil-form-title">Profil & adresse</h1>
         </Box>
 
         <p className="profil-section-label">Personligt</p>

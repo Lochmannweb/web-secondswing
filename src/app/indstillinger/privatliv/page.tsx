@@ -13,7 +13,7 @@ export default function PrivatlivPage() {
   return (
     <Box className="settings-layout">
       <Button
-        onClick={() => router.push("/profile")}
+        onClick={() => router.push("/indstillinger")}
         className="profil-back"
         startIcon={<NavigateBeforeIcon />}
       >
@@ -21,8 +21,8 @@ export default function PrivatlivPage() {
       </Button>
 
       <Box className="settings-header">
-        <p className="settings-kicker">Profil</p>
-        <h1 className="settings-title">Indstillinger</h1>
+        <p className="settings-kicker">Sikkerhed & privatliv</p>
+        <h1 className="settings-title">Privatliv & data</h1>
       </Box>
 
       <Box className="settings-content-grid">
