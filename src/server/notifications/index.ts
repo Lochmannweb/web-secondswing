@@ -1,8 +1,8 @@
-import { prisma } from "@/server/db/prisma";
-import { getProfilesByIds } from "@/server/profiles";
-import { getUnreadMessageCount, markAllMessagesRead, markChatRead } from "@/server/chats";
 import type { NotificationPreferences, NotificationType } from "@/app/lib/notifications";
 import { isInAppEnabled } from "@/app/lib/notifications";
+import { getUnreadMessageCount, markAllMessagesRead, markChatRead } from "@/server/chats";
+import { prisma } from "@/server/db/prisma";
+import { getProfilesByIds } from "@/server/profiles";
 
 export type NotificationDto = {
   id: string;
@@ -15,34 +15,6 @@ export type NotificationDto = {
   source: "table" | "message";
   metadata?: Record<string, unknown>;
 };
-
-type TableNotification = {
-  id: string;
-  type: string;
-  title: string;
-  body: string;
-  link: string | null;
-  readAt: Date | null;
-  createdAt: Date;
-  metadata: unknown;
-};
-
-function serializeTableNotification(row: TableNotification): NotificationDto {
-  return {
-    id: row.id,
-    type: row.type as NotificationType,
-    title: row.title,
-    body: row.body,
-    link: row.link ?? "/notifikationer",
-    read_at: row.readAt?.toISOString() ?? null,
-    created_at: row.createdAt.toISOString(),
-    source: "table",
-    metadata:
-      row.metadata && typeof row.metadata === "object"
-        ? (row.metadata as Record<string, unknown>)
-        : undefined,
-  };
-}
 
 function dedupeNotifications(items: NotificationDto[]): NotificationDto[] {
   const byKey = new Map<string, NotificationDto>();
@@ -82,7 +54,7 @@ async function fetchMessageNotifications(userId: string): Promise<NotificationDt
   const notifications: NotificationDto[] = [];
 
   for (const message of messages) {
-    if (seenChats.has(message.chatId)) continue;
+    if (!message.chatId || seenChats.has(message.chatId)) continue;
     seenChats.add(message.chatId);
 
     const senderName = nameById.get(message.senderId) ?? "En bruger";
@@ -111,17 +83,8 @@ export async function listNotifications(
   userId: string,
   preferences: NotificationPreferences
 ): Promise<NotificationDto[]> {
-  const [tableRows, messageItems] = await Promise.all([
-    prisma.notification.findMany({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-      take: 50,
-    }),
-    fetchMessageNotifications(userId),
-  ]);
-
-  const tableItems = tableRows.map(serializeTableNotification);
-  const merged = dedupeNotifications([...tableItems, ...messageItems]);
+  const messageItems = await fetchMessageNotifications(userId);
+  const merged = dedupeNotifications(messageItems);
 
   return merged.filter((item) => isInAppEnabled(item.type, preferences));
 }
@@ -130,13 +93,7 @@ export async function markNotificationRead(
   userId: string,
   notification: Pick<NotificationDto, "id" | "source" | "metadata">
 ) {
-  if (notification.source === "table") {
-    await prisma.notification.updateMany({
-      where: { id: notification.id, userId },
-      data: { readAt: new Date() },
-    });
-    return;
-  }
+  if (notification.source !== "message") return;
 
   const chatId = notification.metadata?.chat_id as string | undefined;
   if (!chatId) return;
@@ -148,25 +105,15 @@ export async function markAllNotificationsRead(
   userId: string,
   notifications: Array<Pick<NotificationDto, "id" | "source" | "read_at">>
 ) {
-  const tableIds = notifications
-    .filter((item) => item.source === "table" && !item.read_at)
-    .map((item) => item.id);
+  const hasUnreadMessages = notifications.some(
+    (item) => item.source === "message" && !item.read_at
+  );
 
-  if (tableIds.length) {
-    await prisma.notification.updateMany({
-      where: { id: { in: tableIds }, userId },
-      data: { readAt: new Date() },
-    });
+  if (hasUnreadMessages) {
+    await markAllMessagesRead(userId);
   }
-
-  await markAllMessagesRead(userId);
 }
 
 export async function getUnreadNotificationCount(userId: string) {
-  const [tableCount, messageCount] = await Promise.all([
-    prisma.notification.count({ where: { userId, readAt: null } }),
-    getUnreadMessageCount(userId),
-  ]);
-
-  return tableCount + messageCount;
+  return getUnreadMessageCount(userId);
 }

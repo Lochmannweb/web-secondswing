@@ -1,5 +1,5 @@
 import { prisma } from "@/server/db/prisma";
-import { serializeProduct } from "@/server/products/serialize";
+import { parseProductId, serializeProduct } from "@/server/products/serialize";
 import type { Prisma } from "@prisma/client";
 
 type ProductInput = {
@@ -41,12 +41,7 @@ function toCreateData(input: ProductInput): Prisma.ProductCreateInput {
     dividerCount: input.divider_count ?? null,
     weight: input.weight ?? null,
     sold: input.sold ?? false,
-    user: {
-      connectOrCreate: {
-        where: { id: input.user_id },
-        create: { id: input.user_id },
-      },
-    },
+    userId: input.user_id,
     images: input.extra_images?.length
       ? {
           create: input.extra_images.map((img) => ({
@@ -61,13 +56,15 @@ function toCreateData(input: ProductInput): Prisma.ProductCreateInput {
 export async function createProduct(input: ProductInput) {
   const product = await prisma.product.create({
     data: toCreateData(input),
+    include: { images: { orderBy: { position: "asc" } } },
   });
   return serializeProduct(product);
 }
 
 export async function updateProduct(id: string, updates: Partial<ProductInput>) {
+  const productId = parseProductId(id);
   const product = await prisma.product.update({
-    where: { id },
+    where: { id: productId },
     data: {
       title: updates.title,
       description: updates.description,
@@ -86,33 +83,28 @@ export async function updateProduct(id: string, updates: Partial<ProductInput>) 
       weight: updates.weight,
       sold: updates.sold,
     },
+    include: { images: { orderBy: { position: "asc" } } },
   });
   return serializeProduct(product);
 }
 
 export async function deleteProduct(id: string) {
-  await prisma.product.delete({ where: { id } });
+  const productId = parseProductId(id);
+  await prisma.product.delete({ where: { id: productId } });
 }
 
 export async function replaceProductImages(productId: string, imageUrls: string[]) {
-  await prisma.productImage.deleteMany({ where: { productId } });
+  const id = parseProductId(productId);
+  await prisma.productImage.deleteMany({ where: { productId: id } });
 
   const extras = imageUrls.slice(1);
   if (extras.length === 0) return;
 
   await prisma.productImage.createMany({
     data: extras.map((url, index) => ({
-      productId,
+      productId: id,
       imageUrl: url,
       position: index + 1,
     })),
   });
-}
-
-export async function listProductsByUser(userId: string) {
-  const products = await prisma.product.findMany({
-    where: { userId },
-    orderBy: { createdAt: "desc" },
-  });
-  return products.map(serializeProduct);
 }
