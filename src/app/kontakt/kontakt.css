@@ -1,0 +1,178 @@
+body.kontakt-route {
+  overflow: hidden;
+  height: 100svh;
+}
+
+.kontakt-page {
+  height: calc(100svh - 5.25rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(5rem, 11vh, 6.5rem) 20px 0.75rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.kontakt-inner {
+  width: 100%;
+  max-width: 440px;
+  max-height: 100%;
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+  text-align: center;
+}
+
+.kontakt-header {
+  display: grid;
+  gap: 0.45rem;
+  justify-items: center;
+}
+
+.kontakt-kicker {
+  margin: 0;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.kontakt-title {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.15rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.kontakt-intro {
+  margin: 0;
+  max-width: 36ch;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.kontakt-email {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: #4a7340;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.15s ease;
+}
+
+.kontakt-email:hover {
+  opacity: 0.75;
+}
+
+.kontakt-form {
+  width: 100%;
+  display: grid;
+  gap: 0.65rem;
+  text-align: left;
+}
+
+.kontakt-field .MuiOutlinedInput-root {
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+.kontakt-field .MuiOutlinedInput-root fieldset {
+  border-color: var(--color-border);
+  border-radius: 0;
+}
+
+.kontakt-field .MuiOutlinedInput-root:hover fieldset {
+  border-color: var(--color-text-muted);
+}
+
+.kontakt-field .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #6b8f5e;
+}
+
+.kontakt-field .MuiInputLabel-root {
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kontakt-field .MuiInputLabel-root.Mui-focused {
+  color: #4a7340;
+}
+
+.kontakt-field .MuiInputBase-root {
+  font-size: 0.85rem;
+}
+
+.kontakt-submit.MuiButton-root {
+  justify-self: center;
+  min-width: 160px;
+  min-height: 40px;
+  margin-top: 0.15rem;
+  border-radius: 999px;
+  background: #4a7340 !important;
+  border: 1px solid #4a7340 !important;
+  color: #ffffff !important;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.62rem;
+  box-shadow: none;
+}
+
+.kontakt-submit.MuiButton-root:hover {
+  background: #3d5c32 !important;
+  border-color: #3d5c32 !important;
+}
+
+@media (max-width: 599px) {
+  .kontakt-page {
+    height: calc(100svh - 4.75rem);
+    padding-top: 5.5rem;
+    align-items: center;
+  }
+
+  .kontakt-inner {
+    max-width: 100%;
+    gap: 0.75rem;
+  }
+
+  .kontakt-title {
+    font-size: 1.45rem;
+  }
+
+  .kontakt-intro {
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+
+  .kontakt-form {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-height: 700px) {
+  .kontakt-page {
+    padding-top: 4.75rem;
+  }
+
+  .kontakt-inner {
+    gap: 0.6rem;
+  }
+
+  .kontakt-header {
+    gap: 0.3rem;
+  }
+
+  .kontakt-title {
+    font-size: 1.35rem;
+  }
+
+  .kontakt-field .MuiInputBase-root {
+    font-size: 0.8rem;
+  }
+}

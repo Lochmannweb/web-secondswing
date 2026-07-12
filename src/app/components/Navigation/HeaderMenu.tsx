@@ -68,6 +68,9 @@ function HeaderMenu() {
               LOG IND
             </button>
           )}
+          <Link href="/favoriter" className="site-header-link">
+            FAVORITTER
+          </Link>
           <Link href="/shop" className="site-header-link">
             SHOP
           </Link>
@@ -141,6 +144,13 @@ function HeaderMenu() {
                 LOG IND
               </button>
             )}
+            <Link
+              href="/favoriter"
+              className="header-drawer-link"
+              onClick={() => setDrawerOpen(false)}
+            >
+              FAVORITTER
+            </Link>
             <Link
               href="/shop"
               className="header-drawer-link"
