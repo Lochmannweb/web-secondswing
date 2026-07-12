@@ -10,13 +10,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Ingen fil valgt" }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const image = await createImage(file.type || "image/jpeg", buffer);
+    if (!file.type.startsWith("image/")) {
+      return NextResponse.json({ error: "Kun billedfiler er tilladt" }, { status: 400 });
+    }
 
-    return NextResponse.json({ success: true, url: image.url });
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const image = await createImage(file.type, buffer);
+
+    return NextResponse.json({ id: image.id, url: image.url }, { status: 201 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Upload fejl";
-    console.error("API upload error:", message);
+    const message = error instanceof Error ? error.message : "Upload fejlede";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
