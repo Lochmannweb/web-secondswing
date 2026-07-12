@@ -3,54 +3,37 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-/// Profil — id matcher Supabase auth user uuid (login forbliver i Supabase).
-model Profile {
-  id          String   @id @db.Uuid
-  displayName String?  @map("display_name")
-  avatarUrl   String?  @map("avatar_url")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  createdAt   DateTime @default(now()) @map("created_at")
-
-  products       Product[]
-  favorites      Favorite[]
-  buyerChats     Chat[]         @relation("ChatBuyer")
-  sellerChats    Chat[]         @relation("ChatSeller")
-  sentMessages   Message[]      @relation("MessageSender")
-  receivedMessages Message[]    @relation("MessageReceiver")
-  notifications  Notification[]
-  loginSessions  LoginSession[]
-
-  @@map("profiles")
-}
-
+/// user_id = Supabase auth uuid — profil-data læses kun via Supabase client (profiles-tabel).
 model Product {
-  id           String   @id @default(uuid()) @db.Uuid
-  userId       String   @map("user_id") @db.Uuid
-  title        String
+  id           BigInt    @id @default(autoincrement()) @db.BigInt
+  userId       String    @map("user_id") @db.Uuid
+  title        String?
   description  String?
-  price        Decimal? @db.Decimal(10, 2)
-  imageUrl     String?  @map("image_url")
-  createdAt    DateTime @default(now()) @map("created_at")
-  sold         Boolean  @default(false)
+  price        Decimal?  @db.Decimal
+  imageUrl     String?   @map("image_url")
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  sold         Boolean   @default(false)
   gender       String?
   color        String?
   size         String?
   stand        String?
-  category     String   @default("clothing")
+  category     String?   @default("clothing")
   brand        String?
-  clubType     String?  @map("club_type")
+  clubType     String?   @map("club_type")
   flex         String?
   hand         String?
-  dividerCount Int?     @map("divider_count")
+  dividerCount Int?      @map("divider_count")
   weight       String?
 
-  user      Profile        @relation(fields: [userId], references: [id], onDelete: Cascade)
   images    ProductImage[]
   favorites Favorite[]
+  chats     Chat[]
 
   @@index([userId])
   @@index([createdAt(sort: Desc)])
@@ -58,10 +41,11 @@ model Product {
 }
 
 model ProductImage {
-  id        String  @id @default(uuid()) @db.Uuid
-  productId String  @map("product_id") @db.Uuid
-  imageUrl  String  @map("image_url")
-  position  Int     @default(0)
+  id        BigInt   @id @default(autoincrement()) @db.BigInt
+  productId BigInt   @map("product_id") @db.BigInt
+  imageUrl  String   @map("image_url")
+  position  Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
@@ -70,24 +54,26 @@ model ProductImage {
 }
 
 model Favorite {
-  userId    String @map("user_id") @db.Uuid
-  productId String @map("product_id") @db.Uuid
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String?  @map("user_id") @db.Uuid
+  productId BigInt?  @map("product_id") @db.BigInt
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
-  user    Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@id([userId, productId])
+  @@index([userId])
+  @@index([productId])
   @@map("favoriter")
 }
 
 model Chat {
-  id        String   @id @default(uuid()) @db.Uuid
-  buyerId   String   @map("buyer_id") @db.Uuid
-  sellerId  String   @map("seller_id") @db.Uuid
-  createdAt DateTime @default(now()) @map("created_at")
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  buyerId   String?  @map("buyer_id") @db.Uuid
+  sellerId  String?  @map("seller_id") @db.Uuid
+  productId BigInt?  @map("product_id") @db.BigInt
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
-  buyer    Profile   @relation("ChatBuyer", fields: [buyerId], references: [id], onDelete: Cascade)
-  seller   Profile   @relation("ChatSeller", fields: [sellerId], references: [id], onDelete: Cascade)
+  product  Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
   messages Message[]
 
   @@index([buyerId])
@@ -96,65 +82,28 @@ model Chat {
 }
 
 model Message {
-  id         String    @id @default(uuid()) @db.Uuid
-  chatId     String    @map("chat_id") @db.Uuid
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   senderId   String    @map("sender_id") @db.Uuid
   receiverId String    @map("receiver_id") @db.Uuid
-  content    String    @default("")
+  content    String
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  chatId     String?   @map("chat_id") @db.Uuid
+  readAt     DateTime? @map("read_at") @db.Timestamptz(6)
   imageUrl   String?   @map("image_url")
-  readAt     DateTime? @map("read_at")
-  createdAt  DateTime  @default(now()) @map("created_at")
 
-  chat     Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  sender   Profile @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver Profile @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  chat Chat? @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
   @@index([chatId, createdAt])
   @@index([receiverId, readAt])
   @@map("messages")
 }
 
-model Notification {
-  id        String    @id @default(uuid()) @db.Uuid
-  userId    String    @map("user_id") @db.Uuid
-  type      String
-  title     String
-  body      String
-  link      String?
-  readAt    DateTime? @map("read_at")
-  metadata  Json      @default("{}")
-  createdAt DateTime  @default(now()) @map("created_at")
-
-  user Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, createdAt(sort: Desc)])
-  @@map("notifications")
-}
-
-model LoginSession {
-  id           String   @id @default(uuid()) @db.Uuid
-  userId       String   @map("user_id") @db.Uuid
-  deviceKey    String   @map("device_key")
-  label        String   @default("Ukendt enhed")
-  deviceType   String   @default("ukendt") @map("device_type")
-  browser      String   @default("Browser")
-  os           String   @default("Ukendt")
-  lastActiveAt DateTime @default(now()) @map("last_active_at")
-  createdAt    DateTime @default(now()) @map("created_at")
-
-  user Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, deviceKey])
-  @@index([userId, lastActiveAt(sort: Desc)])
-  @@map("login_sessions")
-}
-
-/// Billeder gemmes i Postgres og serves via /api/images/[id]
+/// Billeder gemmes i Neon og serves via /api/images/[id]
 model Image {
-  id        String   @id @default(uuid()) @db.Uuid
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   mimeType  String   @map("mime_type")
   data      Bytes
-  createdAt DateTime @default(now()) @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   @@map("images")
 }

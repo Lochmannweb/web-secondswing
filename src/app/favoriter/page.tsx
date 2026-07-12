@@ -25,14 +25,14 @@ import "./favorit.css";
 
 interface Product {
   id: string;
-  title: string;
+  title: string | null;
   description: string | null;
   price: number | null;
   image_url: string | null;
   created_at: string;
   user_id: string;
-  gender: "male" | "female" | "unisex" | null;
-  category?: ProductCategory | null;
+  gender: string | null;
+  category?: string | null;
   color?: string | null;
   size?: string | null;
   stand?: string | null;
@@ -65,7 +65,7 @@ export default function FavoriterPage() {
       }
 
       const productData = await listFavoriteProducts(userData.user.id);
-      setProducts(productData as Product[]);
+      setProducts(productData);
 
       setLoading(false);
     };

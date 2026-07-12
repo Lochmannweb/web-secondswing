@@ -1,6 +1,6 @@
 "use client";
 
-import { createProduct } from "@/app/lib/crud";
+import { createProduct, replaceProductImages } from "@/app/lib/crud";
 import { uploadImageFiles } from "@/app/lib/uploadImage";
 import {
   buildProductPayload,
@@ -222,18 +222,20 @@ export default function CreateProduct() {
         throw new Error("Indtast en gyldig pris større end 0.");
       }
 
-      await createProduct({
+      const createdProduct = await createProduct({
         user_id: user.id,
         ...productPayload,
         image_url: primaryImageUrl,
-        extra_images:
-          uploadedUrls.length > 1
-            ? uploadedUrls.slice(1).map((url, index) => ({
-                image_url: url,
-                position: index + 1,
-              }))
-            : undefined,
       });
+
+      if (uploadedUrls.length > 1 && createdProduct?.id) {
+        const extraImages = uploadedUrls.slice(1).map((url, index) => ({
+          image_url: url,
+          position: index + 1,
+        }));
+
+        await replaceProductImages(createdProduct.id, extraImages);
+      }
 
       setMessage({ type: "success", text: "Produkt blev oprettet!" });
       setForm(createEmptyProductForm());

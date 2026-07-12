@@ -1,68 +1,100 @@
-import { deleteProduct, getProductById, replaceProductImages, updateProduct } from "@/server/products";
+import { prisma } from "@/app/lib/prisma";
+import { parseProductId, serializeProduct } from "@/app/lib/productSerialize";
 import { NextRequest, NextResponse } from "next/server";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
+type ProductPatchBody = {
+  title?: string;
+  description?: string | null;
+  price?: number | null;
+  image_url?: string | null;
+  category?: string;
+  gender?: string | null;
+  color?: string | null;
+  size?: string | null;
+  stand?: string | null;
+  brand?: string | null;
+  club_type?: string | null;
+  flex?: string | null;
+  hand?: string | null;
+  divider_count?: number | null;
+  weight?: string | null;
+  sold?: boolean;
+};
+
 export async function GET(_req: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
-    const product = await getProductById(id);
+    const productId = parseProductId(id);
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+      include: {
+        images: { orderBy: { position: "asc" } },
+      },
+    });
 
     if (!product) {
       return NextResponse.json({ error: "Produkt ikke fundet" }, { status: 404 });
     }
 
-    return NextResponse.json(product);
+    return NextResponse.json(serializeProduct(product));
   } catch (error) {
     console.error("GET /api/products/[id] fejlede:", error);
-    return NextResponse.json({ error: "Kunne ikke hente produkt" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Kunne ikke hente produkt";
+    const status = message === "Ugyldigt produkt-id" ? 400 : 500;
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
 export async function PATCH(req: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
-    const body = (await req.json()) as Record<string, unknown>;
+    const productId = parseProductId(id);
+    const body = (await req.json()) as ProductPatchBody;
 
-    const product = await updateProduct(id, {
-      title: typeof body.title === "string" ? body.title : undefined,
-      description: typeof body.description === "string" ? body.description : undefined,
-      price: typeof body.price === "number" ? body.price : undefined,
-      image_url: typeof body.image_url === "string" ? body.image_url : undefined,
-      category: typeof body.category === "string" ? body.category : undefined,
-      gender: typeof body.gender === "string" ? body.gender : undefined,
-      color: typeof body.color === "string" ? body.color : undefined,
-      size: typeof body.size === "string" ? body.size : undefined,
-      stand: typeof body.stand === "string" ? body.stand : undefined,
-      brand: typeof body.brand === "string" ? body.brand : undefined,
-      club_type: typeof body.club_type === "string" ? body.club_type : undefined,
-      flex: typeof body.flex === "string" ? body.flex : undefined,
-      hand: typeof body.hand === "string" ? body.hand : undefined,
-      divider_count: typeof body.divider_count === "number" ? body.divider_count : undefined,
-      weight: typeof body.weight === "string" ? body.weight : undefined,
-      sold: typeof body.sold === "boolean" ? body.sold : undefined,
+    const data: Record<string, unknown> = {};
+    if (body.title !== undefined) data.title = body.title;
+    if (body.description !== undefined) data.description = body.description;
+    if (body.price !== undefined) data.price = body.price;
+    if (body.image_url !== undefined) data.imageUrl = body.image_url;
+    if (body.category !== undefined) data.category = body.category;
+    if (body.gender !== undefined) data.gender = body.gender;
+    if (body.color !== undefined) data.color = body.color;
+    if (body.size !== undefined) data.size = body.size;
+    if (body.stand !== undefined) data.stand = body.stand;
+    if (body.brand !== undefined) data.brand = body.brand;
+    if (body.club_type !== undefined) data.clubType = body.club_type;
+    if (body.flex !== undefined) data.flex = body.flex;
+    if (body.hand !== undefined) data.hand = body.hand;
+    if (body.divider_count !== undefined) data.dividerCount = body.divider_count;
+    if (body.weight !== undefined) data.weight = body.weight;
+    if (body.sold !== undefined) data.sold = body.sold;
+
+    const product = await prisma.product.update({
+      where: { id: productId },
+      data,
     });
 
-    if (Array.isArray(body.image_urls)) {
-      const urls = body.image_urls.filter((url): url is string => typeof url === "string");
-      await replaceProductImages(id, urls);
-    }
-
-    const refreshed = await getProductById(id);
-    return NextResponse.json(refreshed ?? product);
+    return NextResponse.json(serializeProduct(product));
   } catch (error) {
     console.error("PATCH /api/products/[id] fejlede:", error);
-    return NextResponse.json({ error: "Kunne ikke opdatere produkt" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Kunne ikke opdatere produkt";
+    const status = message === "Ugyldigt produkt-id" ? 400 : 500;
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
 export async function DELETE(_req: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
-    await deleteProduct(id);
+    const productId = parseProductId(id);
+    await prisma.product.delete({ where: { id: productId } });
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("DELETE /api/products/[id] fejlede:", error);
-    return NextResponse.json({ error: "Kunne ikke slette produkt" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Kunne ikke slette produkt";
+    const status = message === "Ugyldigt produkt-id" ? 400 : 500;
+    return NextResponse.json({ error: message }, { status });
   }
 }

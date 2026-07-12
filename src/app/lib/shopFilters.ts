@@ -1,5 +1,5 @@
 import type { ProductCategory } from "@/app/lib/productForm";
-import { CATEGORY_OPTIONS, inferProductCategory } from "@/app/lib/productForm";
+import { CATEGORY_OPTIONS, inferProductCategory, PRODUCT_CATEGORIES } from "@/app/lib/productForm";
 import type { Filter } from "@/app/utils/filterStyles";
 
 export type ShopFacetKey =
@@ -48,7 +48,7 @@ export const ALL_VIEW_FACETS: ShopFacetKey[] = [
 
 export type ShopProduct = {
   user_id: string;
-  category?: ProductCategory | null;
+  category?: string | null;
   gender?: string | null;
   color?: string | null;
   size?: string | null;
@@ -59,7 +59,7 @@ export type ShopProduct = {
   hand?: string | null;
   divider_count?: number | null;
   weight?: string | null;
-  title?: string;
+  title?: string | null;
 };
 
 export type ActiveShopFacets = Partial<Record<ShopFacetKey, string[]>>;
@@ -107,8 +107,8 @@ export function getFacetOptionLabel(facet: ShopFacetKey, value: string) {
 }
 
 export function resolveProductCategory(product: ShopProduct): ProductCategory {
-  if (product.category) {
-    return product.category;
+  if (product.category && PRODUCT_CATEGORIES.includes(product.category as ProductCategory)) {
+    return product.category as ProductCategory;
   }
 
   return inferProductCategory(product);

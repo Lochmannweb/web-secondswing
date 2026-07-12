@@ -1,6 +1,6 @@
+import { parseProductId, serializeProduct } from "@/app/lib/productSerialize";
 import { prisma } from "@/server/db/prisma";
-import { serializeProduct } from "@/server/products/serialize";
-import { ensureProfile } from "@/server/profiles/queries";
+import type { Product } from "@prisma/client";
 
 export async function listFavoriteProductIds(userId: string) {
   const favorites = await prisma.favorite.findMany({
@@ -8,7 +8,9 @@ export async function listFavoriteProductIds(userId: string) {
     select: { productId: true },
   });
 
-  return favorites.map((favorite) => favorite.productId);
+  return favorites
+    .map((favorite) => favorite.productId?.toString())
+    .filter((id): id is string => Boolean(id));
 }
 
 export async function listFavoriteProducts(userId: string) {
@@ -17,39 +19,43 @@ export async function listFavoriteProducts(userId: string) {
     include: {
       product: true,
     },
-    orderBy: { product: { createdAt: "desc" } },
+    orderBy: { createdAt: "desc" },
   });
 
-  return favorites.map((favorite) => serializeProduct(favorite.product));
+  return favorites
+    .map((favorite) => favorite.product)
+    .filter((product): product is Product => product != null)
+    .map(serializeProduct);
 }
 
 export async function isFavorite(userId: string, productId: string) {
-  const favorite = await prisma.favorite.findUnique({
-    where: {
-      userId_productId: { userId, productId },
-    },
+  const id = parseProductId(productId);
+  const favorite = await prisma.favorite.findFirst({
+    where: { userId, productId: id },
   });
 
   return Boolean(favorite);
 }
 
 export async function addFavorite(userId: string, productId: string) {
-  await ensureProfile(userId);
+  const id = parseProductId(productId);
+  const existing = await prisma.favorite.findFirst({
+    where: { userId, productId: id },
+  });
 
-  await prisma.favorite.upsert({
-    where: {
-      userId_productId: { userId, productId },
-    },
-    update: {},
-    create: {
+  if (existing) return;
+
+  await prisma.favorite.create({
+    data: {
       userId,
-      productId,
+      productId: id,
     },
   });
 }
 
 export async function removeFavorite(userId: string, productId: string) {
+  const id = parseProductId(productId);
   await prisma.favorite.deleteMany({
-    where: { userId, productId },
+    where: { userId, productId: id },
   });
 }

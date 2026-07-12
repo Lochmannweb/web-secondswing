@@ -1,6 +1,5 @@
 import { prisma } from "@/server/db/prisma";
 import { serializeChat, serializeMessage } from "@/server/chats/serialize";
-import { ensureProfile } from "@/server/profiles/queries";
 
 type CreateMessageInput = {
   chat_id: string;
@@ -24,8 +23,6 @@ export async function findOrCreateChat(buyerId: string, sellerId: string) {
     return serializeChat(existing);
   }
 
-  await Promise.all([ensureProfile(buyerId), ensureProfile(sellerId)]);
-
   const chat = await prisma.chat.create({
     data: {
       buyerId,
@@ -37,11 +34,6 @@ export async function findOrCreateChat(buyerId: string, sellerId: string) {
 }
 
 export async function createMessage(input: CreateMessageInput) {
-  await Promise.all([
-    ensureProfile(input.sender_id),
-    ensureProfile(input.receiver_id),
-  ]);
-
   const message = await prisma.message.create({
     data: {
       chatId: input.chat_id,
@@ -87,11 +79,10 @@ export async function markMessageRead(messageId: string, userId: string) {
 
 export async function markAllMessagesRead(userId: string) {
   await prisma.message.updateMany({
-    where: { receiverId: userId, readAt: null },
+    where: {
+      receiverId: userId,
+      readAt: null,
+    },
     data: { readAt: new Date() },
   });
-}
-
-export async function markMessagesReadForChat(chatId: string, userId: string) {
-  return markChatRead(chatId, userId);
 }

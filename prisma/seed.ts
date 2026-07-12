@@ -6,26 +6,6 @@ const DEMO_USER_ID = "00000000-0000-4000-8000-000000000001";
 const DEMO_USER_ID_2 = "00000000-0000-4000-8000-000000000002";
 
 async function main() {
-  await prisma.profile.upsert({
-    where: { id: DEMO_USER_ID },
-    update: {},
-    create: {
-      id: DEMO_USER_ID,
-      displayName: "Demo Sælger",
-      avatarUrl: null,
-    },
-  });
-
-  await prisma.profile.upsert({
-    where: { id: DEMO_USER_ID_2 },
-    update: {},
-    create: {
-      id: DEMO_USER_ID_2,
-      displayName: "Anden Sælger",
-      avatarUrl: null,
-    },
-  });
-
   const count = await prisma.product.count();
   if (count > 0) {
     console.log(`Seed: ${count} produkter findes allerede — springer demo-produkter over.`);
@@ -76,7 +56,7 @@ async function main() {
     ],
   });
 
-  console.log("Seed: demo-profiler og produkter oprettet.");
+  console.log("Seed: demo-produkter oprettet.");
 }
 
 main()

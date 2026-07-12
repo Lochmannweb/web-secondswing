@@ -16,12 +16,9 @@ function HeaderMenu() {
   useNavigationTracking();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-    setHydrated(true);
-
     supabase.auth.getSession().then(({ data }) => {
       setIsLoggedIn(!!data.session);
     });
@@ -34,8 +31,6 @@ function HeaderMenu() {
 
     return () => subscription.subscription.unsubscribe();
   }, [supabase.auth]);
-
-  if (!hydrated) return null;
 
   async function handleGoogleLogin() {
     const { error } = await supabase.auth.signInWithOAuth({

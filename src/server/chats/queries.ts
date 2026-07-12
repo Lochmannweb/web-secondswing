@@ -43,7 +43,7 @@ export async function getChatInbox(userId: string): Promise<ChatInboxDto> {
 
   const previewMap = new Map<string, ChatPreviewDto>();
   for (const message of messages) {
-    if (!previewMap.has(message.chatId)) {
+    if (message.chatId && !previewMap.has(message.chatId)) {
       previewMap.set(message.chatId, {
         chat_id: message.chatId,
         content: message.content,
@@ -54,6 +54,7 @@ export async function getChatInbox(userId: string): Promise<ChatInboxDto> {
 
   const unreadByChat: Record<string, number> = {};
   for (const row of unreadMessages) {
+    if (!row.chatId) continue;
     unreadByChat[row.chatId] = (unreadByChat[row.chatId] ?? 0) + 1;
   }
 

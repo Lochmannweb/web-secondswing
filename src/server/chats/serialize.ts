@@ -1,13 +1,14 @@
 export type ChatDto = {
   id: string;
-  buyer_id: string;
-  seller_id: string;
+  buyer_id: string | null;
+  seller_id: string | null;
+  product_id: string | null;
   created_at: string;
 };
 
 export type MessageDto = {
   id: string;
-  chat_id: string;
+  chat_id: string | null;
   sender_id: string;
   receiver_id: string;
   content: string;
@@ -18,14 +19,15 @@ export type MessageDto = {
 
 type ChatRecord = {
   id: string;
-  buyerId: string;
-  sellerId: string;
+  buyerId: string | null;
+  sellerId: string | null;
+  productId: bigint | null;
   createdAt: Date;
 };
 
 type MessageRecord = {
   id: string;
-  chatId: string;
+  chatId: string | null;
   senderId: string;
   receiverId: string;
   content: string;
@@ -39,6 +41,7 @@ export function serializeChat(chat: ChatRecord): ChatDto {
     id: chat.id,
     buyer_id: chat.buyerId,
     seller_id: chat.sellerId,
+    product_id: chat.productId?.toString() ?? null,
     created_at: chat.createdAt.toISOString(),
   };
 }

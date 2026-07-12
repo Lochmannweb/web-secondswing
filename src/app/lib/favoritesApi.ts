@@ -1,3 +1,5 @@
+import type { ProductDto } from "@/app/lib/productSerialize";
+
 async function parseJson<T>(response: Response): Promise<T> {
   const payload = (await response.json()) as T & { error?: string };
   if (!response.ok) {
@@ -13,14 +15,12 @@ export async function listFavoriteProductIds(userId: string): Promise<string[]> 
   return parseJson<string[]>(response);
 }
 
-export async function listFavoriteProducts(userId: string) {
+export async function listFavoriteProducts(userId: string): Promise<ProductDto[]> {
   const response = await fetch(
     `/api/favorites?user_id=${encodeURIComponent(userId)}&with_products=1`,
     { cache: "no-store" }
   );
-  return parseJson<Awaited<ReturnType<typeof import("@/server/favorites").listFavoriteProducts>>>(
-    response
-  );
+  return parseJson<ProductDto[]>(response);
 }
 
 export async function addFavorite(userId: string, productId: string) {

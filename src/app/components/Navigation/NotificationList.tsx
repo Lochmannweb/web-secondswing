@@ -29,7 +29,9 @@ export function NotificationList({
             className={`notification-item${item.read_at ? "" : " notification-item--unread"}`}
             onClick={() => onSelect(item)}
           >
-            <span className="notification-item-kicker">{item.type === "message" ? "Besked" : "Opdatering"}</span>
+            <span className="notification-item-kicker">
+              {item.type === "message" ? "Besked" : "Opdatering"}
+            </span>
             <span className="notification-item-title">{item.title}</span>
             <span className="notification-item-body">{item.body}</span>
             <span className="notification-item-time">{formatRelativeTime(item.created_at)}</span>

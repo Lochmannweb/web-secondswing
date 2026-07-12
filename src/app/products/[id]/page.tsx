@@ -1,6 +1,5 @@
 "use client";
 
-import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import { getProductById, updateProduct } from "@/app/lib/crud";
 import {
   addFavorite,
@@ -8,8 +7,9 @@ import {
   removeFavorite,
 } from "@/app/lib/favoritesApi";
 import { findOrCreateChat } from "@/app/lib/chatsApi";
-import type { ProductDto } from "@/server/products/serialize";
+import type { ProductDto } from "@/app/lib/productSerialize";
 import { getProductDetailMeta } from "@/app/lib/productDisplay";
+import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import OfferBidDrawer from "@/app/components/Products/OfferBidDrawer";
 import { Box, Button, IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -23,7 +23,7 @@ import "./productEdit.css";
 
 interface Product {
   id: string;
-  title: string;
+  title: string | null;
   description: string | null;
   price: number | null;
   image_url: string | null;
@@ -40,7 +40,7 @@ interface Product {
   divider_count?: number | null;
   weight?: string | null;
   sold: boolean | null;
-  product_images?: ProductDto["product_images"];
+  images?: ProductDto["images"];
 }
 
 export default function ProductPage() {
@@ -76,10 +76,11 @@ export default function ProductPage() {
         setProduct(data);
 
         const initialImages = data.image_url ? [data.image_url] : [];
-        const extraImages = data.product_images ?? [];
-        const mergedImages = extraImages.length
-          ? [...initialImages, ...extraImages.map((item) => item.image_url).filter(Boolean)]
-          : initialImages;
+        const extraImages = data.images ?? [];
+        const mergedImages = [
+          ...initialImages,
+          ...extraImages.map((item) => item.image_url).filter(Boolean),
+        ];
         setProductImages(Array.from(new Set(mergedImages)));
 
         if (currentUserId) {
@@ -118,8 +119,10 @@ export default function ProductPage() {
 
     const nextSoldValue = !product.sold;
 
+    if (!produktId) return;
+
     try {
-      await updateProduct(produktId!, { sold: nextSoldValue });
+      await updateProduct(produktId, { sold: nextSoldValue });
       setProduct({ ...product, sold: nextSoldValue });
     } catch {
       setError("Kunne ikke opdatere produktstatus");
@@ -134,21 +137,17 @@ export default function ProductPage() {
       return;
     }
 
-    if (isFavorite) {
-      try {
+    try {
+      if (isFavorite) {
         await removeFavorite(viewerId, product.id);
         setIsFavorite(false);
-      } catch {
-        setError("Kunne ikke fjerne favorit");
+        return;
       }
-      return;
-    }
 
-    try {
       await addFavorite(viewerId, product.id);
       setIsFavorite(true);
     } catch {
-      setError("Kunne ikke gemme favorit");
+      setError(isFavorite ? "Kunne ikke fjerne favorit" : "Kunne ikke gemme favorit");
     }
   };
 
@@ -369,7 +368,7 @@ export default function ProductPage() {
           onClose={() => setIsOfferDrawerOpen(false)}
           product={{
             id: product.id,
-            title: product.title,
+            title: product.title ?? "",
             price: product.price,
             image_url: product.image_url,
             user_id: product.user_id,
