@@ -1,10 +1,5 @@
-body.kontakt-route {
-  overflow: hidden;
-  height: 100svh;
-}
-
 .kontakt-page {
-  height: calc(100svh - 5.25rem);
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,9 +126,7 @@ body.kontakt-route {
 
 @media (max-width: 599px) {
   .kontakt-page {
-    height: calc(100svh - 4.75rem);
     padding-top: 5.5rem;
-    align-items: center;
   }
 
   .kontakt-inner {

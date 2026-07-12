@@ -1,12 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { usePageFitViewport } from "@/app/hooks/usePageFitViewport";
+import "./kontakt.css";
 
 export default function KontaktLayout({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    document.body.classList.add("kontakt-route");
-    return () => document.body.classList.remove("kontakt-route");
-  }, []);
-
+  usePageFitViewport();
   return children;
 }
