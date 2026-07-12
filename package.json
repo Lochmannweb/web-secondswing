@@ -1,16 +1,24 @@
 {
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node scripts/dev.mjs",
+    "dev:next": "next dev",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:push": "prisma db push",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node ./test/sanity.test.js"
+    "test": "node ./test/sanity.test.js",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
+    "@prisma/client": "^6.19.0",
     "@react-three/fiber": "^9.4.2",
     "@sentry/nextjs": "^10.29.0",
     "@supabase/ssr": "^0.8.0",
@@ -23,6 +31,11 @@
   "devDependencies": {
     "@types/three": "^0.181.0",
     "eslint": "^8.57.1",
+    "prisma": "^6.19.0",
+    "tsx": "^4.20.6",
     "typescript": "5.9.3"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }
