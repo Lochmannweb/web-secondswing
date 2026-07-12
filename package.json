@@ -1,16 +1,21 @@
 {
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node scripts/dev.mjs",
+    "dev:next": "next dev",
+    "dev:studio": "prisma studio",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node ./test/sanity.test.js"
+    "test": "node ./test/sanity.test.js",
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
+    "@prisma/client": "^6.19.3",
     "@react-three/fiber": "^9.4.2",
     "@sentry/nextjs": "^10.29.0",
     "@supabase/ssr": "^0.8.0",
@@ -23,6 +28,8 @@
   "devDependencies": {
     "@types/three": "^0.181.0",
     "eslint": "^8.57.1",
+    "pg": "^8.22.0",
+    "prisma": "^6.19.3",
     "typescript": "5.9.3"
   }
 }
