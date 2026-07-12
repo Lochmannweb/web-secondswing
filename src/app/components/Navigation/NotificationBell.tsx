@@ -69,6 +69,7 @@ export default function NotificationBell({ isHero = false }: NotificationBellPro
         anchorEl={anchorEl}
         onClose={handleClose}
         className="notification-popover"
+        disableScrollLock
         slotProps={{
           paper: { className: "notification-popover-paper" },
         }}
