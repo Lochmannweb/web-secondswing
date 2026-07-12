@@ -13,6 +13,7 @@ import {
   type ShopFacetKey,
   type ShopProduct,
 } from "@/app/lib/shopFilters";
+import { getProduct } from "@/app/lib/crud";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import SearchBar from "@/app/components/Shop/SearchBar";
 import AllProducts from "@/app/components/Products/AllProducts";
@@ -25,14 +26,14 @@ import "./shop.css";
 
 interface Product {
   id: string;
-  title: string;
+  title: string | null;
   description: string | null;
   price: number | null;
   image_url: string | null;
   created_at: string;
   user_id: string;
-  gender: "male" | "female" | "unisex" | null;
-  category?: ProductCategory | null;
+  gender: string | null;
+  category?: string | null;
   color?: string | null;
   size?: string | null;
   stand?: string | null;
@@ -77,13 +78,8 @@ export default function ShopPage() {
         const loggedInUserId = sessionData.session?.user.id ?? null;
         setUserId(loggedInUserId);
 
-        const { data, error } = await supabase
-          .from("products")
-          .select("*")
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-        setProducts(data || []);
+        const data = await getProduct();
+        setProducts(data);
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : "Ukendt fejl";
         setError(message);

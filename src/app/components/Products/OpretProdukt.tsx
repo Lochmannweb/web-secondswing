@@ -1,6 +1,6 @@
 "use client";
 
-import { createProduct } from "@/app/lib/crud";
+import { createProduct, replaceProductImages } from "@/app/lib/crud";
 import {
   buildProductPayload,
   CATEGORY_OPTIONS,
@@ -256,22 +256,11 @@ export default function CreateProduct() {
 
       if (uploadedUrls.length > 1 && createdProduct?.id) {
         const extraImages = uploadedUrls.slice(1).map((url, index) => ({
-          product_id: createdProduct.id,
           image_url: url,
           position: index + 1,
         }));
 
-        const { error: imagesError } = await supabase.from("product_images").insert(extraImages);
-
-        if (imagesError?.code === "42P01") {
-          throw new Error("Produkt blev gemt, men tabellen product_images mangler i databasen.");
-        }
-
-        if (imagesError) {
-          throw new Error(
-            `Produkt gemt, men ekstra billeder kunne ikke gemmes: ${imagesError.message}`
-          );
-        }
+        await replaceProductImages(createdProduct.id, extraImages);
       }
 
       setMessage({ type: "success", text: "Produkt blev oprettet!" });

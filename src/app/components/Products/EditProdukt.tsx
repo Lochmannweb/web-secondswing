@@ -3,6 +3,7 @@
 
 "use client"
 
+import { getProductById, updateProduct } from "@/app/lib/crud"
 import { updateProfile } from "@/app/actions"
 import { getSupabaseClient } from "@/app/lib/supabaseClient"
 import { Box, TextField, Button, Alert, MenuItem, Select, InputLabel, FormControl } from "@mui/material"
@@ -26,23 +27,17 @@ export default function EditProduct({ productId }: EditProductProps) {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", productId)
-        .single()
+      try {
+        const data = await getProductById(productId)
 
-      if (error) {
-        setMessage({ type: "error", text: `Kunne ikke hente produkt: ${error.message}` })
-        return
-      }
-
-      if (data) {
-        setTitle(data.title)
-        setDescription(data.description)
+        setTitle(data.title ?? "")
+        setDescription(data.description ?? "")
         setPrice(data.price?.toString() || "")
-        setGender(data.gender)
+        setGender((data.gender as "female" | "male" | "unisex") ?? "female")
         setImagePreview(data.image_url || "/placeholderprofile.jpg")
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Ukendt fejl"
+        setMessage({ type: "error", text: `Kunne ikke hente produkt: ${message}` })
       }
     }
 
@@ -86,18 +81,13 @@ export default function EditProduct({ productId }: EditProductProps) {
         imageUrl = await uploadImage(imageFile)
       }
 
-      const { error } = await supabase
-        .from("products")
-        .update({
-          title,
-          description,
-          price: price ? parseFloat(price) : null,
-          gender,
-          image_url: imageUrl,
-        })
-        .eq("id", productId)
-
-      if (error) throw error
+      await updateProduct(productId, {
+        title,
+        description,
+        price: price ? parseFloat(price) : null,
+        gender,
+        image_url: imageUrl,
+      })
 
       setMessage({ type: "success", text: "Produkt opdateret succesfuldt!" })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

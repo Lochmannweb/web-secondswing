@@ -1,5 +1,6 @@
 "use client";
 
+import { getUnreadMessageCount } from "@/app/lib/chatsApi";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -43,41 +44,21 @@ export default function ProfilePage() {
         return;
       }
 
-      const { count } = await supabase
-        .from("messages")
-        .select("id", { count: "exact", head: true })
-        .eq("receiver_id", currentUserId)
-        .is("read_at", null);
-
-      if (isMounted) setUnreadMessageCount(count ?? 0);
+      try {
+        const count = await getUnreadMessageCount(currentUserId);
+        if (isMounted) setUnreadMessageCount(count);
+      } catch {
+        if (isMounted) setUnreadMessageCount(0);
+      }
     };
 
     loadUnreadCount();
 
-    const channelPromise = supabase.auth.getUser().then(({ data }) => {
-      const currentUserId = data.user?.id;
-      if (!currentUserId) return null;
-
-      return supabase
-        .channel(`profile-unread-${currentUserId}`)
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "messages",
-            filter: `receiver_id=eq.${currentUserId}`,
-          },
-          loadUnreadCount
-        )
-        .subscribe();
-    });
+    const intervalId = window.setInterval(loadUnreadCount, 15000);
 
     return () => {
       isMounted = false;
-      channelPromise.then((channel) => {
-        if (channel) supabase.removeChannel(channel);
-      });
+      window.clearInterval(intervalId);
     };
   }, [supabase]);
 

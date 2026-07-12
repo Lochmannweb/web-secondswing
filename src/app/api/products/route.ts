@@ -1,5 +1,5 @@
 import { prisma } from "@/app/lib/prisma";
-import { serializeProduct } from "@/app/lib/productSerialize";
+import { parseProductId, serializeProduct } from "@/app/lib/productSerialize";
 import type { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -26,6 +26,22 @@ type ProductBody = {
 export async function GET(req: NextRequest) {
   try {
     const userId = req.nextUrl.searchParams.get("user_id");
+    const idsParam = req.nextUrl.searchParams.get("ids");
+
+    if (idsParam) {
+      const ids = idsParam
+        .split(",")
+        .map((value) => value.trim())
+        .filter(Boolean)
+        .map(parseProductId);
+
+      const products = await prisma.product.findMany({
+        where: { id: { in: ids } },
+        orderBy: { createdAt: "desc" },
+      });
+
+      return NextResponse.json(products.map(serializeProduct));
+    }
 
     const products = await prisma.product.findMany({
       where: userId ? { userId } : undefined,
@@ -68,12 +84,7 @@ export async function POST(req: NextRequest) {
       dividerCount: body.divider_count ?? null,
       weight: body.weight ?? null,
       sold: body.sold ?? false,
-      user: {
-        connectOrCreate: {
-          where: { id: body.user_id },
-          create: { id: body.user_id },
-        },
-      },
+      userId: body.user_id,
     };
 
     const product = await prisma.product.create({ data });

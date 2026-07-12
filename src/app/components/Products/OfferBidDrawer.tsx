@@ -6,7 +6,7 @@ import {
   parseCustomOfferAmount,
   validateCustomOfferAmount,
 } from "@/app/lib/offerPresets";
-import { getSupabaseClient } from "@/app/lib/supabaseClient";
+import { findOrCreateChat, sendMessage } from "@/app/lib/chatsApi";
 import { Box, Button, Drawer, TextField } from "@mui/material";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
@@ -35,7 +35,6 @@ export default function OfferBidDrawer({
   onLoginRequired,
   onError,
 }: OfferBidDrawerProps) {
-  const supabase = getSupabaseClient();
   const offerPresets = useMemo(() => getOfferPresets(product.price), [product.price]);
   const [selectedOfferId, setSelectedOfferId] = useState(offerPresets[1]?.id ?? "");
   const [customAmountInput, setCustomAmountInput] = useState("");
@@ -88,51 +87,18 @@ export default function OfferBidDrawer({
     setCustomAmountError(null);
 
     try {
-      const { data: existingChats, error: existingError } = await supabase
-        .from("chats")
-        .select("id")
-        .or(
-          `and(buyer_id.eq.${viewerId},seller_id.eq.${product.user_id}),and(buyer_id.eq.${product.user_id},seller_id.eq.${viewerId})`
-        )
-        .limit(1);
-
-      if (existingError) {
-        throw new Error(existingError.message);
-      }
-
-      let chatId = existingChats?.[0]?.id;
-
-      if (!chatId) {
-        const { data: insertedChat, error: insertError } = await supabase
-          .from("chats")
-          .insert([{ buyer_id: viewerId, seller_id: product.user_id }])
-          .select("id")
-          .single();
-
-        if (insertError || !insertedChat?.id) {
-          throw new Error(insertError?.message ?? "Kunne ikke oprette samtale");
-        }
-
-        chatId = insertedChat.id;
-      }
-
+      const chat = await findOrCreateChat(viewerId, product.user_id);
       const offerMessage = `Bud: ${selectedAmount} kr på "${product.title}" (annonceret pris: ${product.price} kr)`;
 
-      const { error: messageError } = await supabase.from("messages").insert([
-        {
-          chat_id: chatId,
-          sender_id: viewerId,
-          receiver_id: product.user_id,
-          content: offerMessage,
-        },
-      ]);
-
-      if (messageError) {
-        throw new Error(messageError.message);
-      }
+      await sendMessage({
+        chatId: chat.id,
+        senderId: viewerId,
+        receiverId: product.user_id,
+        content: offerMessage,
+      });
 
       onClose();
-      window.location.href = `/chats?chatId=${chatId}`;
+      window.location.href = `/chats?chatId=${chat.id}`;
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Kunne ikke sende bud";
       onError(msg);

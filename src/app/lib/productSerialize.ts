@@ -1,4 +1,10 @@
-import type { Product } from "@prisma/client";
+import type { Product, ProductImage } from "@prisma/client";
+
+export type ProductImageDto = {
+  id: string;
+  image_url: string;
+  position: number;
+};
 
 export type ProductDto = {
   id: string;
@@ -20,7 +26,10 @@ export type ProductDto = {
   hand: string | null;
   divider_count: number | null;
   weight: string | null;
+  images?: ProductImageDto[];
 };
+
+type ProductWithImages = Product & { images?: ProductImage[] };
 
 export function parseProductId(id: string): bigint {
   if (!/^\d+$/.test(id)) {
@@ -29,8 +38,8 @@ export function parseProductId(id: string): bigint {
   return BigInt(id);
 }
 
-export function serializeProduct(product: Product): ProductDto {
-  return {
+export function serializeProduct(product: ProductWithImages): ProductDto {
+  const dto: ProductDto = {
     id: product.id.toString(),
     user_id: product.userId,
     title: product.title,
@@ -51,4 +60,14 @@ export function serializeProduct(product: Product): ProductDto {
     divider_count: product.dividerCount,
     weight: product.weight,
   };
+
+  if (product.images) {
+    dto.images = product.images.map((image) => ({
+      id: image.id.toString(),
+      image_url: image.imageUrl,
+      position: image.position,
+    }));
+  }
+
+  return dto;
 }

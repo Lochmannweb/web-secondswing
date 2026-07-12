@@ -1,40 +1,15 @@
 #!/usr/bin/env node
-import { readFileSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadProjectEnv } from "./loadEnv.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-
-function loadEnvFile(filename, override = false) {
-  const path = resolve(root, filename);
-  if (!existsSync(path)) return;
-
-  for (const line of readFileSync(path, "utf8").split("\n")) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-    const eq = trimmed.indexOf("=");
-    if (eq === -1) continue;
-    const key = trimmed.slice(0, eq).trim();
-    let value = trimmed.slice(eq + 1).trim();
-    if (
-      (value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1);
-    }
-    if (override || process.env[key] === undefined) {
-      process.env[key] = value;
-    }
-  }
-}
-
-loadEnvFile(".env");
-loadEnvFile(".env.local", true);
+loadProjectEnv(root);
 
 const url = process.env.DIRECT_URL || process.env.DATABASE_URL;
 
 if (!url) {
-  console.error("DATABASE_URL mangler i .env.local");
+  console.error("NEON_URL (eller DATABASE_URL) mangler i .env.local");
   process.exit(1);
 }
 
@@ -51,18 +26,17 @@ const client = new pg.default.Client({ connectionString: url, connectionTimeoutM
 try {
   await client.connect();
   await client.query("select 1");
-  console.log("Database-forbindelse OK");
+  const host = url.includes("neon.tech") ? "Neon" : url.includes("supabase.com") ? "Supabase" : "Postgres";
+  console.log(`Database-forbindelse OK (${host})`);
   process.exit(0);
 } catch (error) {
   const message = error instanceof Error ? error.message : String(error);
   console.error("\nDatabase-forbindelse fejlede:");
   console.error(message);
-  console.error("\nGør dette i Supabase Dashboard → Project Settings → Database:");
-  console.error("1. Reset database password (hvis du er i tvivl)");
-  console.error("2. Kopiér Connection string → URI (Session pooler) til DIRECT_URL");
-  console.error("3. Kopiér Connection string → URI (Transaction pooler) til DATABASE_URL");
-  console.error("4. Erstat [YOUR-PASSWORD] — specialtegn skal URL-kodes (! → %21)");
-  console.error("\nBrug hostnavnet fra dashboardet — gæt ikke region (aws-0-eu-central-1 osv.).\n");
+  console.error("\nNeon Dashboard → Connection details:");
+  console.error("- NEON_URL = Pooled connection");
+  console.error("- NEON_DIRECT_URL = Direct connection (valgfri; ellers udledes fra NEON_URL)");
+  console.error("\nSupabase bruges kun til auth/profiles — ikke som NEON_URL.\n");
   process.exit(1);
 } finally {
   try {

@@ -1,6 +1,6 @@
 "use client"
 
-import { deleteProduct, updateProduct } from "@/app/lib/crud"
+import { deleteProduct, getProductById, replaceProductImages, updateProduct } from "@/app/lib/crud"
 import {
   buildProductPayload,
   CATEGORY_OPTIONS,
@@ -86,15 +86,7 @@ export default function EditProductPage() {
           return
         }
 
-        const { data: product, error } = await supabase
-          .from("products")
-          .select("*")
-          .eq("id", productId)
-          .single()
-
-        if (error) {
-          throw new Error(error.message)
-        }
+        const product = await getProductById(productId)
 
         if (!product) {
           setMessage({ type: "error", text: "Produkt ikke fundet." })
@@ -112,19 +104,11 @@ export default function EditProductPage() {
         setForm(toProductFormState(product))
 
         const initialImages = product.image_url ? [product.image_url] : []
-        const { data: extraImages, error: extraImagesError } = await supabase
-          .from("product_images")
-          .select("image_url, position")
-          .eq("product_id", productId)
-          .order("position", { ascending: true })
-
-        if (extraImagesError && extraImagesError.code !== "42P01") {
-          throw new Error(extraImagesError.message)
-        }
-
-        const mergedImages = !extraImagesError && extraImages
-          ? [...initialImages, ...extraImages.map((item) => item.image_url).filter(Boolean)]
-          : initialImages
+        const extraImages = product.images ?? []
+        const mergedImages = [
+          ...initialImages,
+          ...extraImages.map((item) => item.image_url).filter(Boolean),
+        ]
 
         setProductImages(Array.from(new Set(mergedImages)))
         setActivePreviewIndex(0)
@@ -311,33 +295,15 @@ export default function EditProductPage() {
       })
 
       if (uploadedUrls.length > 0) {
-        const { error: deleteImagesError } = await supabase
-          .from("product_images")
-          .delete()
-          .eq("product_id", productId)
-
-        if (deleteImagesError && deleteImagesError.code !== "42P01") {
-          throw new Error(deleteImagesError.message)
-        }
-
         const extraImages = uploadedUrls.slice(1).map((url, index) => ({
-          product_id: Number(productId),
           image_url: url,
           position: index + 1,
         }))
 
         if (extraImages.length > 0) {
-          const { error: imagesError } = await supabase
-            .from("product_images")
-            .insert(extraImages)
-
-          if (imagesError?.code === "42P01") {
-            throw new Error("Produkt blev opdateret, men tabellen product_images mangler i databasen.")
-          }
-
-          if (imagesError) {
-            throw new Error(`Produkt opdateret, men ekstra billeder kunne ikke gemmes: ${imagesError.message}`)
-          }
+          await replaceProductImages(productId, extraImages)
+        } else {
+          await replaceProductImages(productId, [])
         }
 
         setForm((prev) => ({ ...prev, image_url: uploadedUrls[0] ?? null }))
@@ -371,15 +337,6 @@ export default function EditProductPage() {
     setMessage(null)
 
     try {
-      const { error: extraImagesDeleteError } = await supabase
-        .from("product_images")
-        .delete()
-        .eq("product_id", productId)
-
-      if (extraImagesDeleteError && extraImagesDeleteError.code !== "42P01") {
-        throw new Error(extraImagesDeleteError.message)
-      }
-
       await deleteProduct(productId)
       router.push("/profile")
     } catch (err) {

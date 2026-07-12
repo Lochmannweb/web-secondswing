@@ -5,17 +5,18 @@ import Link from "next/link";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { IconButton, Alert } from "@mui/material";
+import { addFavorite, listFavoriteProductIds, removeFavorite } from "@/app/lib/favoritesApi";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
 
 interface Product {
   id: string;
-  title: string;
+  title: string | null;
   description: string | null;
   price: number | null;
   image_url: string | null;
   created_at: string;
   user_id: string;
-  gender?: "male" | "female" | "unisex" | null;
+  gender: string | null;
   category?: string | null;
   color?: string | null;
   size?: string | null;
@@ -49,13 +50,8 @@ export default function AllProducts({ products, onFavoriteRemoved }: AllProducts
       }
       setUserId(userData.user.id);
 
-      const { data: favData, error } = await supabase
-        .from("favoriter")
-        .select("product_id")
-        .eq("user_id", userData.user.id);
-
-      if (error) console.error(error);
-      else setFavorites(favData.map((f) => f.product_id));
+      const favData = await listFavoriteProductIds(userData.user.id);
+      setFavorites(favData);
     };
     fetchFavorites();
   }, [supabase]);
@@ -66,19 +62,11 @@ export default function AllProducts({ products, onFavoriteRemoved }: AllProducts
     try {
       if (favorites.includes(productId)) {
         setFavorites(favorites.filter((id) => id !== productId));
-        const { error } = await supabase
-          .from("favoriter")
-          .delete()
-          .eq("user_id", userId)
-          .eq("product_id", productId);
-        if (error) console.error("Fejl ved sletning:", error);
-        else onFavoriteRemoved?.(productId);
+        await removeFavorite(userId, productId);
+        onFavoriteRemoved?.(productId);
       } else {
         setFavorites([...favorites, productId]);
-        const { error } = await supabase
-          .from("favoriter")
-          .insert([{ user_id: userId, product_id: productId }]);
-        if (error) console.error("Fejl ved indsættelse:", error);
+        await addFavorite(userId, productId);
       }
     } catch (err) {
       console.error(err);
@@ -128,7 +116,7 @@ export default function AllProducts({ products, onFavoriteRemoved }: AllProducts
               {product.image_url ? (
                 <img
                   src={product.image_url}
-                  alt={product.title}
+                  alt={product.title ?? "Produkt"}
                   className="catalog-product-image"
                 />
               ) : (

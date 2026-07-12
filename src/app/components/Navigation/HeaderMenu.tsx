@@ -2,6 +2,7 @@
 
 import { useNavigationTracking } from "@/app/hooks/useNavigationTracking";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
+import NotificationBell from "@/app/components/Navigation/NotificationBell";
 import { Box, Drawer, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Link from "next/link";
@@ -11,16 +12,13 @@ import { useEffect, useState } from "react";
 function HeaderMenu() {
   const supabase = getSupabaseClient();
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  const isHeroPage = pathname === "/" || pathname === "/about";
   useNavigationTracking();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-    setHydrated(true);
-
     supabase.auth.getSession().then(({ data }) => {
       setIsLoggedIn(!!data.session);
     });
@@ -33,8 +31,6 @@ function HeaderMenu() {
 
     return () => subscription.subscription.unsubscribe();
   }, [supabase.auth]);
-
-  if (!hydrated) return null;
 
   async function handleGoogleLogin() {
     const { error } = await supabase.auth.signInWithOAuth({
@@ -52,13 +48,31 @@ function HeaderMenu() {
 
   return (
     <>
-      <header className={`site-header${isHome ? " site-header--hero" : ""}`}>
-        <nav className="site-header-left" aria-label="Primær navigation">
-          {isLoggedIn ? (
-            <Link href="/profile" className="site-header-link">
-              PROFIL
+      <header className={`site-header${isHeroPage ? " site-header--hero" : ""}`}>
+        <div className="site-header-left">
+          <Link href="/" className="site-header-logo">
+            SECONDSWING
+          </Link>
+          <nav className="site-header-nav" aria-label="Primær navigation">
+            {isLoggedIn && (
+              <>
+                <Link href="/profile" className="site-header-link">
+                  PROFIL
+                </Link>
+                <Link href="/favoriter" className="site-header-link">
+                  FAVORITTER
+                </Link>
+              </>
+            )}
+            <Link href="/shop" className="site-header-link">
+              SHOP
             </Link>
-          ) : (
+          </nav>
+          <p className="site-header-tagline">BRUGT GOLFUDSTYR</p>
+        </div>
+
+        <div className="site-header-right">
+          {!isLoggedIn && (
             <button
               type="button"
               className="site-header-link site-header-login"
@@ -67,22 +81,14 @@ function HeaderMenu() {
               LOG IND
             </button>
           )}
-          <Link href="/shop" className="site-header-link">
-            SHOP
-          </Link>
-        </nav>
-
-        <div className="site-header-center">
-          <Link href="/" className="site-header-logo">
-            SECONDSWING
-          </Link>
-          <p className="site-header-tagline">BRUGT GOLFUDSTYR</p>
-        </div>
-
-        <div className="site-header-right">
           <Link href="/opretProdukt" className="site-header-cta">
             OPRET ANNONCE
           </Link>
+          {isLoggedIn && (
+            <div className="site-header-notifications">
+              <NotificationBell isHero={isHeroPage} />
+            </div>
+          )}
           <button
             type="button"
             className="site-header-menu-btn"
@@ -139,6 +145,15 @@ function HeaderMenu() {
                 LOG IND
               </button>
             )}
+            {isLoggedIn && (
+              <Link
+                href="/favoriter"
+                className="header-drawer-link"
+                onClick={() => setDrawerOpen(false)}
+              >
+                FAVORITTER
+              </Link>
+            )}
             <Link
               href="/shop"
               className="header-drawer-link"
@@ -148,13 +163,22 @@ function HeaderMenu() {
             </Link>
 
             {isLoggedIn && (
-              <Link
-                href="/chats"
-                className="header-drawer-link"
-                onClick={() => setDrawerOpen(false)}
-              >
-                CHAT HISTORIK
-              </Link>
+              <>
+                <Link
+                  href="/notifikationer"
+                  className="header-drawer-link"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  NOTIFIKATIONER
+                </Link>
+                <Link
+                  href="/chats"
+                  className="header-drawer-link"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  CHAT HISTORIK
+                </Link>
+              </>
             )}
             <Link
               href="/opretProdukt"

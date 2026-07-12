@@ -10,6 +10,7 @@ import {
   type ActiveShopFacets,
   type ShopFacetKey,
 } from "@/app/lib/shopFilters";
+import { listFavoriteProducts } from "@/app/lib/favoritesApi";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import SearchBar from "@/app/components/Shop/SearchBar";
 import AllProducts from "@/app/components/Products/AllProducts";
@@ -24,14 +25,14 @@ import "./favorit.css";
 
 interface Product {
   id: string;
-  title: string;
+  title: string | null;
   description: string | null;
   price: number | null;
   image_url: string | null;
   created_at: string;
   user_id: string;
-  gender: "male" | "female" | "unisex" | null;
-  category?: ProductCategory | null;
+  gender: string | null;
+  category?: string | null;
   color?: string | null;
   size?: string | null;
   stand?: string | null;
@@ -63,35 +64,8 @@ export default function FavoriterPage() {
         return;
       }
 
-      const { data: favData, error: favError } = await supabase
-        .from("favoriter")
-        .select("product_id")
-        .eq("user_id", userData.user.id);
-
-      if (favError) {
-        console.error("Fejl ved hentning af favoritter:", favError);
-        setLoading(false);
-        return;
-      }
-
-      const productIds = favData.map((favorite) => favorite.product_id);
-      if (!productIds.length) {
-        setProducts([]);
-        setLoading(false);
-        return;
-      }
-
-      const { data: productData, error: productError } = await supabase
-        .from("products")
-        .select("*")
-        .in("id", productIds)
-        .order("created_at", { ascending: false });
-
-      if (productError) {
-        console.error("Fejl ved hentning af produkter:", productError);
-      } else {
-        setProducts(productData || []);
-      }
+      const productData = await listFavoriteProducts(userData.user.id);
+      setProducts(productData);
 
       setLoading(false);
     };

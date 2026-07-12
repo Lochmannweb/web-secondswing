@@ -1,49 +1,20 @@
 #!/usr/bin/env node
 import { execSync, spawn } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadProjectEnv } from "./loadEnv.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-
-function loadEnvFile(filename, override = false) {
-  const path = resolve(root, filename);
-  if (!existsSync(path)) return;
-
-  for (const line of readFileSync(path, "utf8").split("\n")) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-
-    const eq = trimmed.indexOf("=");
-    if (eq === -1) continue;
-
-    const key = trimmed.slice(0, eq).trim();
-    let value = trimmed.slice(eq + 1).trim();
-
-    if (
-      (value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1);
-    }
-
-    if (override || process.env[key] === undefined) {
-      process.env[key] = value;
-    }
-  }
-}
-
-loadEnvFile(".env");
-loadEnvFile(".env.local", true);
+loadProjectEnv(root);
 
 function run(command) {
   console.log(`> ${command}`);
   execSync(command, { stdio: "inherit", shell: true, cwd: root, env: process.env });
 }
 
-if (!process.env.DATABASE_URL) {
-  console.error("\nDATABASE_URL mangler i .env.local");
-  console.error("Tilføj Supabase connection string fra Dashboard → Database.\n");
+if (!process.env.DATABASE_URL && !process.env.NEON_URL) {
+  console.error("\nNEON_URL mangler i .env.local");
+  console.error("Neon Dashboard → Connection details → Pooled URI.\n");
   process.exit(1);
 }
 

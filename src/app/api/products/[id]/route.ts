@@ -27,7 +27,12 @@ export async function GET(_req: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
     const productId = parseProductId(id);
-    const product = await prisma.product.findUnique({ where: { id: productId } });
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+      include: {
+        images: { orderBy: { position: "asc" } },
+      },
+    });
 
     if (!product) {
       return NextResponse.json({ error: "Produkt ikke fundet" }, { status: 404 });
