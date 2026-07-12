@@ -14,13 +14,13 @@ import { getSupabaseClient } from "@/app/lib/supabaseClient";
 
 interface Product {
   id: string;
-  title: string;
+  title: string | null;
   description: string | null;
   price: number | null;
   image_url: string | null;
   created_at: string;
   user_id: string;
-  gender?: "male" | "female" | "unisex" | null;
+  gender: string | null;
   category?: string | null;
   color?: string | null;
   size?: string | null;
@@ -128,7 +128,7 @@ export default function AllProducts({ products, onFavoriteRemoved }: AllProducts
               {product.image_url ? (
                 <img
                   src={product.image_url}
-                  alt={product.title}
+                  alt={product.title ?? "Produkt"}
                   className="catalog-product-image"
                 />
               ) : (

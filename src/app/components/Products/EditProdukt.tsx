@@ -3,8 +3,8 @@
 
 "use client"
 
-import { updateProfile } from "@/app/actions"
 import { getProductById, updateProduct } from "@/app/lib/crud"
+import { updateProfile } from "@/app/actions"
 import { uploadImageFile } from "@/app/lib/uploadImage"
 import { Box, TextField, Button, Alert, MenuItem, Select, InputLabel, FormControl } from "@mui/material"
 import Image from "next/image"
@@ -29,14 +29,14 @@ export default function EditProduct({ productId }: EditProductProps) {
       try {
         const data = await getProductById(productId)
 
-        setTitle(data.title)
+        setTitle(data.title ?? "")
         setDescription(data.description ?? "")
         setPrice(data.price?.toString() || "")
         setGender((data.gender as "female" | "male" | "unisex") ?? "female")
         setImagePreview(data.image_url || "/placeholderprofile.jpg")
       } catch (error) {
-        const msg = error instanceof Error ? error.message : "Kunne ikke hente produkt"
-        setMessage({ type: "error", text: msg })
+        const message = error instanceof Error ? error.message : "Ukendt fejl"
+        setMessage({ type: "error", text: `Kunne ikke hente produkt: ${message}` })
       }
     }
 

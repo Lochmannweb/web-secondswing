@@ -11,7 +11,7 @@ import {
   type ShopFacetKey,
 } from "@/app/lib/shopFilters";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
-import { deleteProduct } from "@/app/lib/crud";
+import { deleteProduct, getProductsByUser } from "@/app/lib/crud";
 import SearchBar from "@/app/components/Shop/SearchBar";
 import CatalogCategoryNav from "@/app/components/Shop/CatalogCategoryNav";
 import CatalogFilterDrawer from "@/app/components/Shop/CatalogFilterDrawer";
@@ -34,14 +34,14 @@ import "./produkter.css";
 
 interface Product {
   id: string;
-  title: string;
+  title: string | null;
   description: string | null;
   price: number | null;
   image_url: string | null;
   created_at: string;
   user_id: string;
-  gender: "male" | "female" | "unisex" | null;
-  category?: ProductCategory | null;
+  gender: string | null;
+  category?: string | null;
   color?: string | null;
   size?: string | null;
   stand?: string | null;
@@ -79,17 +79,8 @@ export default function ProdukterPage() {
           return;
         }
 
-        const { data: userProducts, error: productsError } = await supabase
-          .from("products")
-          .select("*")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false });
-
-        if (productsError) {
-          throw new Error(`Kunne ikke hente produkter: ${productsError.message}`);
-        }
-
-        setProducts(userProducts || []);
+        const userProducts = await getProductsByUser(user.id);
+        setProducts(userProducts);
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : "Der opstod en fejl ved hentning af produkter";
         setError(message);
@@ -246,7 +237,7 @@ export default function ProdukterPage() {
                   {product.image_url ? (
                     <img
                       src={product.image_url}
-                      alt={product.title}
+                      alt={product.title ?? "Produkt"}
                       className="catalog-product-image"
                     />
                   ) : (

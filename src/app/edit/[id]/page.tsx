@@ -1,6 +1,6 @@
 "use client"
 
-import { deleteProduct, getProductById, updateProduct } from "@/app/lib/crud"
+import { deleteProduct, getProductById, replaceProductImages, updateProduct } from "@/app/lib/crud"
 import { uploadImageFiles } from "@/app/lib/uploadImage"
 import {
   buildProductPayload,
@@ -105,10 +105,11 @@ export default function EditProductPage() {
         setForm(toProductFormState(product))
 
         const initialImages = product.image_url ? [product.image_url] : []
-        const extraImages = product.product_images ?? []
-        const mergedImages = extraImages.length
-          ? [...initialImages, ...extraImages.map((item) => item.image_url).filter(Boolean)]
-          : initialImages
+        const extraImages = product.images ?? []
+        const mergedImages = [
+          ...initialImages,
+          ...extraImages.map((item) => item.image_url).filter(Boolean),
+        ]
 
         setProductImages(Array.from(new Set(mergedImages)))
         setActivePreviewIndex(0)
@@ -275,16 +276,26 @@ export default function EditProductPage() {
       await updateProduct(productId, {
         ...productPayload,
         image_url: imageUrl,
-        image_urls: allImageUrls,
-      })
+      });
 
       if (imageFiles.length > 0) {
-        setForm((prev) => ({ ...prev, image_url: allImageUrls[0] ?? null }))
-        setProductImages(allImageUrls)
-        selectedImagePreviews.forEach((url) => URL.revokeObjectURL(url))
-        setSelectedImagePreviews([])
-        setImageFiles([])
-        setActivePreviewIndex(0)
+        const extraImages = allImageUrls.slice(1).map((url, index) => ({
+          image_url: url,
+          position: index + 1,
+        }));
+
+        if (extraImages.length > 0) {
+          await replaceProductImages(productId, extraImages);
+        } else {
+          await replaceProductImages(productId, []);
+        }
+
+        setForm((prev) => ({ ...prev, image_url: allImageUrls[0] ?? null }));
+        setProductImages(allImageUrls);
+        selectedImagePreviews.forEach((url) => URL.revokeObjectURL(url));
+        setSelectedImagePreviews([]);
+        setImageFiles([]);
+        setActivePreviewIndex(0);
       }
 
       setMessage({ type: "success", text: "Produkt opdateret!" })

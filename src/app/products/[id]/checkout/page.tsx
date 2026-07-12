@@ -11,6 +11,7 @@ import {
   NETS_PAYMENT_METHODS,
   type NetsPaymentMethodId,
 } from "@/app/lib/paymentMethods";
+import { getProductById } from "@/app/lib/crud";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { Alert, Box, Button, TextField } from "@mui/material";
@@ -91,15 +92,7 @@ export default function CheckoutPage() {
           return;
         }
 
-        const { data, error: productError } = await supabase
-          .from("products")
-          .select("id, title, price, image_url, user_id, sold")
-          .eq("id", productId)
-          .single();
-
-        if (productError) {
-          throw new Error(productError.message);
-        }
+        const data = await getProductById(productId);
 
         if (data.user_id === currentUserId) {
           throw new Error("Du kan ikke købe dit eget produkt");
@@ -113,7 +106,14 @@ export default function CheckoutPage() {
           throw new Error("Produktet har ingen pris");
         }
 
-        setProduct(data);
+        setProduct({
+          id: data.id,
+          title: data.title ?? "",
+          price: data.price,
+          image_url: data.image_url,
+          user_id: data.user_id,
+          sold: data.sold,
+        });
         setAddress(
           shippingAddressFromMetadata(userData.user?.user_metadata, userData.user?.email ?? "")
         );

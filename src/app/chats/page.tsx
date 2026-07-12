@@ -35,14 +35,14 @@ import "./chats.css";
 
 type ChatRow = {
   id: string;
-  buyer_id: string;
-  seller_id: string;
+  buyer_id: string | null;
+  seller_id: string | null;
   created_at: string;
 };
 
 type MessageRow = {
   id: string;
-  chat_id: string;
+  chat_id: string | null;
   sender_id: string;
   receiver_id: string;
   content: string;
@@ -59,7 +59,7 @@ type ProfileRow = {
 
 type PartnerProduct = {
   id: string;
-  title: string;
+  title: string | null;
   price: number | null;
   image_url: string | null;
 };
@@ -181,9 +181,11 @@ export default function ChatsPage() {
 
       const partnerIds = Array.from(
         new Set(
-          allChats.map((chat) =>
-            chat.buyer_id === currentUser.id ? chat.seller_id : chat.buyer_id
-          )
+          allChats
+            .map((chat) =>
+              chat.buyer_id === currentUser.id ? chat.seller_id : chat.buyer_id
+            )
+            .filter((id): id is string => Boolean(id))
         )
       );
 
@@ -425,6 +427,11 @@ export default function ChatsPage() {
     const receiverId =
       activeChat.buyer_id === userId ? activeChat.seller_id : activeChat.buyer_id;
 
+    if (!receiverId) {
+      setError("Kunne ikke finde modtager for samtalen");
+      return;
+    }
+
     sendLockRef.current = true;
     setIsSending(true);
     setError(null);
@@ -456,6 +463,11 @@ export default function ChatsPage() {
 
     const receiverId =
       activeChat.buyer_id === userId ? activeChat.seller_id : activeChat.buyer_id;
+
+    if (!receiverId) {
+      setError("Kunne ikke finde modtager for samtalen");
+      return;
+    }
 
     sendLockRef.current = true;
     setIsSending(true);
@@ -833,7 +845,7 @@ export default function ChatsPage() {
                           {product.image_url ? (
                             <Image
                               src={product.image_url}
-                              alt={product.title}
+                              alt={product.title ?? "Produkt"}
                               fill
                               style={{ objectFit: "cover" }}
                             />

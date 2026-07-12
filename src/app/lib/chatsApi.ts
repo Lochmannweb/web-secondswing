@@ -1,4 +1,4 @@
-import type { ChatDto, ChatInboxDto, MessageDto } from "@/server/chats";
+import type { ChatInboxDto, ChatDto, MessageDto } from "@/server/chats/serialize";
 
 async function parseJson<T>(response: Response): Promise<T> {
   const payload = (await response.json()) as T & { error?: string };
@@ -90,10 +90,10 @@ export async function getProductsByUser(userId: string) {
   return parseJson<
     Array<{
       id: string;
-      title: string;
+      title: string | null;
       price: number | null;
       image_url: string | null;
-      sold: boolean | null;
+      sold: boolean;
     }>
   >(response);
 }
