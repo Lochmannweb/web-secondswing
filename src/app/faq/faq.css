@@ -1,0 +1,16 @@
+.faq-route .info-page {
+  max-width: 560px;
+  width: 100%;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.faq-route .info-page-content {
+  width: 100%;
+}
+
+@media (max-width: 599px) {
+  body.page-fit-viewport .site-main > .faq-route {
+    padding-top: max(5.5rem, calc(50svh - 10rem));
+  }
+}
