@@ -1,78 +1,44 @@
-import { getSupabaseClient } from "./supabaseClient";
+/** Klient-lag: kalder Prisma API — al data håndteres server-side via /api/* */
 
-const supabase = getSupabaseClient();
+import type { ProductDto } from "@/server/products/serialize";
 
-// CRUD - CREATE + error handling i backend
-export async function createProduct(product: unknown) {
-
-    const { data, error } = await supabase
-        .from("products")
-        .insert(product)
-        .select()
-        .single();
-
-        if (error) {
-            console.error("-- SUPABASE INSERT ERROR --")
-            console.error("Message:", error.message)
-            console.error("Details:", error.details)
-            console.error("Hint:", error.hint)
-            console.error("Code:", error.code)
-            throw new Error(error.message) 
-        }
-
-        return data;
+async function parseJson<T>(response: Response): Promise<T> {
+  const payload = (await response.json()) as T & { error?: string };
+  if (!response.ok) {
+    throw new Error(payload.error ?? "Request fejlede");
+  }
+  return payload;
 }
 
+export async function createProduct(product: Record<string, unknown>) {
+  const response = await fetch("/api/products", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(product),
+  });
+  return parseJson(response);
+}
 
-// CRUD - READ + error handling i backend
 export async function getProduct() {
-    const { data, error } = await supabase
-        .from("products")
-        .select();
-
-        if (error) {
-            console.log("Read failed: ", error);
-            throw new Error("Kunne ikke hente produkter");
-        }
-
-        return data;
+  const response = await fetch("/api/products", { cache: "no-store" });
+  return parseJson<Awaited<ReturnType<typeof import("@/server/products").listProducts>>>(response);
 }
 
-
-
-// CRUD - UPDATE + error handling i backend
-export async function updateProduct(id: string, updates: unknown) {
-    const { data, error } = await supabase
-        .from("products")
-        .update(updates)
-        .eq("id", id)
-        .select()
-        .single();
-
-        if (error) {
-            console.log("Update failed: ", error);
-            throw new Error("Kunne ikke updatere produkter");
-        }
-
-        return data;
+export async function updateProduct(id: string, updates: Record<string, unknown>) {
+  const response = await fetch(`/api/products/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updates),
+  });
+  return parseJson(response);
 }
 
-
-
-
-// CRUD - DELETE + error handling i backend
 export async function deleteProduct(id: string) {
-    const { data, error } = await supabase
-        .from("products")
-        .delete()
-        .eq("id", id);
-
-        if (error) {
-            console.log("Delete failed: ", error);
-            throw new Error("Kunne ikke slette produkter");
-        }
-
-        return data;
+  const response = await fetch(`/api/products/${id}`, { method: "DELETE" });
+  return parseJson(response);
 }
 
-
+export async function getProductById(id: string): Promise<ProductDto> {
+  const response = await fetch(`/api/products/${id}`, { cache: "no-store" });
+  return parseJson<ProductDto>(response);
+}

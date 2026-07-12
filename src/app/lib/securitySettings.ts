@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { searchProfiles as searchProfilesApi } from "@/app/lib/profilesApi";
 
 export type DeviceType = "mobil" | "ipad" | "tablet" | "baerbar" | "ukendt";
 
@@ -783,21 +784,14 @@ export async function submitUserReport(
 }
 
 export async function searchProfiles(
-  supabase: SupabaseClient,
   query: string,
   excludeUserId?: string
 ): Promise<{ id: string; display_name: string | null }[]> {
-  const trimmed = query.trim();
-  if (trimmed.length < 2) return [];
-
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("id, display_name")
-    .ilike("display_name", `%${trimmed}%`)
-    .limit(6);
-
-  if (error || !data) return [];
-  return data.filter((profile) => profile.id !== excludeUserId);
+  const profiles = await searchProfilesApi(query, excludeUserId);
+  return profiles.map((profile) => ({
+    id: profile.id,
+    display_name: profile.display_name,
+  }));
 }
 
 export async function getMfaEnabled(supabase: SupabaseClient): Promise<boolean> {

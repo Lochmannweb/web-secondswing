@@ -77,12 +77,12 @@ export default function ShopPage() {
         const loggedInUserId = sessionData.session?.user.id ?? null;
         setUserId(loggedInUserId);
 
-        const { data, error } = await supabase
-          .from("products")
-          .select("*")
-          .order("created_at", { ascending: false });
+        const response = await fetch("/api/products", { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error("Kunne ikke hente produkter");
+        }
 
-        if (error) throw error;
+        const data = (await response.json()) as Product[];
         setProducts(data || []);
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : "Ukendt fejl";

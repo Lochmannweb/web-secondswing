@@ -50,7 +50,7 @@ export function useNotifications(): UseNotificationsResult {
 
     setPreferences(prefs);
 
-    const items = await fetchNotifications(supabase, currentUserId, prefs);
+    const items = await fetchNotifications(currentUserId, prefs);
     if (!isMountedRef.current) return;
 
     setNotifications(items);
@@ -59,33 +59,10 @@ export function useNotifications(): UseNotificationsResult {
 
   useEffect(() => {
     isMountedRef.current = true;
-    let messageChannel: ReturnType<typeof supabase.channel> | null = null;
 
-    const setup = async () => {
-      await refresh();
+    refresh();
 
-      const { data } = await supabase.auth.getUser();
-      const currentUserId = data.user?.id;
-      if (!currentUserId || !isMountedRef.current) return;
-
-      messageChannel = supabase
-        .channel(`notifications-messages-${currentUserId}`)
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "messages",
-            filter: `receiver_id=eq.${currentUserId}`,
-          },
-          () => {
-            refresh();
-          }
-        )
-        .subscribe();
-    };
-
-    setup();
+    const intervalId = window.setInterval(refresh, 15000);
 
     const { data: authListener } = supabase.auth.onAuthStateChange(() => {
       refresh();
@@ -93,8 +70,8 @@ export function useNotifications(): UseNotificationsResult {
 
     return () => {
       isMountedRef.current = false;
+      window.clearInterval(intervalId);
       authListener.subscription.unsubscribe();
-      if (messageChannel) supabase.removeChannel(messageChannel);
     };
   }, [supabase, refresh]);
 
@@ -102,7 +79,7 @@ export function useNotifications(): UseNotificationsResult {
     async (notification: AppNotification) => {
       if (!userId) return;
 
-      await markNotificationRead(supabase, notification, userId);
+      await markNotificationRead(notification, userId);
       if (!isMountedRef.current) return;
 
       setNotifications((prev) =>
@@ -113,7 +90,7 @@ export function useNotifications(): UseNotificationsResult {
         )
       );
     },
-    [supabase, userId]
+    [userId]
   );
 
   const markAllRead = useCallback(async () => {
@@ -122,14 +99,14 @@ export function useNotifications(): UseNotificationsResult {
     const unread = notifications.filter((n) => !n.read_at);
     if (!unread.length) return;
 
-    await markAllNotificationsRead(supabase, unread, userId);
+    await markAllNotificationsRead(unread, userId);
     if (!isMountedRef.current) return;
 
     const now = new Date().toISOString();
     setNotifications((prev) =>
       prev.map((item) => ({ ...item, read_at: item.read_at ?? now }))
     );
-  }, [notifications, supabase, userId]);
+  }, [notifications, userId]);
 
   const unreadCount = notifications.filter((n) => !n.read_at).length;
 

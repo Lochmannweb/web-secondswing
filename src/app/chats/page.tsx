@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  getChatInbox,
+  getMessages,
+  getProductsByUser,
+  markChatRead,
+  sendMessage as sendChatMessage,
+  sendMessages,
+} from "@/app/lib/chatsApi";
+import { getProfilesBatch } from "@/app/lib/profilesApi";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import {
   Alert,
@@ -156,52 +165,19 @@ export default function ChatsPage() {
 
       setUserId(currentUser.id);
 
-      const { data: chatRows, error: chatError } = await supabase
-        .from("chats")
-        .select("id, buyer_id, seller_id, created_at")
-        .or(`buyer_id.eq.${currentUser.id},seller_id.eq.${currentUser.id}`)
-        .order("created_at", { ascending: false });
-
-      if (chatError) {
-        setError("Kunne ikke hente samtaler");
-        setLoading(false);
-        return;
-      }
-
-      const allChats = chatRows ?? [];
+      const inbox = await getChatInbox(currentUser.id);
+      const allChats = inbox.chats;
       setChats(allChats);
 
-      if (allChats.length > 0) {
-        const chatIds = allChats.map((chat) => chat.id);
-
-        const [{ data: latestMessages }, { data: unreadMessages }] = await Promise.all([
-          supabase
-            .from("messages")
-            .select("chat_id, content, created_at")
-            .in("chat_id", chatIds)
-            .order("created_at", { ascending: false }),
-          supabase
-            .from("messages")
-            .select("chat_id")
-            .in("chat_id", chatIds)
-            .eq("receiver_id", currentUser.id)
-            .is("read_at", null),
-        ]);
-
-        const latestMap: ChatPreviewMap = {};
-        for (const row of latestMessages ?? []) {
-          if (!latestMap[row.chat_id]) {
-            latestMap[row.chat_id] = { content: row.content, created_at: row.created_at };
-          }
-        }
-        setLatestMessageByChat(latestMap);
-
-        const unreadMap: UnreadCountMap = {};
-        for (const row of unreadMessages ?? []) {
-          unreadMap[row.chat_id] = (unreadMap[row.chat_id] ?? 0) + 1;
-        }
-        setUnreadByChat(unreadMap);
+      const latestMap: ChatPreviewMap = {};
+      for (const preview of inbox.previews) {
+        latestMap[preview.chat_id] = {
+          content: preview.content,
+          created_at: preview.created_at,
+        };
       }
+      setLatestMessageByChat(latestMap);
+      setUnreadByChat(inbox.unread_by_chat);
 
       const partnerIds = Array.from(
         new Set(
@@ -212,19 +188,19 @@ export default function ChatsPage() {
       );
 
       if (partnerIds.length > 0) {
-        const { data: profileRows, error: profileError } = await supabase
-          .from("profiles")
-          .select("id, display_name, avatar_url")
-          .in("id", partnerIds);
-
-        if (profileError) {
-          setError("Kunne ikke hente profilnavne");
-        } else if (profileRows) {
+        try {
+          const profileRows = await getProfilesBatch(partnerIds);
           const map = profileRows.reduce<Record<string, ProfileRow>>((acc, profile) => {
-            acc[profile.id] = profile;
+            acc[profile.id] = {
+              id: profile.id,
+              display_name: profile.display_name,
+              avatar_url: profile.avatar_url,
+            };
             return acc;
           }, {});
           setProfilesById(map);
+        } catch {
+          setError("Kunne ikke hente profilnavne");
         }
       }
 
@@ -270,29 +246,16 @@ export default function ChatsPage() {
       setLoadingMessages(true);
       setError(null);
 
-      const { data, error: messagesError } = await supabase
-        .from("messages")
-        .select("id, chat_id, sender_id, receiver_id, content, created_at, read_at, image_url")
-        .eq("chat_id", activeChatId)
-        .order("created_at", { ascending: true });
+      try {
+        const data = await getMessages(activeChatId);
+        setMessages(data);
 
-      if (messagesError) {
+        if (userId) {
+          await markChatRead(activeChatId, userId);
+          setUnreadByChat((prev) => ({ ...prev, [activeChatId]: 0 }));
+        }
+      } catch {
         setError("Kunne ikke hente beskeder");
-        setLoadingMessages(false);
-        return;
-      }
-
-      setMessages(data ?? []);
-
-      if (userId) {
-        await supabase
-          .from("messages")
-          .update({ read_at: new Date().toISOString() })
-          .eq("chat_id", activeChatId)
-          .eq("receiver_id", userId)
-          .is("read_at", null);
-
-        setUnreadByChat((prev) => ({ ...prev, [activeChatId]: 0 }));
       }
 
       setLoadingMessages(false);
@@ -304,50 +267,35 @@ export default function ChatsPage() {
   useEffect(() => {
     if (!activeChatId) return;
 
-    const channel = supabase
-      .channel(`messages-realtime-${activeChatId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-          filter: `chat_id=eq.${activeChatId}`,
-        },
-        async (payload) => {
-          const incoming = payload.new as MessageRow;
+    const pollMessages = async () => {
+      try {
+        const data = await getMessages(activeChatId);
+        setMessages((prev) => {
+          if (prev.length === data.length && prev.at(-1)?.id === data.at(-1)?.id) {
+            return prev;
+          }
+          return data;
+        });
 
-          setMessages((prev) => {
-            if (prev.some((message) => message.id === incoming.id)) return prev;
-            return [...prev, incoming];
-          });
-
+        if (data.length > 0) {
+          const latest = data[data.length - 1];
           setLatestMessageByChat((prev) => ({
             ...prev,
-            [incoming.chat_id]: { content: incoming.content, created_at: incoming.created_at },
+            [activeChatId]: { content: latest.content, created_at: latest.created_at },
           }));
-
-          if (incoming.receiver_id === userId) {
-            await supabase
-              .from("messages")
-              .update({ read_at: new Date().toISOString() })
-              .eq("id", incoming.id)
-              .eq("receiver_id", userId)
-              .is("read_at", null);
-          } else if (incoming.sender_id !== userId) {
-            setUnreadByChat((prev) => ({
-              ...prev,
-              [incoming.chat_id]: (prev[incoming.chat_id] ?? 0) + 1,
-            }));
-          }
         }
-      )
-      .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
+        if (userId) {
+          await markChatRead(activeChatId, userId);
+        }
+      } catch {
+        // Ignorer polling-fejl
+      }
     };
-  }, [activeChatId, supabase, userId]);
+
+    const intervalId = window.setInterval(pollMessages, 4000);
+    return () => window.clearInterval(intervalId);
+  }, [activeChatId, userId]);
 
   const activeChat = useMemo(
     () => chats.find((chat) => chat.id === activeChatId) ?? null,
@@ -397,18 +345,21 @@ export default function ChatsPage() {
 
       setLoadingPartnerProducts(true);
 
-      const { data, error: productsError } = await supabase
-        .from("products")
-        .select("id, title, price, image_url")
-        .eq("user_id", partnerId)
-        .eq("sold", false)
-        .order("created_at", { ascending: false })
-        .limit(6);
-
-      if (productsError) {
+      try {
+        const data = await getProductsByUser(partnerId);
+        setPartnerProducts(
+          data
+            .filter((product) => !product.sold)
+            .slice(0, 6)
+            .map((product) => ({
+              id: product.id,
+              title: product.title,
+              price: product.price,
+              image_url: product.image_url,
+            }))
+        );
+      } catch {
         setPartnerProducts([]);
-      } else {
-        setPartnerProducts(data ?? []);
       }
 
       setLoadingPartnerProducts(false);
@@ -478,25 +429,24 @@ export default function ChatsPage() {
     setIsSending(true);
     setError(null);
 
-    const { data: insertedMessage, error: sendError } = await supabase
-      .from("messages")
-      .insert([{ chat_id: activeChat.id, sender_id: userId, receiver_id: receiverId, content }])
-      .select("id, chat_id, sender_id, receiver_id, content, created_at, read_at, image_url")
-      .single();
+    try {
+      const insertedMessage = await sendChatMessage({
+        chatId: activeChat.id,
+        senderId: userId,
+        receiverId,
+        content,
+      });
 
-    if (sendError || !insertedMessage) {
-      setError(sendError?.message ?? "Kunne ikke sende besked");
-      setIsSending(false);
-      sendLockRef.current = false;
-      return;
+      setMessages((prev) => [...prev, insertedMessage]);
+      setLatestMessageByChat((prev) => ({
+        ...prev,
+        [activeChat.id]: { content: insertedMessage.content, created_at: insertedMessage.created_at },
+      }));
+      setNewMessage("");
+    } catch (sendError) {
+      setError(sendError instanceof Error ? sendError.message : "Kunne ikke sende besked");
     }
 
-    setMessages((prev) => [...prev, insertedMessage]);
-    setLatestMessageByChat((prev) => ({
-      ...prev,
-      [activeChat.id]: { content: insertedMessage.content, created_at: insertedMessage.created_at },
-    }));
-    setNewMessage("");
     setIsSending(false);
     sendLockRef.current = false;
   };
@@ -553,13 +503,18 @@ export default function ChatsPage() {
         });
       }
 
-      const { data: insertResults, error: sendError } = await supabase
-        .from("messages")
-        .insert(preparedMessages)
-        .select("id, chat_id, sender_id, receiver_id, content, created_at, read_at, image_url");
+      const insertResults = await sendMessages(
+        activeChat.id,
+        preparedMessages.map((message) => ({
+          sender_id: message.sender_id,
+          receiver_id: message.receiver_id,
+          content: message.content,
+          image_url: message.image_url,
+        }))
+      );
 
-      if (sendError || !insertResults?.length) {
-        throw new Error(sendError?.message ?? "Kunne ikke sende billeder");
+      if (!insertResults.length) {
+        throw new Error("Kunne ikke sende billeder");
       }
 
       setMessages((prev) => [...prev, ...insertResults]);

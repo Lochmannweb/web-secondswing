@@ -4,7 +4,8 @@
 "use client"
 
 import { updateProfile } from "@/app/actions"
-import { getSupabaseClient } from "@/app/lib/supabaseClient"
+import { getProductById, updateProduct } from "@/app/lib/crud"
+import { uploadImageFile } from "@/app/lib/uploadImage"
 import { Box, TextField, Button, Alert, MenuItem, Select, InputLabel, FormControl } from "@mui/material"
 import Image from "next/image"
 import { useEffect, useState } from "react"
@@ -22,32 +23,25 @@ export default function EditProduct({ productId }: EditProductProps) {
   const [imagePreview, setImagePreview] = useState<string>("/placeholderprofile.jpg")
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
-  const supabase = getSupabaseClient()
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", productId)
-        .single()
+      try {
+        const data = await getProductById(productId)
 
-      if (error) {
-        setMessage({ type: "error", text: `Kunne ikke hente produkt: ${error.message}` })
-        return
-      }
-
-      if (data) {
         setTitle(data.title)
-        setDescription(data.description)
+        setDescription(data.description ?? "")
         setPrice(data.price?.toString() || "")
-        setGender(data.gender)
+        setGender((data.gender as "female" | "male" | "unisex") ?? "female")
         setImagePreview(data.image_url || "/placeholderprofile.jpg")
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : "Kunne ikke hente produkt"
+        setMessage({ type: "error", text: msg })
       }
     }
 
     fetchProduct()
-  }, [productId, supabase])
+  }, [productId])
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -61,20 +55,6 @@ export default function EditProduct({ productId }: EditProductProps) {
     }
   }
 
-  const uploadImage = async (file: File): Promise<string> => {
-    const fileExt = file.name.split(".").pop()
-    const fileName = `${Date.now()}.${fileExt}`
-
-    const { error } = await supabase.storage.from("avatars").upload(fileName, file, { upsert: true })
-    if (error) throw new Error(`Kunne ikke uploade billede: ${error.message}`)
-
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("avatars").getPublicUrl(fileName)
-    if (!publicUrl) throw new Error("Kunne ikke generere offentlig URL for billedet")
-    return publicUrl
-  }
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     setLoading(true)
@@ -83,21 +63,16 @@ export default function EditProduct({ productId }: EditProductProps) {
     try {
       let imageUrl = imagePreview
       if (imageFile) {
-        imageUrl = await uploadImage(imageFile)
+        imageUrl = await uploadImageFile(imageFile)
       }
 
-      const { error } = await supabase
-        .from("products")
-        .update({
-          title,
-          description,
-          price: price ? parseFloat(price) : null,
-          gender,
-          image_url: imageUrl,
-        })
-        .eq("id", productId)
-
-      if (error) throw error
+      await updateProduct(productId, {
+        title,
+        description,
+        price: price ? parseFloat(price) : null,
+        gender,
+        image_url: imageUrl,
+      })
 
       setMessage({ type: "success", text: "Produkt opdateret succesfuldt!" })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
