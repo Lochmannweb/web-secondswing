@@ -1,6 +1,14 @@
 "use client";
 
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
+import { getProductById, updateProduct } from "@/app/lib/crud";
+import {
+  addFavorite,
+  checkFavorite,
+  removeFavorite,
+} from "@/app/lib/favoritesApi";
+import { findOrCreateChat } from "@/app/lib/chatsApi";
+import type { ProductDto } from "@/server/products/serialize";
 import { getProductDetailMeta } from "@/app/lib/productDisplay";
 import OfferBidDrawer from "@/app/components/Products/OfferBidDrawer";
 import { Box, Button, IconButton } from "@mui/material";
@@ -32,6 +40,7 @@ interface Product {
   divider_count?: number | null;
   weight?: string | null;
   sold: boolean | null;
+  product_images?: ProductDto["product_images"];
 }
 
 export default function ProductPage() {
@@ -63,41 +72,19 @@ export default function ProductPage() {
         const currentUserId = userData.user?.id ?? null;
         setViewerId(currentUserId);
 
-        const { data, error } = await supabase
-          .from("products")
-          .select("*")
-          .eq("id", produktId)
-          .single();
-
-        if (error) throw new Error(error.message);
+        const data = await getProductById(produktId);
         setProduct(data);
 
         const initialImages = data.image_url ? [data.image_url] : [];
-        setProductImages(initialImages);
-
-        const { data: extraImages, error: extraImagesError } = await supabase
-          .from("product_images")
-          .select("image_url, position")
-          .eq("product_id", produktId)
-          .order("position", { ascending: true });
-
-        if (!extraImagesError && extraImages) {
-          const mergedImages = [
-            ...initialImages,
-            ...extraImages.map((item) => item.image_url).filter(Boolean),
-          ];
-          setProductImages(Array.from(new Set(mergedImages)));
-        }
+        const extraImages = data.product_images ?? [];
+        const mergedImages = extraImages.length
+          ? [...initialImages, ...extraImages.map((item) => item.image_url).filter(Boolean)]
+          : initialImages;
+        setProductImages(Array.from(new Set(mergedImages)));
 
         if (currentUserId) {
-          const { data: favoriteData } = await supabase
-            .from("favoriter")
-            .select("product_id")
-            .eq("user_id", currentUserId)
-            .eq("product_id", produktId)
-            .maybeSingle();
-
-          setIsFavorite(Boolean(favoriteData));
+          const favorite = await checkFavorite(currentUserId, produktId);
+          setIsFavorite(favorite);
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Fejl ved hentning";
@@ -131,18 +118,12 @@ export default function ProductPage() {
 
     const nextSoldValue = !product.sold;
 
-    const { error } = await supabase
-      .from("products")
-      .update({ sold: nextSoldValue })
-      .eq("id", produktId)
-      .select();
-
-    if (error) {
+    try {
+      await updateProduct(produktId!, { sold: nextSoldValue });
+      setProduct({ ...product, sold: nextSoldValue });
+    } catch {
       setError("Kunne ikke opdatere produktstatus");
-      return;
     }
-
-    setProduct({ ...product, sold: nextSoldValue });
   };
 
   const toggleFavorite = async () => {
@@ -154,31 +135,21 @@ export default function ProductPage() {
     }
 
     if (isFavorite) {
-      const { error } = await supabase
-        .from("favoriter")
-        .delete()
-        .eq("user_id", viewerId)
-        .eq("product_id", product.id);
-
-      if (error) {
+      try {
+        await removeFavorite(viewerId, product.id);
+        setIsFavorite(false);
+      } catch {
         setError("Kunne ikke fjerne favorit");
-        return;
       }
-
-      setIsFavorite(false);
       return;
     }
 
-    const { error } = await supabase
-      .from("favoriter")
-      .insert([{ user_id: viewerId, product_id: product.id }]);
-
-    if (error) {
+    try {
+      await addFavorite(viewerId, product.id);
+      setIsFavorite(true);
+    } catch {
       setError("Kunne ikke gemme favorit");
-      return;
     }
-
-    setIsFavorite(true);
   };
 
   const openOrCreateChat = async () => {
@@ -194,35 +165,8 @@ export default function ProductPage() {
     setIsCreatingChat(true);
 
     try {
-      const { data: existingChats, error: existingError } = await supabase
-        .from("chats")
-        .select("id")
-        .or(
-          `and(buyer_id.eq.${viewerId},seller_id.eq.${product.user_id}),and(buyer_id.eq.${product.user_id},seller_id.eq.${viewerId})`
-        )
-        .limit(1);
-
-      if (existingError) {
-        throw new Error(existingError.message);
-      }
-
-      const existingChatId = existingChats?.[0]?.id;
-      if (existingChatId) {
-        router.push(`/chats?chatId=${existingChatId}`);
-        return;
-      }
-
-      const { data: insertedChat, error: insertError } = await supabase
-        .from("chats")
-        .insert([{ buyer_id: viewerId, seller_id: product.user_id }])
-        .select("id")
-        .single();
-
-      if (insertError || !insertedChat?.id) {
-        throw new Error(insertError?.message ?? "Kunne ikke oprette samtale");
-      }
-
-      router.push(`/chats?chatId=${insertedChat.id}`);
+      const chat = await findOrCreateChat(viewerId, product.user_id);
+      router.push(`/chats?chatId=${chat.id}`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Kunne ikke starte samtale";
       setError(msg);

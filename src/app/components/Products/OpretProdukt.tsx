@@ -1,6 +1,7 @@
 "use client";
 
 import { createProduct } from "@/app/lib/crud";
+import { uploadImageFiles } from "@/app/lib/uploadImage";
 import {
   buildProductPayload,
   CATEGORY_OPTIONS,
@@ -86,31 +87,6 @@ export default function CreateProduct() {
 
   const updateField = (key: keyof ProductFormState, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const uploadImage = async (file: File, userId: string, index: number): Promise<string> => {
-    const fileExt = (file.name.split(".").pop() || "jpg").toLowerCase();
-    const uniqueId =
-      typeof crypto !== "undefined" && "randomUUID" in crypto
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-    const filePath = `${userId}/${Date.now()}-${index}-${uniqueId}.${fileExt}`;
-
-    const { error } = await supabase.storage.from("avatars").upload(filePath, file);
-
-    if (error) {
-      throw new Error(`Kunne ikke uploade billede: ${error.message}`);
-    }
-
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("avatars").getPublicUrl(filePath);
-
-    if (!publicUrl) {
-      throw new Error("Kunne ikke generere offentlig URL.");
-    }
-
-    return publicUrl;
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -229,9 +205,7 @@ export default function CreateProduct() {
       }
 
       const uploadedUrls =
-        imageFiles.length > 0
-          ? await Promise.all(imageFiles.map((file, index) => uploadImage(file, user.id, index)))
-          : [];
+        imageFiles.length > 0 ? await uploadImageFiles(imageFiles) : [];
       const primaryImageUrl = uploadedUrls[0] ?? null;
 
       const productPayload = buildProductPayload(form);
@@ -248,31 +222,18 @@ export default function CreateProduct() {
         throw new Error("Indtast en gyldig pris større end 0.");
       }
 
-      const createdProduct = await createProduct({
+      await createProduct({
         user_id: user.id,
         ...productPayload,
         image_url: primaryImageUrl,
+        extra_images:
+          uploadedUrls.length > 1
+            ? uploadedUrls.slice(1).map((url, index) => ({
+                image_url: url,
+                position: index + 1,
+              }))
+            : undefined,
       });
-
-      if (uploadedUrls.length > 1 && createdProduct?.id) {
-        const extraImages = uploadedUrls.slice(1).map((url, index) => ({
-          product_id: createdProduct.id,
-          image_url: url,
-          position: index + 1,
-        }));
-
-        const { error: imagesError } = await supabase.from("product_images").insert(extraImages);
-
-        if (imagesError?.code === "42P01") {
-          throw new Error("Produkt blev gemt, men tabellen product_images mangler i databasen.");
-        }
-
-        if (imagesError) {
-          throw new Error(
-            `Produkt gemt, men ekstra billeder kunne ikke gemmes: ${imagesError.message}`
-          );
-        }
-      }
 
       setMessage({ type: "success", text: "Produkt blev oprettet!" });
       setForm(createEmptyProductForm());

@@ -1,4 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import {
+  fetchNotificationsFromApi,
+  markAllNotificationsReadApi,
+  markNotificationReadApi,
+} from "@/app/lib/notificationsApi";
 
 export type NotificationType = "message" | "offer" | "product" | "system" | "marketing";
 
@@ -81,199 +86,25 @@ export function formatRelativeTime(dateString: string): string {
   });
 }
 
-type TableNotificationRow = {
-  id: string;
-  type: NotificationType;
-  title: string;
-  body: string;
-  link: string | null;
-  read_at: string | null;
-  created_at: string;
-  metadata?: Record<string, unknown> | null;
-};
-
-type MessageRow = {
-  id: string;
-  chat_id: string;
-  content: string;
-  created_at: string;
-  read_at: string | null;
-  sender_id: string;
-};
-
-async function fetchTableNotifications(
-  supabase: SupabaseClient,
-  userId: string
-): Promise<AppNotification[]> {
-  const { data, error } = await supabase
-    .from("notifications")
-    .select("id, type, title, body, link, read_at, created_at, metadata")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-    .limit(50);
-
-  if (error) {
-    if (
-      error.code === "42P01" ||
-      error.message.includes("does not exist") ||
-      error.message.includes("Could not find the table")
-    ) {
-      return [];
-    }
-    console.error("Kunne ikke hente notifikationer:", error.message);
-    return [];
-  }
-
-  return (data as TableNotificationRow[]).map((row) => ({
-    id: row.id,
-    type: row.type,
-    title: row.title,
-    body: row.body,
-    link: row.link ?? "/notifikationer",
-    read_at: row.read_at,
-    created_at: row.created_at,
-    source: "table" as const,
-    metadata: row.metadata ?? undefined,
-  }));
-}
-
-async function fetchMessageNotifications(
-  supabase: SupabaseClient,
-  userId: string
-): Promise<AppNotification[]> {
-  const { data: messages, error } = await supabase
-    .from("messages")
-    .select("id, chat_id, content, created_at, read_at, sender_id")
-    .eq("receiver_id", userId)
-    .is("read_at", null)
-    .order("created_at", { ascending: false })
-    .limit(30);
-
-  if (error || !messages?.length) return [];
-
-  const senderIds = [...new Set((messages as MessageRow[]).map((m) => m.sender_id))];
-  const { data: profiles } = await supabase
-    .from("profiles")
-    .select("id, display_name")
-    .in("id", senderIds);
-
-  const nameById = new Map(
-    (profiles ?? []).map((p: { id: string; display_name: string | null }) => [
-      p.id,
-      p.display_name ?? "En bruger",
-    ])
-  );
-
-  const seenChats = new Set<string>();
-  const notifications: AppNotification[] = [];
-
-  for (const message of messages as MessageRow[]) {
-    if (seenChats.has(message.chat_id)) continue;
-    seenChats.add(message.chat_id);
-
-    const senderName = nameById.get(message.sender_id) ?? "En bruger";
-    const preview =
-      message.content.trim().length > 0
-        ? message.content.slice(0, 120)
-        : "Sendte et billede";
-
-    notifications.push({
-      id: `message-${message.id}`,
-      type: "message",
-      title: `Ny besked fra ${senderName}`,
-      body: preview,
-      link: `/chats?chat=${message.chat_id}`,
-      read_at: message.read_at,
-      created_at: message.created_at,
-      source: "message",
-      metadata: { message_id: message.id, chat_id: message.chat_id },
-    });
-  }
-
-  return notifications;
-}
-
-function dedupeNotifications(items: AppNotification[]): AppNotification[] {
-  const byKey = new Map<string, AppNotification>();
-
-  for (const item of items) {
-    const chatId = item.metadata?.chat_id as string | undefined;
-    const key =
-      item.type === "message" && chatId ? `message:${chatId}` : `${item.source}:${item.id}`;
-
-    const existing = byKey.get(key);
-    if (!existing || new Date(item.created_at) > new Date(existing.created_at)) {
-      byKey.set(key, item);
-    }
-  }
-
-  return [...byKey.values()].sort(
-    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-  );
-}
-
 export async function fetchNotifications(
-  supabase: SupabaseClient,
   userId: string,
   preferences: NotificationPreferences
 ): Promise<AppNotification[]> {
-  const [tableItems, messageItems] = await Promise.all([
-    fetchTableNotifications(supabase, userId),
-    fetchMessageNotifications(supabase, userId),
-  ]);
-
-  const merged = dedupeNotifications([...tableItems, ...messageItems]);
-
-  return merged.filter((item) => isInAppEnabled(item.type, preferences));
+  return fetchNotificationsFromApi(userId, preferences);
 }
 
 export async function markNotificationRead(
-  supabase: SupabaseClient,
   notification: AppNotification,
   userId: string
 ): Promise<void> {
-  if (notification.source === "table") {
-    await supabase
-      .from("notifications")
-      .update({ read_at: new Date().toISOString() })
-      .eq("id", notification.id)
-      .eq("user_id", userId);
-    return;
-  }
-
-  const chatId = notification.metadata?.chat_id as string | undefined;
-  if (!chatId) return;
-
-  await supabase
-    .from("messages")
-    .update({ read_at: new Date().toISOString() })
-    .eq("chat_id", chatId)
-    .eq("receiver_id", userId)
-    .is("read_at", null);
+  await markNotificationReadApi(userId, notification);
 }
 
 export async function markAllNotificationsRead(
-  supabase: SupabaseClient,
   notifications: AppNotification[],
   userId: string
 ): Promise<void> {
-  const tableIds = notifications
-    .filter((n) => n.source === "table" && !n.read_at)
-    .map((n) => n.id);
-
-  if (tableIds.length) {
-    await supabase
-      .from("notifications")
-      .update({ read_at: new Date().toISOString() })
-      .in("id", tableIds)
-      .eq("user_id", userId);
-  }
-
-  await supabase
-    .from("messages")
-    .update({ read_at: new Date().toISOString() })
-    .eq("receiver_id", userId)
-    .is("read_at", null);
+  await markAllNotificationsReadApi(userId, notifications);
 }
 
 export async function loadNotificationPreferences(

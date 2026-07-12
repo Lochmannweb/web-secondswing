@@ -139,7 +139,7 @@ export default function SikkerhedPage() {
     }
 
     const timeout = window.setTimeout(async () => {
-      const results = await searchProfiles(supabase, blockQuery, currentUserId ?? undefined);
+      const results = await searchProfiles(blockQuery, currentUserId ?? undefined);
       setBlockResults(results);
     }, 250);
 
@@ -153,7 +153,7 @@ export default function SikkerhedPage() {
     }
 
     const timeout = window.setTimeout(async () => {
-      const results = await searchProfiles(supabase, reportQuery, currentUserId ?? undefined);
+      const results = await searchProfiles(reportQuery, currentUserId ?? undefined);
       setReportResults(results);
     }, 250);
 
