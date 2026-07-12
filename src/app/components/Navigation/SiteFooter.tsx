@@ -3,7 +3,7 @@ import Link from "next/link";
 const footerLinks = [
   { href: "/about", label: "Om os" },
   { href: "/faq", label: "FAQ" },
-  { href: "/favoriter", label: "Favoritter" },
+  { href: "/kontakt", label: "Kontakt" },
 ];
 
 export default function SiteFooter() {

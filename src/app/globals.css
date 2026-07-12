@@ -343,6 +343,48 @@ body.chats-route {
   overflow: hidden;
 }
 
+body.page-fit-viewport {
+  overflow: hidden;
+  height: 100svh;
+}
+
+body.page-fit-viewport .site-shell {
+  height: 100svh;
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+body.page-fit-viewport .site-main {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body.page-fit-viewport .site-main > .kontakt-page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.page-fit-viewport .site-main > .faq-route {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  padding-top: max(clamp(5rem, 11vh, 6.5rem), calc(50svh - 11rem));
+  padding-bottom: 1rem;
+  box-sizing: border-box;
+}
+
 .landing-primary-link,
 .landing-secondary-link {
   display: inline-flex;

@@ -8,6 +8,7 @@ import {
   sendMessage as sendChatMessage,
   sendMessages,
 } from "@/app/lib/chatsApi";
+import { getProfilesBatch } from "@/app/lib/profilesApi";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import {
   Alert,
@@ -190,16 +191,8 @@ export default function ChatsPage() {
 
       if (partnerIds.length > 0) {
         try {
-          const { data: profileRows, error: profilesError } = await supabase
-            .from("profiles")
-            .select("id, display_name, avatar_url")
-            .in("id", partnerIds);
-
-          if (profilesError) {
-            throw profilesError;
-          }
-
-          const map = (profileRows ?? []).reduce<Record<string, ProfileRow>>((acc, profile) => {
+          const profileRows = await getProfilesBatch(partnerIds);
+          const map = profileRows.reduce<Record<string, ProfileRow>>((acc, profile) => {
             acc[profile.id] = {
               id: profile.id,
               display_name: profile.display_name,

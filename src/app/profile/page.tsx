@@ -1,5 +1,7 @@
 "use client";
 
+import { useNotifications } from "@/app/hooks/useNotifications";
+import { getProfile } from "@/app/lib/profilesApi";
 import { getUnreadMessageCount } from "@/app/lib/chatsApi";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import { useEffect, useMemo, useState } from "react";
@@ -16,12 +18,12 @@ type UserProfile = {
 };
 
 const menuItems = [
-  { key: "messages", label: "Beskeder", link: "/chats", primary: false },
-  { key: "fav", label: "Favoritter", link: "/favoriter", primary: false },
-  { key: "myProducts", label: "Mine produkter", link: "/produkter", primary: false },
-  { key: "createProduct", label: "Sælg nyt udstyr", link: "/opretProdukt", primary: false },
-  { key: "editProfile", label: "Rediger profil", link: "/indstillinger/profiloplysninger", primary: false },
-  { key: "privacy", label: "Indstillinger", link: "/indstillinger/privatliv", primary: false },
+  { key: "messages", label: "Beskeder", link: "/chats" },
+  { key: "notifications", label: "Notifikationer", link: "/notifikationer" },
+  { key: "fav", label: "Favoritter", link: "/favoriter" },
+  { key: "myProducts", label: "Mine produkter", link: "/produkter" },
+  { key: "createProduct", label: "Sælg nyt udstyr", link: "/opretProdukt" },
+  { key: "settings", label: "Indstillinger", link: "/indstillinger" },
 ] as const;
 
 export default function ProfilePage() {
@@ -30,6 +32,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [needsLogin, setNeedsLogin] = useState(false);
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
+  const { unreadCount: unreadNotificationCount } = useNotifications();
   const supabase = useMemo(() => getSupabaseClient(), []);
 
   useEffect(() => {
@@ -53,7 +56,6 @@ export default function ProfilePage() {
     };
 
     loadUnreadCount();
-
     const intervalId = window.setInterval(loadUnreadCount, 15000);
 
     return () => {
@@ -74,11 +76,12 @@ export default function ProfilePage() {
         return;
       }
 
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("display_name, avatar_url")
-        .eq("id", user.id)
-        .single();
+      let profileData = null;
+      try {
+        profileData = await getProfile(user.id);
+      } catch {
+        profileData = null;
+      }
 
       setProfile({
         id: user.id,
@@ -174,7 +177,7 @@ export default function ProfilePage() {
               <Button
                 key={item.key}
                 onClick={() => router.push(item.link)}
-                className={`profile-action-button${item.primary ? " profile-action-button--primary" : ""}`}
+                className="profile-action-button"
               >
                 {item.key === "messages" ? (
                   <Badge
@@ -182,6 +185,15 @@ export default function ProfilePage() {
                     badgeContent={unreadMessageCount}
                     max={99}
                     invisible={unreadMessageCount === 0}
+                  >
+                    {item.label}
+                  </Badge>
+                ) : item.key === "notifications" ? (
+                  <Badge
+                    color="error"
+                    badgeContent={unreadNotificationCount}
+                    max={99}
+                    invisible={unreadNotificationCount === 0}
                   >
                     {item.label}
                   </Badge>

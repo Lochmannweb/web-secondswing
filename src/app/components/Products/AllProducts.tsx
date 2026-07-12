@@ -5,7 +5,11 @@ import Link from "next/link";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { IconButton, Alert } from "@mui/material";
-import { addFavorite, listFavoriteProductIds, removeFavorite } from "@/app/lib/favoritesApi";
+import {
+  addFavorite,
+  listFavoriteProductIds,
+  removeFavorite,
+} from "@/app/lib/favoritesApi";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
 
 interface Product {
@@ -62,11 +66,19 @@ export default function AllProducts({ products, onFavoriteRemoved }: AllProducts
     try {
       if (favorites.includes(productId)) {
         setFavorites(favorites.filter((id) => id !== productId));
-        await removeFavorite(userId, productId);
-        onFavoriteRemoved?.(productId);
+        try {
+          await removeFavorite(userId, productId);
+          onFavoriteRemoved?.(productId);
+        } catch (error) {
+          console.error("Fejl ved sletning:", error);
+        }
       } else {
         setFavorites([...favorites, productId]);
-        await addFavorite(userId, productId);
+        try {
+          await addFavorite(userId, productId);
+        } catch (error) {
+          console.error("Fejl ved indsættelse:", error);
+        }
       }
     } catch (err) {
       console.error(err);

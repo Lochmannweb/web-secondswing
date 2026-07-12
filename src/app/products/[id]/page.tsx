@@ -7,8 +7,9 @@ import {
   removeFavorite,
 } from "@/app/lib/favoritesApi";
 import { findOrCreateChat } from "@/app/lib/chatsApi";
-import { getSupabaseClient } from "@/app/lib/supabaseClient";
+import type { ProductDto } from "@/app/lib/productSerialize";
 import { getProductDetailMeta } from "@/app/lib/productDisplay";
+import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import OfferBidDrawer from "@/app/components/Products/OfferBidDrawer";
 import { Box, Button, IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -39,6 +40,7 @@ interface Product {
   divider_count?: number | null;
   weight?: string | null;
   sold: boolean | null;
+  images?: ProductDto["images"];
 }
 
 export default function ProductPage() {
@@ -119,8 +121,12 @@ export default function ProductPage() {
 
     if (!produktId) return;
 
-    await updateProduct(produktId, { sold: nextSoldValue });
-    setProduct({ ...product, sold: nextSoldValue });
+    try {
+      await updateProduct(produktId, { sold: nextSoldValue });
+      setProduct({ ...product, sold: nextSoldValue });
+    } catch {
+      setError("Kunne ikke opdatere produktstatus");
+    }
   };
 
   const toggleFavorite = async () => {

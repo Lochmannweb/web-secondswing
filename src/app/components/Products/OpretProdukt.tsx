@@ -1,6 +1,7 @@
 "use client";
 
 import { createProduct, replaceProductImages } from "@/app/lib/crud";
+import { uploadImageFiles } from "@/app/lib/uploadImage";
 import {
   buildProductPayload,
   CATEGORY_OPTIONS,
@@ -86,31 +87,6 @@ export default function CreateProduct() {
 
   const updateField = (key: keyof ProductFormState, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const uploadImage = async (file: File, userId: string, index: number): Promise<string> => {
-    const fileExt = (file.name.split(".").pop() || "jpg").toLowerCase();
-    const uniqueId =
-      typeof crypto !== "undefined" && "randomUUID" in crypto
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-    const filePath = `${userId}/${Date.now()}-${index}-${uniqueId}.${fileExt}`;
-
-    const { error } = await supabase.storage.from("avatars").upload(filePath, file);
-
-    if (error) {
-      throw new Error(`Kunne ikke uploade billede: ${error.message}`);
-    }
-
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("avatars").getPublicUrl(filePath);
-
-    if (!publicUrl) {
-      throw new Error("Kunne ikke generere offentlig URL.");
-    }
-
-    return publicUrl;
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -229,9 +205,7 @@ export default function CreateProduct() {
       }
 
       const uploadedUrls =
-        imageFiles.length > 0
-          ? await Promise.all(imageFiles.map((file, index) => uploadImage(file, user.id, index)))
-          : [];
+        imageFiles.length > 0 ? await uploadImageFiles(imageFiles) : [];
       const primaryImageUrl = uploadedUrls[0] ?? null;
 
       const productPayload = buildProductPayload(form);

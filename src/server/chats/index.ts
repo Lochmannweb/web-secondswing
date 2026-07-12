@@ -1,3 +1,17 @@
-export * from "@/server/chats/queries";
-export * from "@/server/chats/mutations";
-export * from "@/server/chats/serialize";
+export {
+  listChatsForUser,
+  getChatInbox,
+  findChatBetweenUsers,
+  getMessagesForChat,
+  getUnreadMessageCount,
+  findChatById,
+} from "@/server/chats/queries";
+export {
+  findOrCreateChat,
+  createMessage,
+  createMessages,
+  markChatRead,
+  markMessageRead,
+  markAllMessagesRead,
+} from "@/server/chats/mutations";
+export type { ChatDto, MessageDto, ChatInboxDto, ChatPreviewDto } from "@/server/chats/serialize";

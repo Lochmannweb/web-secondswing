@@ -10,6 +10,7 @@ import {
   type ActiveShopFacets,
   type ShopFacetKey,
 } from "@/app/lib/shopFilters";
+import type { ProductCategory } from "@/app/lib/productForm";
 import { listFavoriteProducts } from "@/app/lib/favoritesApi";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import SearchBar from "@/app/components/Shop/SearchBar";
@@ -19,7 +20,6 @@ import CatalogFilterDrawer from "@/app/components/Shop/CatalogFilterDrawer";
 import { Alert, Box, Drawer } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import type { Filter } from "@/app/utils/filterStyles";
-import type { ProductCategory } from "@/app/lib/productForm";
 import "../shop/shop.css";
 import "./favorit.css";
 

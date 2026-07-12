@@ -88,6 +88,7 @@ export default function OfferBidDrawer({
 
     try {
       const chat = await findOrCreateChat(viewerId, product.user_id);
+
       const offerMessage = `Bud: ${selectedAmount} kr på "${product.title}" (annonceret pris: ${product.price} kr)`;
 
       await sendMessage({

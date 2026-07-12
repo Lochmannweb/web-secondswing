@@ -1,113 +1,142 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import { Box, Button, Divider } from '@mui/material'
-import { getSupabaseClient } from "@/app/lib/supabaseClient"
-import { useRouter } from 'next/navigation'
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { Box, Button } from "@mui/material";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import "../profil.css";
+import "./indstillinger.css";
+
+type SettingsItem = {
+  key: string;
+  label: string;
+  description: string;
+  href: string;
+};
+
+type SettingsGroup = {
+  key: string;
+  label: string;
+  items: SettingsItem[];
+};
+
+const settingsGroups: SettingsGroup[] = [
+  {
+    key: "account",
+    label: "Konto",
+    items: [
+      {
+        key: "profile",
+        label: "Profil & adresse",
+        description: "Navn, billede, leveringsadresse og bio",
+        href: "/indstillinger/profiloplysninger",
+      },
+      {
+        key: "notifications",
+        label: "Notifikationer",
+        description: "Vælg hvad du vil modtage in-app og på e-mail",
+        href: "/indstillinger/notifikationer",
+      },
+    ],
+  },
+  {
+    key: "marketplace",
+    label: "Køb & salg",
+    items: [
+      {
+        key: "trade",
+        label: "Køb, salg & fragt",
+        description: "Standard fragt, tilbud og annoncepræferencer",
+        href: "/indstillinger/kob-salg",
+      },
+      {
+        key: "payments",
+        label: "Betalinger",
+        description: "Betalingsmetoder og udbetaling som sælger",
+        href: "/indstillinger/betalinger",
+      },
+    ],
+  },
+  {
+    key: "security",
+    label: "Sikkerhed & privatliv",
+    items: [
+      {
+        key: "security",
+        label: "Sikkerhed",
+        description: "Login, enheder og kontobeskyttelse",
+        href: "/indstillinger/sikkerhed",
+      },
+      {
+        key: "privacy",
+        label: "Privatliv & data",
+        description: "Cookies, vilkår og dine data",
+        href: "/indstillinger/privatliv",
+      },
+    ],
+  },
+  {
+    key: "help",
+    label: "Hjælp",
+    items: [
+      {
+        key: "faq",
+        label: "Ofte stillede spørgsmål",
+        description: "Svar på de mest almindelige spørgsmål",
+        href: "/faq",
+      },
+      {
+        key: "contact",
+        label: "Kontakt support",
+        description: "Få hjælp fra SecondSwing-teamet",
+        href: "/kontakt",
+      },
+    ],
+  },
+];
 
 export default function Indstillinger() {
-  const router = useRouter()
-  const supabase = getSupabaseClient()
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push('/') // redirect til homepage
-  }
+  const router = useRouter();
 
   return (
-    <Box sx={{ color: "white" }} p={2} display={{ xs: "grid", sm: "flex" }} justifyContent={{ sm: "center" }} height={{ sm: "100vh" }}>
-      <Box pt={"5rem"} alignSelf={{ sm: "center" }} width={{ sm: "50vh" }} height={{ sm: "40vh" }} >
-        <h1>Indstillinger</h1> 
-        <Divider sx={{ backgroundColor: "gray", mb: 2 }} />
+    <Box className="settings-hub">
+      <Button
+        onClick={() => router.push("/profile")}
+        className="profil-back"
+        startIcon={<NavigateBeforeIcon />}
+      >
+        Tilbage til profil
+      </Button>
 
-        <Box display={"grid"} width={"100%"}>
-          <Button
-            href='/indstillinger/profiloplysninger'
-            sx={{
-              backgroundColor: "transparent",
-              color: "white",
-              cursor: "pointer",
-              display: "flow",
-              "&:hover": {
-                backgroundColor: "#00ff001c",
-              }
-            }}
-          >
-            Profiloplysninger
-          </Button>
+      <header className="settings-header">
+        <p className="settings-kicker">Konto</p>
+        <h1 className="settings-title">Indstillinger</h1>
+        <p className="settings-hub-intro">
+          Administrer profil, notifikationer, betalinger og privatliv.
+        </p>
+      </header>
 
-          <Button
-            href='/indstillinger/kontoindstillinger'
-            sx={{
-              backgroundColor: "transparent",
-              color: "white",
-              cursor: "pointer",
-              display: "flow",
-              "&:hover": {
-                backgroundColor: "#00ff001c",
-              }
-            }}
-          >
-            Kontooplysninger
-          </Button>
-
-          <Button
-            href='/indstillinger/sikkerhed'
-            sx={{
-              backgroundColor: "transparent",
-              color: "white",
-              cursor: "pointer",
-              display: "flow",
-              "&:hover": {
-                backgroundColor: "#00ff001c",
-              }
-            }}
-          >
-            Sikkerhed
-            </Button>
-
-          <Button
-            href='/indstillinger/privatliv'
-            sx={{
-              backgroundColor: "transparent",
-              color: "white",
-              cursor: "pointer",
-              display: "flow",
-              "&:hover": {
-                backgroundColor: "#00ff001c",
-              }
-            }}
-          >
-            Privatliv
-          </Button>
-
-
-          <Button
-            onClick={handleLogout}
-            sx={{
-              backgroundColor: "transparent",
-              color: "white",
-              cursor: "pointer",
-              textAlign: "start",
-              width: "100%",
-              display: "flow",
-              "&:hover": {
-                backgroundColor: "#00ff001c",
-              }
-            }}
-          >
-            Log ud
-          </Button>
-      </Box>
-      </Box>
-
-      {/* only apper om tablet/desktop else send to a href */}
-      <Box width={{ sm: "30vh" }} sx={{ height: "50vh" }} alignSelf={{ sm: "center" }}>
-            {/* show content for the specific setting */}
-      </Box>
-
+      <div className="settings-hub-groups">
+        {settingsGroups.map((group) => (
+          <section key={group.key} className="settings-hub-group" aria-label={group.label}>
+            <h2 className="settings-hub-group-label">{group.label}</h2>
+            <ul className="settings-hub-list">
+              {group.items.map((item) => (
+                <li key={item.key}>
+                  <Link href={item.href} className="settings-hub-link">
+                    <span className="settings-hub-link-text">
+                      <span className="settings-hub-link-title">{item.label}</span>
+                      <span className="settings-hub-link-desc">{item.description}</span>
+                    </span>
+                    <ChevronRightIcon className="settings-hub-link-icon" aria-hidden="true" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
     </Box>
-  )
+  );
 }
-
-

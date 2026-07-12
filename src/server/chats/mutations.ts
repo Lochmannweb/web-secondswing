@@ -66,6 +66,17 @@ export async function markChatRead(chatId: string, userId: string) {
   });
 }
 
+export async function markMessageRead(messageId: string, userId: string) {
+  await prisma.message.updateMany({
+    where: {
+      id: messageId,
+      receiverId: userId,
+      readAt: null,
+    },
+    data: { readAt: new Date() },
+  });
+}
+
 export async function markAllMessagesRead(userId: string) {
   await prisma.message.updateMany({
     where: {

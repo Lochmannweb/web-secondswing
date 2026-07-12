@@ -1,6 +1,7 @@
 "use client"
 
 import { deleteProduct, getProductById, replaceProductImages, updateProduct } from "@/app/lib/crud"
+import { uploadImageFiles } from "@/app/lib/uploadImage"
 import {
   buildProductPayload,
   CATEGORY_OPTIONS,
@@ -137,23 +138,6 @@ export default function EditProductPage() {
     event.target.value = ""
   }
 
-  const uploadImage = async (file: File, userId: string, index: number): Promise<string> => {
-    const fileExt = (file.name.split(".").pop() || "jpg").toLowerCase()
-    const uniqueId = typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
-    const filePath = `${userId}/${productId ?? "tmp"}-${Date.now()}-${index}-${uniqueId}.${fileExt}`
-
-    const { error } = await supabase.storage.from("avatars").upload(filePath, file)
-
-    if (error) {
-      throw new Error(`Kunne ikke uploade billede: ${error.message}`)
-    }
-
-    const { data } = supabase.storage.from("avatars").getPublicUrl(filePath)
-    return data.publicUrl
-  }
-
   const displayImages = useMemo(() => {
     if (selectedImagePreviews.length > 0) {
       return selectedImagePreviews
@@ -272,11 +256,11 @@ export default function EditProductPage() {
       }
 
       let imageUrl = form.image_url ?? null
-      let uploadedUrls: string[] = []
+      let allImageUrls = productImages
 
       if (imageFiles.length > 0) {
-        uploadedUrls = await Promise.all(imageFiles.map((file, index) => uploadImage(file, user.id, index)))
-        imageUrl = uploadedUrls[0] ?? null
+        allImageUrls = await uploadImageFiles(imageFiles)
+        imageUrl = allImageUrls[0] ?? null
       }
 
       const productPayload = buildProductPayload(form)
@@ -292,26 +276,26 @@ export default function EditProductPage() {
       await updateProduct(productId, {
         ...productPayload,
         image_url: imageUrl,
-      })
+      });
 
-      if (uploadedUrls.length > 0) {
-        const extraImages = uploadedUrls.slice(1).map((url, index) => ({
+      if (imageFiles.length > 0) {
+        const extraImages = allImageUrls.slice(1).map((url, index) => ({
           image_url: url,
           position: index + 1,
-        }))
+        }));
 
         if (extraImages.length > 0) {
-          await replaceProductImages(productId, extraImages)
+          await replaceProductImages(productId, extraImages);
         } else {
-          await replaceProductImages(productId, [])
+          await replaceProductImages(productId, []);
         }
 
-        setForm((prev) => ({ ...prev, image_url: uploadedUrls[0] ?? null }))
-        setProductImages(uploadedUrls)
-        selectedImagePreviews.forEach((url) => URL.revokeObjectURL(url))
-        setSelectedImagePreviews([])
-        setImageFiles([])
-        setActivePreviewIndex(0)
+        setForm((prev) => ({ ...prev, image_url: allImageUrls[0] ?? null }));
+        setProductImages(allImageUrls);
+        selectedImagePreviews.forEach((url) => URL.revokeObjectURL(url));
+        setSelectedImagePreviews([]);
+        setImageFiles([]);
+        setActivePreviewIndex(0);
       }
 
       setMessage({ type: "success", text: "Produkt opdateret!" })

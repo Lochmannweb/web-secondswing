@@ -97,3 +97,13 @@ model Message {
   @@index([receiverId, readAt])
   @@map("messages")
 }
+
+/// Billeder gemmes i Neon og serves via /api/images/[id]
+model Image {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  mimeType  String   @map("mime_type")
+  data      Bytes
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("images")
+}

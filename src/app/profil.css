@@ -227,6 +227,23 @@
   color: var(--color-text-muted);
 }
 
+.settings-stub-text {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.settings-stub-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
 @media (min-width: 900px) {
   .profil-layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

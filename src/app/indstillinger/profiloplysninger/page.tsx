@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Alert, TextField } from "@mui/material";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import { getProfile, updateProfile as updateProfileApi } from "@/app/lib/profilesApi";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
+import { uploadImageFile } from "@/app/lib/uploadImage";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import "../../profil.css";
@@ -44,14 +46,13 @@ export default function Profiloplysninger() {
       setShippingCountry((user.user_metadata?.shipping_country as string) || "Danmark");
       setBio((user.user_metadata?.bio as string) ?? "");
 
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("avatar_url, display_name")
-        .eq("id", user.id)
-        .single();
-
-      if (!error && data?.avatar_url) setImagePreview(data.avatar_url);
-      if (!error && data?.display_name) setDisplayName(data.display_name);
+      try {
+        const data = await getProfile(user.id);
+        if (data.avatar_url) setImagePreview(data.avatar_url);
+        if (data.display_name) setDisplayName(data.display_name);
+      } catch {
+        // Profil oprettes ved første gem
+      }
     };
 
     fetchProfile();
@@ -69,19 +70,6 @@ export default function Profiloplysninger() {
     reader.readAsDataURL(file);
   };
 
-  const uploadImage = async (file: File): Promise<string> => {
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Date.now()}.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage.from("avatars").upload(fileName, file);
-    if (uploadError) throw new Error(`Kunne ikke uploade billede: ${uploadError.message}`);
-
-    const { data } = supabase.storage.from("avatars").getPublicUrl(fileName);
-    if (!data?.publicUrl) throw new Error("Kunne ikke generere offentlig URL for billedet");
-
-    return data.publicUrl;
-  };
-
   const handleSubmit = async () => {
     setLoading(true);
     setMessage(null);
@@ -95,18 +83,12 @@ export default function Profiloplysninger() {
       if (userError || !user) throw new Error("Du skal være logget ind");
 
       let newAvatarUrl = imagePreview;
-      if (imageFile) newAvatarUrl = await uploadImage(imageFile);
+      if (imageFile) newAvatarUrl = await uploadImageFile(imageFile);
 
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({
-          avatar_url: newAvatarUrl,
-          display_name: displayName.trim(),
-          updated_at: new Date(),
-        })
-        .eq("id", user.id);
-
-      if (updateError) throw new Error(updateError.message);
+      await updateProfileApi(user.id, {
+        avatar_url: newAvatarUrl,
+        display_name: displayName.trim(),
+      });
 
       const authUpdates: { email?: string; data?: Record<string, string> } = {};
 
@@ -167,7 +149,7 @@ export default function Profiloplysninger() {
 
       <Box className="profil-fields">
         <Button
-          onClick={() => router.push("/profile")}
+          onClick={() => router.push("/indstillinger")}
           className="profil-back"
           startIcon={<NavigateBeforeIcon />}
         >
@@ -175,8 +157,8 @@ export default function Profiloplysninger() {
         </Button>
 
         <Box className="profil-form-header">
-          <p className="profil-form-kicker">Profil</p>
-          <h1 className="profil-form-title">Rediger oplysninger</h1>
+          <p className="profil-form-kicker">Indstillinger</p>
+          <h1 className="profil-form-title">Profil & adresse</h1>
         </Box>
 
         <p className="profil-section-label">Personligt</p>
