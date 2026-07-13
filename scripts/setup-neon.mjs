@@ -2,10 +2,12 @@
 import { execSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { ensurePrismaEnv } from "./ensure-prisma-env.mjs";
 import { loadProjectEnv } from "./loadEnv.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 loadProjectEnv(root);
+ensurePrismaEnv();
 
 function run(command) {
   console.log(`> ${command}`);
