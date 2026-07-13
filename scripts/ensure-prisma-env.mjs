@@ -26,11 +26,11 @@ export function normalizeDatabaseUrl(url) {
 export function ensurePrismaEnv() {
   if (process.env.NEON_URL) {
     process.env.DATABASE_URL = normalizeDatabaseUrl(process.env.NEON_URL);
-  } else if (!process.env.DATABASE_URL && process.env.POSTGRES_PRISMA_URL) {
+  } else if (process.env.POSTGRES_PRISMA_URL) {
     process.env.DATABASE_URL = normalizeDatabaseUrl(process.env.POSTGRES_PRISMA_URL);
-  } else if (!process.env.DATABASE_URL && process.env.POSTGRES_URL) {
+  } else if (process.env.POSTGRES_URL) {
     process.env.DATABASE_URL = normalizeDatabaseUrl(process.env.POSTGRES_URL);
-  } else if (process.env.DATABASE_URL) {
+  } else if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes("supabase.com")) {
     process.env.DATABASE_URL = normalizeDatabaseUrl(process.env.DATABASE_URL);
   }
 
