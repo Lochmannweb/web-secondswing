@@ -1,19 +1,21 @@
 export const aboutData = {
     Company: {
         title: "Om Os",
-        contentTop: "Second Swing blev skabt af passionerede golfspillere, der ville gøre det lettere og billigere at købe og sælge brugt golfudstyr.",
-        contentMidt: "Vi oplevede selv, hvor dyrt nyt udstyr er, og hvor meget brugt udstyr stadig har at tilbyde. Derfor skabte vi en platform, hvor golfspillere nemt kan handle direkte med hinanden.",
-        contentBottom: "Vores mission er at give golfudstyr nyt liv og gøre sporten mere tilgængelig for alle – mere golf, mindre omkostning.",
+        contentTop: "Second Swing blev skabt med et enkelt formål: at gøre det nemmere og mere attraktivt at købe og sælge brugt golfudstyr.",
+        contentMidt: "Vi oplevede selv, hvor stor en investering nyt golfudstyr kan være, samtidig med at meget brugt udstyr stadig har mange gode år tilbage. Derfor skabte vi en platform, hvor golfspillere nemt, sikkert og direkte kan handle med hinanden.",
+        contentBottom: "Vi tror på, at kvalitetsudstyr fortjener et længere liv – til gavn for både golfspillere og miljøet.",
     },
     OurMission: {
         title: "Vores mission",
-        contentTop: "Vi ønsker at gøre golf mere tilgængeligt for alle. Nyt golfudstyr kan være dyrt, men der findes masser af gode jern, køller og bags, der fortjener en ny ejer.",
-        contentMidt: "Derfor har vi skabt en simpel, sikker og brugervenlig platform, hvor golfspillere kan handle med hinanden.",
+        contentTop: "Vores mission er at gøre golf mere tilgængelig ved at skabe en enkel, sikker og brugervenlig markedsplads for brugt golfudstyr.",
+        contentMidt: "Vi ønsker at sænke omkostningerne ved sporten og samtidig gøre det nemmere at finde kvalitetsudstyr til en fair pris. Når godt udstyr får en ny ejer, skaber det værdi for både køber, sælger og sporten som helhed.",
+        contentBottom: "Mere golf. Mindre omkostning."
     },
     OurTeam: {
         title: "Holdet bag",
-        contentTop: "Second Swing er bygget med udgangspunkt i sporten, brugerne og den type handler, der faktisk sker mellem golfspillere.",
-        contentMidt: "Med erfaring inden for både golf, forretning og digital udvikling har vi skabt en platform, hvor kvalitet, brugervenlighed og passion for sporten går hånd i hånd.",
+        contentTop: "Second Swing er skabt af golfspillere med en passion for både sporten og den gode handelsoplevelse.",
+        contentMidt: "Vi kombinerer erfaring inden for golf, forretningsudvikling og digitale løsninger for at skabe en platform, der er pålidelig, intuitiv og bygget med brugernes behov i centrum.",
+        contentBottom: "Vores ambition er at være det naturlige samlingspunkt for køb og salg af brugt golfudstyr – et sted, hvor kvalitet, gennemsigtighed og fællesskab går hånd i hånd.",
     },
     ChooseUs: {
         title: "Hvorfor vælge os",

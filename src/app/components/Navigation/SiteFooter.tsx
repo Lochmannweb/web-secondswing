@@ -4,6 +4,10 @@ const footerLinks = [
   { href: "/about", label: "Om os" },
   { href: "/faq", label: "FAQ" },
   { href: "/kontakt", label: "Kontakt" },
+  { href: "/handelsbetingelser", label: "Handelsbetingelser" },
+  { href: "/brugervilkar", label: "Brugervilkår" },
+  { href: "/privatlivspolitik", label: "Privatlivspolitik" },
+  { href: "/cookie", label: "Cookies" },
 ];
 
 export default function SiteFooter() {

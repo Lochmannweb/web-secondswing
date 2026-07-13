@@ -317,7 +317,8 @@ a {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.25rem;
+  align-items: center;
+  gap: clamp(0.65rem, 1.5vw, 1.25rem);
   margin-bottom: 0.75rem;
 }
 
@@ -327,6 +328,7 @@ a {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   transition: color 0.2s ease;
+  white-space: nowrap;
 }
 
 .site-footer-link:hover {
@@ -337,6 +339,18 @@ a {
   color: var(--color-text-subtle);
   font-size: 0.62rem;
   letter-spacing: 0.06em;
+}
+
+@media (min-width: 900px) {
+  .site-footer-nav {
+    flex-wrap: nowrap;
+    gap: 1rem;
+  }
+
+  .site-footer-link {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+  }
 }
 
 body.chats-route {

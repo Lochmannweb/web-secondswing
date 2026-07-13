@@ -17,55 +17,23 @@ export default function KontaktPage() {
       `Navn: ${name}\nE-mail: ${email}\n\n${message}`
     );
 
-    window.location.href = `mailto:support@secondswing.dk?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:secondswing@gmail.com?subject=${subject}&body=${body}`;
   };
 
   return (
     <Box className="kontakt-page">
       <Box className="kontakt-inner">
         <header className="kontakt-header">
-          <p className="kontakt-kicker">Kontakt</p>
+          {/* <p className="kontakt-kicker">Kontakt</p> */}
           <h1 className="kontakt-title">Kontakt os</h1>
           <p className="kontakt-intro">
-            Har du spørgsmål, forslag eller brug for hjælp? Skriv til os — vi svarer så hurtigt vi kan.
+            Har du spørgsmål, forslag eller brug for hjælp? 
+            <br />
+            Skriv til os — vi svarer så hurtigt vi kan.
           </p>
         </header>
 
-        <a href="mailto:support@secondswing.dk" className="kontakt-email">
-          support@secondswing.dk
-        </a>
-
-        <form className="kontakt-form" onSubmit={handleSubmit}>
-          <TextField
-            label="Navn"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            fullWidth
-            className="kontakt-field"
-          />
-          <TextField
-            label="E-mail"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-            fullWidth
-            className="kontakt-field"
-          />
-          <TextField
-            label="Besked"
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
-            required
-            fullWidth
-            multiline
-            minRows={3}
-            className="kontakt-field"
-          />
-          <Button type="submit" className="kontakt-submit">
-            Send besked
-          </Button>
-        </form>
+        <a href="mailto:secondswing@gmail.com" className="kontakt-email">secondswing@gmail.com</a>
       </Box>
     </Box>
   );

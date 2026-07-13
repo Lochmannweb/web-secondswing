@@ -46,6 +46,7 @@ export default function AboutPage() {
             <div className="about-block-text">
               <p>{aboutData.OurMission.contentTop}</p>
               <p>{aboutData.OurMission.contentMidt}</p>
+              <p>{aboutData.OurMission.contentBottom}</p>
             </div>
           </article>
 
@@ -54,6 +55,7 @@ export default function AboutPage() {
             <div className="about-block-text">
               <p>{aboutData.OurTeam.contentTop}</p>
               <p>{aboutData.OurTeam.contentMidt}</p>
+              <p>{aboutData.OurTeam.contentBottom}</p>
             </div>
           </article>
 

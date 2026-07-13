@@ -71,7 +71,7 @@ const settingsGroups: SettingsGroup[] = [
       {
         key: "privacy",
         label: "Privatliv & data",
-        description: "Cookies, vilkår og dine data",
+        description: "Handelsbetingelser, brugervilkår og privatlivspolitik",
         href: "/indstillinger/privatliv",
       },
     ],
