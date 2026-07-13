@@ -7,6 +7,7 @@ export interface NetsCheckoutRequest {
   deliveryMethod: "pickup" | "home";
   totalAmount: number;
   itemPrice: number;
+  commissionFee: number;
   shippingFee: number;
   address: ShippingAddress;
 }
