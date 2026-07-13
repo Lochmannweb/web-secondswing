@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
     const deliveryMethod = body.deliveryMethod as "pickup" | "home" | undefined;
     const totalAmount = Number(body.totalAmount);
     const itemPrice = Number(body.itemPrice);
+    const commissionFee = Number(body.commissionFee);
     const shippingFee = Number(body.shippingFee);
     const address = body.address as ShippingAddress | undefined;
 
@@ -59,6 +60,7 @@ export async function POST(request: NextRequest) {
         deliveryMethod,
         totalAmount,
         itemPrice,
+        commissionFee,
         shippingFee,
         address,
       },

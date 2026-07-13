@@ -11,6 +11,12 @@ import {
   NETS_PAYMENT_METHODS,
   type NetsPaymentMethodId,
 } from "@/app/lib/paymentMethods";
+import {
+  BUYER_PROTECTION_FEE,
+  COMMISSION_RATE,
+  SHIPPING_FEE_HOME,
+  calculateCommissionFee,
+} from "@/app/lib/fees";
 import { getProductById } from "@/app/lib/crud";
 import { getSupabaseClient } from "@/app/lib/supabaseClient";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
@@ -36,9 +42,6 @@ interface NetsCheckoutApiResponse {
   redirectUrl?: string;
   message: string;
 }
-
-const SHIPPING_FEE_HOME = 49;
-const BUYER_PROTECTION_FEE = 0;
 
 export default function CheckoutPage() {
   const params = useParams();
@@ -135,6 +138,7 @@ export default function CheckoutPage() {
 
   const shippingFee = deliveryMethod === "home" ? SHIPPING_FEE_HOME : 0;
   const itemPrice = product?.price ?? 0;
+  const commissionFee = useMemo(() => calculateCommissionFee(itemPrice), [itemPrice]);
   const totalPrice = useMemo(
     () => itemPrice + shippingFee + BUYER_PROTECTION_FEE,
     [itemPrice, shippingFee]
@@ -199,6 +203,7 @@ export default function CheckoutPage() {
           deliveryMethod,
           totalAmount: totalPrice,
           itemPrice,
+          commissionFee,
           shippingFee,
           address,
         }),
@@ -454,6 +459,10 @@ export default function CheckoutPage() {
             <div className="checkout-price-row">
               <span>Produkt</span>
               <span>{itemPrice} kr</span>
+            </div>
+            <div className="checkout-price-row">
+              <span>Kommission ({COMMISSION_RATE * 100}%)</span>
+              <span>{commissionFee} kr</span>
             </div>
             <div className="checkout-price-row">
               <span>Levering</span>
